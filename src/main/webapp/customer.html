@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Customers - Pahana Edu Bookshop</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    .sidebar {
+      height: 100vh;
+      background-color: #343a40;
+      color: white;
+      padding-top: 1rem;
+    }
+
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      padding: 0.75rem 1rem;
+      display: block;
+    }
+
+    .sidebar a:hover {
+      background-color: #495057;
+    }
+
+    .card {
+      box-shadow: 0 0 8px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+
+<!-- 🔹 Top Navbar -->
+<nav class="navbar navbar-dark bg-dark">
+  <div class="container-fluid">
+    <span class="navbar-brand mb-2 mt-2 h1">📚 Pahana Edu Bookshop - Admin Dashboard</span>
+  </div>
+</nav>
+
+<!-- 🔹 Layout -->
+<div class="container-fluid">
+  <div class="row">
+    <!-- 🔸 Sidebar -->
+    <nav class="col-md-2 d-none d-md-block bg-dark sidebar">
+      <div class="position-sticky">
+        <ul class="nav flex-column">
+          <li><a href="index.html">🏠 Dashboard</a></li>
+          <li><a href="customer.html" class="fw-bold">👤 Manage Customers</a></li>
+          <li><a href="item.html">📦 Manage Items</a></li>
+          <li><a href="billing.html">💳 Billing</a></li>
+          <li><a href="reports.html">📊 Reports</a></li>
+          <li><a href="help.html">❓ Help</a></li>
+          <li><a href="logout.html">🚪 Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- 🔸 Main Content Area -->
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+      <h2 class="mb-4">👤 Customer Management</h2>
+
+      <!-- Add New Customer -->
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white">Add New Customer</div>
+        <div class="card-body">
+          <form id="addCustomerForm">
+            <div class="row g-3">
+              <div class="col-md-3">
+                <label for="id" class="form-label">Customer ID</label>
+                <input type="text" name="id" id="id" class="form-control" required>
+              </div>
+              <div class="col-md-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" name="name" id="name" class="form-control" required>
+              </div>
+              <div class="col-md-3">
+                <label for="address" class="form-label">Address</label>
+                <input type="text" name="address" id="address" class="form-control" required>
+              </div>
+              <div class="col-md-3">
+                <label for="salary" class="form-label">Salary</label>
+                <input type="number" step="0.01" name="salary" id="salary" class="form-control" required>
+              </div>
+            </div>
+            <div class="mt-3 text-end">
+              <button type="submit" class="btn btn-success me-2">Add Customer</button>
+              <button type="reset" class="btn btn-outline-secondary">Reset</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Customer Table -->
+      <div class="card">
+        <div class="card-header bg-secondary text-white">Customer List</div>
+        <div class="card-body">
+
+          <!-- 🔍 Per-column filters -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-3">
+              <input type="text" id="searchId" class="form-control" placeholder="Search by ID">
+            </div>
+            <div class="col-md-3">
+              <input type="text" id="searchName" class="form-control" placeholder="Search by Name">
+            </div>
+            <div class="col-md-3">
+              <input type="text" id="searchAddress" class="form-control" placeholder="Search by Address">
+            </div>
+            <div class="col-md-3">
+              <input type="text" id="searchSalary" class="form-control" placeholder="Search by Salary">
+            </div>
+          </div>
+
+          <!-- 🧾 Customer Table -->
+          <table class="table table-bordered table-hover table-striped">
+            <thead class="table-dark">
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Address</th>
+              <th>Salary</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="customerTableBody">
+            <tr>
+              <td>C001</td>
+              <td>Nimal Perera</td>
+              <td>Colombo</td>
+              <td>55000.00</td>
+              <td>
+                <button class="btn btn-sm btn-green">Activate</button>
+                <button class="btn btn-sm btn-warning">Inactivate</button>
+                <button class="btn btn-sm btn-warning">Edit</button>
+                <button class="btn btn-sm btn-danger">Delete</button>
+              </td>
+            </tr>
+            <tr>
+              <td>C002</td>
+              <td>Saman Silva</td>
+              <td>Kandy</td>
+              <td>48000.00</td>
+              <td>
+                <button class="btn btn-sm btn-warning">Edit</button>
+                <button class="btn btn-sm btn-danger">Delete</button>
+                <button class="btn btn-sm btn-danger">Delete</button>
+              </td>
+            </tr>
+            <!-- Add more rows here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-light text-center py-3 mt-4">
+  &copy; 2025 Pahana Edu Bookshop. All Rights Reserved.
+</footer>
+
+<script>
+  // Basic placeholder JS for form submission
+  document.getElementById("addCustomerForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    alert("Hook this form to your backend using fetch() or XMLHttpRequest.");
+  });
+
+  const filterInputs = {
+    0: document.getElementById("searchId"),
+    1: document.getElementById("searchName"),
+    2: document.getElementById("searchAddress"),
+    3: document.getElementById("searchSalary")
+  };
+
+  Object.values(filterInputs).forEach(input => {
+    input.addEventListener("input", filterTable);
+  });
+
+  function filterTable() {
+    const table = document.getElementById("customerTableBody");
+    const rows = table.getElementsByTagName("tr");
+
+    Array.from(rows).forEach(row => {
+      let showRow = true;
+
+      Object.entries(filterInputs).forEach(([colIndex, input]) => {
+        const filterValue = input.value.toLowerCase();
+        const cell = row.cells[colIndex];
+        const cellText = cell.textContent.toLowerCase();
+
+        if (!cellText.includes(filterValue)) {
+          showRow = false;
+        }
+      });
+
+      row.style.display = showRow ? "" : "none";
+    });
+  }
+</script>
+
+</body>
+</html>
