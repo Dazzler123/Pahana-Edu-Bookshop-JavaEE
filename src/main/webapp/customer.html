@@ -123,6 +123,9 @@
                             <input type="text" id="searchTelephone" class="form-control"
                                    placeholder="Search by Telephone">
                         </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button id="resetFiltersBtn" class="btn btn-outline-secondary w-100">Reset Filters</button>
+                        </div>
                     </div>
 
                     <!-- 🧾 Customer Table -->
@@ -160,8 +163,9 @@
     let originalStatus = null;
 
     document.addEventListener("DOMContentLoaded", () => {
-        loadAllCustomers();
+        loadAllCustomers(); // this will call attachSearchFilters at the end
     });
+
 
     // create customer
     document.getElementById("addCustomerForm").addEventListener("submit", function (e) {
@@ -301,6 +305,18 @@
                 });
 
                 attachStatusEventHandlers();
+                attachSearchFilters();
+
+                document.getElementById("resetFiltersBtn").addEventListener("click", () => {
+                    document.getElementById("searchAccountNumber").value = "";
+                    document.getElementById("searchName").value = "";
+                    document.getElementById("searchAddress").value = "";
+                    document.getElementById("searchTelephone").value = "";
+                    filterCustomers();
+                    document.getElementById("searchAccountNumber").focus();
+                });
+
+                filterCustomers(); // re-apply filters based on current input values
             })
             .catch(error => {
                 alert("Failed to load customers: " + error.message);
@@ -332,6 +348,40 @@
                     updateCustomerStatus(btn.dataset.id, 'D');
                 }
             });
+        });
+    }
+
+    function attachSearchFilters() {
+        document.getElementById("searchAccountNumber").addEventListener("input", filterCustomers);
+        document.getElementById("searchName").addEventListener("input", filterCustomers);
+        document.getElementById("searchAddress").addEventListener("input", filterCustomers);
+        document.getElementById("searchTelephone").addEventListener("input", filterCustomers);
+    }
+
+    /**
+     * This method is used to filter customers (grid search filters)
+     */
+    function filterCustomers() {
+        const accFilter = document.getElementById("searchAccountNumber").value.toLowerCase();
+        const nameFilter = document.getElementById("searchName").value.toLowerCase();
+        const addressFilter = document.getElementById("searchAddress").value.toLowerCase();
+        const telFilter = document.getElementById("searchTelephone").value.toLowerCase();
+
+        const rows = document.querySelectorAll("#customerTableBody tr");
+
+        rows.forEach(row => {
+            const acc = row.children[0]?.textContent.toLowerCase();
+            const name = row.children[1]?.textContent.toLowerCase();
+            const address = row.children[2]?.textContent.toLowerCase();
+            const tel = row.children[3]?.textContent.toLowerCase();
+
+            const match =
+                acc.includes(accFilter) &&
+                name.includes(nameFilter) &&
+                address.includes(addressFilter) &&
+                tel.includes(telFilter);
+
+            row.style.display = match ? "" : "none";
         });
     }
 

@@ -18,7 +18,7 @@ import java.sql.SQLException;
 public class CustomerServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
 
         try (Connection connection = ((BasicDataSource) getServletContext().getAttribute("dbcp")).getConnection()) {
@@ -53,7 +53,7 @@ public class CustomerServlet extends HttpServlet {
 
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String accountNumber = req.getParameter("account_number");
         String name = req.getParameter("name");
         String address = req.getParameter("address");
