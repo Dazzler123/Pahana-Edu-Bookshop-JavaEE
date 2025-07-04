@@ -160,7 +160,7 @@
     let originalStatus = null;
 
     document.addEventListener("DOMContentLoaded", () => {
-        loadCustomers();
+        loadAllCustomers();
     });
 
     // create customer
@@ -192,7 +192,7 @@
             .then(data => {
                 alert(data.message);
                 form.reset();
-                loadCustomers();
+                loadAllCustomers();
 
                 // Reset UI
                 isUpdateMode = false;
@@ -225,14 +225,13 @@
 
     /**
      * This method is used to load all available customers to the grid.
+     *
      */
-    function loadCustomers() {
+    function loadAllCustomers() {
         fetch(baseURL + "customer")
             .then(response => {
                 if (!response.ok) {
-                    return response.json().then(err => {
-                        throw err
-                    });
+                    return response.json().then(err => { throw err });
                 }
                 return response.json();
             })
@@ -247,76 +246,122 @@
                     let statusClass = '';
 
                     switch (c.status) {
-                        case 'A':
-                            statusLabel = 'Active';
-                            statusClass = 'bg-success';
-                            break;
-                        case 'I':
-                            statusLabel = 'Inactive';
-                            statusClass = 'bg-secondary';
-                            break;
-                        case 'D':
-                            statusLabel = 'Deleted';
-                            statusClass = 'bg-danger';
-                            break;
-                        default:
-                            statusLabel = 'Unknown';
-                            statusClass = 'bg-dark';
+                        case 'A': statusLabel = 'Active'; statusClass = 'bg-success'; break;
+                        case 'I': statusLabel = 'Inactive'; statusClass = 'bg-secondary'; break;
+                        case 'D': statusLabel = 'Deleted'; statusClass = 'bg-danger'; break;
+                        default:  statusLabel = 'Unknown'; statusClass = 'bg-dark';
                     }
 
                     row.innerHTML = `
-  <td>${c.accountNumber}</td>
-  <td>${c.name}</td>
-  <td>${c.address}</td>
-  <td>${c.telephone}</td>
-  <td><span class="badge ${statusClass}">${statusLabel}</span></td>
-  <td>
-    <button class="btn btn-sm btn-success" ${c.status === 'A' || c.status === 'D' ? 'disabled' : ''}>Activate</button>
-    <button class="btn btn-sm btn-warning" ${c.status === 'I' || c.status === 'D' ? 'disabled' : ''}>Inactivate</button>
-<button class="btn btn-sm btn-primary edit-btn"
-  ${c.status === 'D' || c.status === 'I' ? 'disabled' : ''}
-  data-account="${c.accountNumber}"
-  data-name="${c.name}"
-  data-address="${c.address}"
-  data-telephone="${c.telephone}"
-  data-status="${c.status}">
-  Edit
-</button>
-    <button class="btn btn-sm btn-danger" ${c.status === 'D' ? 'disabled' : ''}>Delete</button>
-  </td>
-`;
-
+                    <td>${c.accountNumber}</td>
+                    <td>${c.name}</td>
+                    <td>${c.address}</td>
+                    <td>${c.telephone}</td>
+                    <td><span class="badge ${statusClass}">${statusLabel}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-success activate-btn" data-id="${c.accountNumber}" ${c.status === 'A' || c.status === 'D' ? 'disabled' : ''}>Activate</button>
+                        <button class="btn btn-sm btn-warning inactivate-btn" data-id="${c.accountNumber}" ${c.status === 'I' || c.status === 'D' ? 'disabled' : ''}>Inactivate</button>
+                        <button class="btn btn-sm btn-primary edit-btn"
+                            data-account="${c.accountNumber}"
+                            data-name="${c.name}"
+                            data-address="${c.address}"
+                            data-telephone="${c.telephone}"
+                            data-status="${c.status}"
+                            ${c.status === 'D' || c.status === 'I' ? 'disabled' : ''}>
+                            Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger delete-btn" data-id="${c.accountNumber}" ${c.status === 'D' ? 'disabled' : ''}>Delete</button>
+                    </td>
+                `;
 
                     tbody.appendChild(row);
 
-                    // Attach click listeners after row is added
-                    row.querySelector('.edit-btn')?.addEventListener('click', (e) => {
-                        const btn = e.currentTarget;
-                        document.getElementById("formHeader").textContent = "Update Customer";
-                        document.getElementById("account_number").value = btn.dataset.account;
-                        document.getElementById("name").value = btn.dataset.name;
-                        document.getElementById("address").value = btn.dataset.address;
-                        document.getElementById("telephone").value = btn.dataset.telephone;
-                        document.getElementById("status").value = btn.dataset.status;
+                    const editBtn = row.querySelector('.edit-btn');
+                    if (editBtn) {
+                        editBtn.addEventListener('click', () => {
+                            document.getElementById("formHeader").textContent = "Update Customer";
+                            document.getElementById("account_number").value = editBtn.dataset.account;
+                            document.getElementById("name").value = editBtn.dataset.name;
+                            document.getElementById("address").value = editBtn.dataset.address;
+                            document.getElementById("telephone").value = editBtn.dataset.telephone;
+                            document.getElementById("status").value = editBtn.dataset.status;
 
+                            isUpdateMode = true;
+                            originalStatus = editBtn.dataset.status;
 
-                        isUpdateMode = true;
-                        originalStatus = btn.dataset.status;
+                            const submitBtn = document.getElementById("submitBtn");
+                            submitBtn.textContent = "Update Customer";
+                            submitBtn.classList.remove("btn-success");
+                            submitBtn.classList.add("btn-warning");
 
-                        const submitBtn = document.getElementById("submitBtn");
-                        submitBtn.textContent = "Update Customer";
-                        submitBtn.classList.remove("btn-success");
-                        submitBtn.classList.add("btn-warning");
-
-                        document.getElementById("account_number").readOnly = true;
-                    });
+                            document.getElementById("account_number").readOnly = true;
+                        });
+                    }
 
                 });
+
+                attachStatusEventHandlers();
             })
             .catch(error => {
                 alert("Failed to load customers: " + error.message);
             });
     }
+
+
+    /**
+     * This method is used to trigger the customer manage events based on
+     * user's action on a customer's record
+     *
+     */
+    function attachStatusEventHandlers() {
+        document.querySelectorAll('.activate-btn').forEach(btn => {
+            btn.addEventListener('click', () => updateCustomerStatus(btn.dataset.id, 'A'));
+        });
+
+        document.querySelectorAll('.inactivate-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (confirm("Are you sure you want to update this customer?")) {
+                    updateCustomerStatus(btn.dataset.id, 'I')
+                }
+            });
+        });
+
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (confirm("Are you sure you want to delete this customer?")) {
+                    updateCustomerStatus(btn.dataset.id, 'D');
+                }
+            });
+        });
+    }
+
+
+    /**
+     * This method is used to update customer's status
+     * @param accountNumber
+     * @param newStatus
+     */
+    function updateCustomerStatus(accountNumber, newStatus) {
+        fetch(baseURL + "customer", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ account_number: accountNumber, status: newStatus })
+        })
+            .then(response => {
+                if (!response.ok) return response.json().then(err => { throw err });
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message);
+                loadAllCustomers();
+            })
+            .catch(error => {
+                alert("Error: " + error.message);
+            });
+    }
+
 
 </script>
 

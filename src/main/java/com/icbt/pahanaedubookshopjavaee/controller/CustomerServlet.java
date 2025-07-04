@@ -131,6 +131,7 @@ public class CustomerServlet extends HttpServlet {
     }
 
 
+
     /**
      * This method can be used to find if the customer already exists
      *
@@ -148,14 +149,42 @@ public class CustomerServlet extends HttpServlet {
     }
 
 
-
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        JsonObject json = Json.createReader(req.getReader()).readObject();
+        String accountNumber = json.getString("account_number", null);
+        String newStatus = json.getString("status", null);
 
+        resp.setContentType("application/json");
+
+        if (accountNumber == null || newStatus == null || !newStatus.matches("[AID]")) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().print(Json.createObjectBuilder()
+                    .add("state", "error")
+                    .add("message", "Invalid request payload.").build());
+            return;
+        }
+
+        try (Connection connection = ((BasicDataSource) getServletContext().getAttribute("dbcp")).getConnection()) {
+            String sql = "UPDATE Customer SET status = ? WHERE account_number = ?";
+            try (PreparedStatement psmt = connection.prepareStatement(sql)) {
+                psmt.setString(1, newStatus);
+                psmt.setString(2, accountNumber);
+                boolean result = psmt.executeUpdate() > 0;
+
+                JsonObjectBuilder response = Json.createObjectBuilder();
+                response.add("state", result ? "done" : "error");
+                response.add("message", result ? "Status updated successfully." : "Update failed. Customer not found.");
+                resp.getWriter().print(response.build());
+            }
+
+        } catch (SQLException e) {
+            JsonObjectBuilder errorObj = Json.createObjectBuilder();
+            errorObj.add("state", "error");
+            errorObj.add("message", e.getMessage());
+            resp.setStatus(500);
+            resp.getWriter().print(errorObj.build());
+        }
     }
 
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-    }
 }
