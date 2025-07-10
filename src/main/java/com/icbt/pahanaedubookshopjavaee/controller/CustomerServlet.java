@@ -1,190 +1,151 @@
 package com.icbt.pahanaedubookshopjavaee.controller;
 
-import org.apache.commons.dbcp2.BasicDataSource;
+import com.icbt.pahanaedubookshopjavaee.model.Customer;
+import com.icbt.pahanaedubookshopjavaee.service.CustomerService;
+import com.icbt.pahanaedubookshopjavaee.service.impl.CustomerServiceImpl;
+import com.icbt.pahanaedubookshopjavaee.util.constants.CommonConstants;
+import com.icbt.pahanaedubookshopjavaee.util.constants.DBConstants;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ResponseMessages;
 
-import javax.json.*;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.List;
 
-@WebServlet(urlPatterns = "/customer")
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+
+@WebServlet("/customer")
 public class CustomerServlet extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setContentType("application/json");
-
-        try (Connection connection = ((BasicDataSource) getServletContext().getAttribute("dbcp")).getConnection()) {
-            PreparedStatement psmt = connection.prepareStatement("SELECT account_number, name, address, telephone, status FROM Customer");
-            ResultSet rs = psmt.executeQuery();
-
-            JsonArrayBuilder customersArray = Json.createArrayBuilder();
-
-            while (rs.next()) {
-                JsonObjectBuilder customer = Json.createObjectBuilder();
-                customer.add("accountNumber", rs.getString("account_number"));
-                customer.add("name", rs.getString("name"));
-                customer.add("address", rs.getString("address"));
-                customer.add("telephone", rs.getString("telephone"));
-                customer.add("status", rs.getString("status"));
-                customersArray.add(customer);
-            }
-
-            JsonObjectBuilder response = Json.createObjectBuilder();
-            response.add("state", "done");
-            response.add("customers", customersArray);
-            resp.getWriter().print(response.build());
-
-        } catch (SQLException e) {
-            JsonObjectBuilder errorObj = Json.createObjectBuilder();
-            errorObj.add("state", "error");
-            errorObj.add("message", e.getMessage());
-            resp.setStatus(500);
-            resp.getWriter().print(errorObj.build());
-        }
-    }
-
+    private CustomerService customerService;
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String accountNumber = req.getParameter("account_number");
-        String name = req.getParameter("name");
-        String address = req.getParameter("address");
-        String telephone = req.getParameter("telephone");
-
-        System.out.println(accountNumber + " " + name + " " + address + " " + telephone);
-        resp.setContentType("application/json");
-
-        try (Connection connection = ((BasicDataSource) getServletContext().getAttribute("dbcp")).getConnection()) {
-            boolean exists = customerExists(connection, accountNumber);
-
-            String sql;
-            if (exists) {
-                // Preserve existing status
-                String currentStatus = getCustomerStatus(connection, accountNumber);
-                sql = "UPDATE Customer SET name = ?, address = ?, telephone = ?, status = ? WHERE account_number = ?";
-                try (PreparedStatement psmt = connection.prepareStatement(sql)) {
-                    psmt.setString(1, name);
-                    psmt.setString(2, address);
-                    psmt.setString(3, telephone);
-                    psmt.setString(4, currentStatus); // preserve original
-                    psmt.setString(5, accountNumber);
-                    boolean result = psmt.executeUpdate() > 0;
-
-                    JsonObjectBuilder response = Json.createObjectBuilder();
-                    response.add("state", result ? "done" : "error");
-                    response.add("message", result ? "Customer updated successfully." : "Customer update failed!");
-                    resp.getWriter().print(response.build());
-                }
-
-            } else {
-                sql = "INSERT INTO Customer (account_number, name, address, telephone, status) VALUES (?, ?, ?, ?, ?)";
-                try (PreparedStatement psmt = connection.prepareStatement(sql)) {
-                    psmt.setString(1, accountNumber);
-                    psmt.setString(2, name);
-                    psmt.setString(3, address);
-                    psmt.setString(4, telephone);
-                    psmt.setString(5, "A"); // New customer = Active
-                    boolean result = psmt.executeUpdate() > 0;
-
-                    JsonObjectBuilder response = Json.createObjectBuilder();
-                    response.add("state", result ? "done" : "error");
-                    response.add("message", result ? "Customer created successfully." : "Customer creation failed!");
-                    resp.getWriter().print(response.build());
-                }
-            }
-
-        } catch (SQLException e) {
-            JsonObjectBuilder errorObj = Json.createObjectBuilder();
-            errorObj.add("state", "error");
-            errorObj.add("message", e.getMessage());
-            resp.setStatus(400);
-            resp.getWriter().print(errorObj.build());
-        }
+    public void init() {
+        DataSource dataSource = (DataSource) getServletContext().getAttribute(DBConstants.DBCP_LABEL);
+        this.customerService = new CustomerServiceImpl(dataSource);
     }
 
     /**
-     * This method can be used to get the customer's status
-     * @param connection
-     * @param accountNumber
-     * @return
-     * @throws SQLException
-     */
-    private String getCustomerStatus(Connection connection, String accountNumber) throws SQLException {
-        String sql = "SELECT status FROM Customer WHERE account_number = ?";
-        try (PreparedStatement psmt = connection.prepareStatement(sql)) {
-            psmt.setString(1, accountNumber);
-            try (ResultSet rs = psmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getString("status");
-                }
-            }
-        }
-        return "I"; // fallback default if somehow not found
-    }
-
-
-
-    /**
-     * This method can be used to find if the customer already exists
+     * This method is used to get all the available customers
      *
-     * @param connection
-     * @param accountNumber
-     * @return
-     * @throws SQLException
+     * @param request
+     * @param response
+     * @throws IOException
      */
-    private boolean customerExists(Connection connection, String accountNumber) throws SQLException {
-        String sql = "SELECT account_number FROM Customer WHERE account_number = ?";
-        try (PreparedStatement psmt = connection.prepareStatement(sql)) {
-            psmt.setString(1, accountNumber);
-            return psmt.executeQuery().next(); // true if record found
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        List<Customer> customers = customerService.getAllCustomers();
+
+        JsonArrayBuilder customersArray = Json.createArrayBuilder();
+        for (Customer c : customers) {
+            customersArray.add(Json.createObjectBuilder()
+                    .add("accountNumber", c.getAccountNumber())
+                    .add("name", c.getName())
+                    .add("address", c.getAddress())
+                    .add("telephone", c.getTelephone())
+                    .add("status", String.valueOf(c.getStatus()))
+            );
         }
+
+        JsonObject json = Json.createObjectBuilder()
+                .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_DONE)
+                .add("customers", customersArray)
+                .build();
+
+        writeJson(response, json);
+    }
+
+    /**
+     * This method is used to create/save new customer
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        String accountNumber = request.getParameter("account_number");
+        String name = request.getParameter("name");
+        String addr = request.getParameter("address");
+        String tel = request.getParameter("telephone");
+        char status = request.getParameter("status") != null ?
+                request.getParameter("status").charAt(0) : CommonConstants.STATUS_ACTIVE_CHAR;
+
+        Customer customer = new Customer(accountNumber, name, addr, tel, status);
+
+        boolean exists = customerService.isExistingCustomer(accountNumber);
+        if (exists) {
+            customerService.updateCustomer(customer);
+        } else {
+            customerService.saveCustomer(customer);
+        }
+
+        JsonObject json = Json.createObjectBuilder()
+                .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_DONE)
+                .add(CommonConstants.LABEL_MESSAGE, exists ? ResponseMessages.MESSAGE_CUSTOMER_UPDATED_SUCCESSFULLY :
+                        ResponseMessages.MESSAGE_CUSTOMER_SAVED_SUCCESSFULLY)
+                .build();
+
+        writeJson(response, json);
     }
 
 
+    /**
+     * This method is used to update the customer's status
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        JsonObject json = Json.createReader(req.getReader()).readObject();
-        String accountNumber = json.getString("account_number", null);
-        String newStatus = json.getString("status", null);
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        try (JsonReader reader = Json.createReader(request.getReader())) {
+            JsonObject json = reader.readObject();
+            String acc = json.getString("account_number", null);
+            String stat = json.getString("status", null);
 
-        resp.setContentType("application/json");
-
-        if (accountNumber == null || newStatus == null || !newStatus.matches("[AID]")) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().print(Json.createObjectBuilder()
-                    .add("state", "error")
-                    .add("message", "Invalid request payload.").build());
-            return;
-        }
-
-        try (Connection connection = ((BasicDataSource) getServletContext().getAttribute("dbcp")).getConnection()) {
-            String sql = "UPDATE Customer SET status = ? WHERE account_number = ?";
-            try (PreparedStatement psmt = connection.prepareStatement(sql)) {
-                psmt.setString(1, newStatus);
-                psmt.setString(2, accountNumber);
-                boolean result = psmt.executeUpdate() > 0;
-
-                JsonObjectBuilder response = Json.createObjectBuilder();
-                response.add("state", result ? "done" : "error");
-                response.add("message", result ? "Status updated successfully." : "Update failed. Customer not found.");
-                resp.getWriter().print(response.build());
+            if (acc == null || stat == null || !stat.matches("[AID]")) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                writeJson(response, Json.createObjectBuilder()
+                        .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
+                        .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.INVALID_REQUEST_PAYLOAD)
+                        .build());
+                return;
             }
 
-        } catch (SQLException e) {
-            JsonObjectBuilder errorObj = Json.createObjectBuilder();
-            errorObj.add("state", "error");
-            errorObj.add("message", e.getMessage());
-            resp.setStatus(500);
-            resp.getWriter().print(errorObj.build());
+            customerService.updateStatus(acc, stat.charAt(0));
+
+            String actionText = stat.equals(CommonConstants.STATUS_ACTIVE_STRING) ? "activated" :
+                    stat.equals(CommonConstants.STATUS_INACTIVE_STRING) ? "inactivated" :
+                            "deleted";
+
+            writeJson(response, Json.createObjectBuilder()
+                    .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_DONE)
+                    .add(CommonConstants.LABEL_MESSAGE,
+                            ResponseMessages.MESSAGE_CUSTOMER_STATUS_UPDATED.replace(CommonConstants.REPLACER, actionText))
+                    .build());
         }
+    }
+
+    /**
+     * This method is used to compile the final common response as a JSON
+     *
+     * @param response
+     * @param data
+     * @throws IOException
+     */
+    private void writeJson(HttpServletResponse response, JsonObject data) throws IOException {
+        response.setContentType(CommonConstants.MIME_TYPE_JSON);
+        response.getWriter().print(data.toString());
     }
 
 }
