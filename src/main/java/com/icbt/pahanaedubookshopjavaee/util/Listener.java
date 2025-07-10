@@ -1,5 +1,7 @@
 package com.icbt.pahanaedubookshopjavaee.util;
 
+import com.icbt.pahanaedubookshopjavaee.util.constants.CommonConstants;
+import com.icbt.pahanaedubookshopjavaee.util.constants.DBConstants;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.servlet.ServletContext;
@@ -11,15 +13,15 @@ import javax.servlet.annotation.WebListener;
 public class Listener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        BasicDataSource bds= new BasicDataSource();
-        bds.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        bds.setUrl("jdbc:mysql://localhost:3306/pahana_edu_bookshop");
-        bds.setUsername("root");
-        bds.setPassword("1234");
+        BasicDataSource bds = new BasicDataSource();
+        bds.setDriverClassName(DBConstants.DB_DRIVER);
+        bds.setUrl(DBConstants.DB_URL + DBConstants.DEPLOYMENT_PORT + CommonConstants.SLASH_STRING + DBConstants.DB_NAME);
+        bds.setUsername(DBConstants.DB_USERNAME);
+        bds.setPassword(DBConstants.DB_PASSWORD);
         bds.setMaxTotal(2);
         bds.setInitialSize(2);
         ServletContext servletContext = servletContextEvent.getServletContext();
-        servletContext.setAttribute("dbcp",bds);
+        servletContext.setAttribute(DBConstants.DBCP_LABEL, bds);
     }
 
     @Override
