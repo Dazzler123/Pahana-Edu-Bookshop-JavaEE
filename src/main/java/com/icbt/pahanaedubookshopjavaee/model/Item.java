@@ -4,12 +4,20 @@ import java.math.BigDecimal;
 
 public class Item {
     private String itemCode;
-    private String itemName;
+    private String name;
     private BigDecimal unitPrice;
     private Integer qtyOnHand;
     private char status;
 
     public Item() {}
+
+    public Item(String itemCode, String name, BigDecimal unitPrice, Integer qtyOnHand, char status) {
+        this.itemCode = itemCode;
+        this.name = name;
+        this.unitPrice = unitPrice;
+        this.qtyOnHand = qtyOnHand;
+        this.status = status;
+    }
 
     public String getItemCode() {
         return itemCode;
@@ -19,12 +27,12 @@ public class Item {
         this.itemCode = itemCode;
     }
 
-    public String getItemName() {
-        return itemName;
+    public String getName() {
+        return name;
     }
 
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public BigDecimal getUnitPrice() {
@@ -55,7 +63,7 @@ public class Item {
     public String toString() {
         return "Item{" +
                 "itemCode='" + itemCode + '\'' +
-                ", itemName='" + itemName + '\'' +
+                ", itemName='" + name + '\'' +
                 ", unitPrice=" + unitPrice +
                 ", qtyOnHand=" + qtyOnHand +
                 ", status=" + status +

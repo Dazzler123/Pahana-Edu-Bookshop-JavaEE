@@ -26,7 +26,7 @@ public class CustomerDAOImpl implements CustomerDAO {
      */
     public List<Customer> findAll() {
         List<Customer> customers = new ArrayList<>();
-        String sql = "SELECT account_number, name, address, telephone, status FROM Customer WHERE status <> 'D'";
+        String sql = "SELECT account_number, name, address, telephone, status FROM Customer WHERE status";
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement psmt = connection.prepareStatement(sql);
