@@ -89,7 +89,7 @@
                             </div>
                             <div class="col-md-3">
                                 <label for="telephone" class="form-label">Telephone</label>
-                                <input type="number" step="0.01" name="telephone" id="telephone" class="form-control"
+                                <input type="text" name="telephone" id="telephone" class="form-control"
                                        required>
                             </div>
                             <input type="hidden" id="status" name="status"/>
@@ -235,7 +235,9 @@
         fetch(baseURL + "customer")
             .then(response => {
                 if (!response.ok) {
-                    return response.json().then(err => { throw err });
+                    return response.json().then(err => {
+                        throw err
+                    });
                 }
                 return response.json();
             })
@@ -250,10 +252,21 @@
                     let statusClass = '';
 
                     switch (c.status) {
-                        case 'A': statusLabel = 'Active'; statusClass = 'bg-success'; break;
-                        case 'I': statusLabel = 'Inactive'; statusClass = 'bg-secondary'; break;
-                        case 'D': statusLabel = 'Deleted'; statusClass = 'bg-danger'; break;
-                        default:  statusLabel = 'Unknown'; statusClass = 'bg-dark';
+                        case 'A':
+                            statusLabel = 'Active';
+                            statusClass = 'bg-success';
+                            break;
+                        case 'I':
+                            statusLabel = 'Inactive';
+                            statusClass = 'bg-secondary';
+                            break;
+                        case 'D':
+                            statusLabel = 'Deleted';
+                            statusClass = 'bg-danger';
+                            break;
+                        default:
+                            statusLabel = 'Unknown';
+                            statusClass = 'bg-dark';
                     }
 
                     row.innerHTML = `
@@ -397,10 +410,12 @@
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ account_number: accountNumber, status: newStatus })
+            body: JSON.stringify({account_number: accountNumber, status: newStatus})
         })
             .then(response => {
-                if (!response.ok) return response.json().then(err => { throw err });
+                if (!response.ok) return response.json().then(err => {
+                    throw err
+                });
                 return response.json();
             })
             .then(data => {
