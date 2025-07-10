@@ -349,7 +349,7 @@
 
         document.querySelectorAll('.inactivate-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                if (confirm("Are you sure you want to update this customer?")) {
+                if (confirm("Are you sure you want to inactivate this customer?")) {
                     updateCustomerStatus(btn.dataset.id, 'I')
                 }
             });

@@ -1,190 +1,142 @@
 package com.icbt.pahanaedubookshopjavaee.controller;
 
-import org.apache.commons.dbcp2.BasicDataSource;
+import com.icbt.pahanaedubookshopjavaee.model.Item;
+import com.icbt.pahanaedubookshopjavaee.service.ItemService;
+import com.icbt.pahanaedubookshopjavaee.service.impl.ItemServiceImpl;
+import com.icbt.pahanaedubookshopjavaee.util.constants.CommonConstants;
+import com.icbt.pahanaedubookshopjavaee.util.constants.DBConstants;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ResponseMessages;
 
 import javax.json.*;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.math.BigDecimal;
+import java.util.List;
 
-@WebServlet(urlPatterns = "/item")
+@WebServlet("/item")
 public class ItemServlet extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setContentType("application/json");
-
-        try (Connection connection = ((BasicDataSource) getServletContext().getAttribute("dbcp")).getConnection()) {
-            PreparedStatement psmt = connection.prepareStatement("SELECT item_code, name, unit_price, qty_on_hand, status FROM Item");
-            ResultSet rs = psmt.executeQuery();
-
-            JsonArrayBuilder itemsArray = Json.createArrayBuilder();
-
-            while (rs.next()) {
-                JsonObjectBuilder item = Json.createObjectBuilder();
-                item.add("itemCode", rs.getString("item_code"));
-                item.add("name", rs.getString("name"));
-                item.add("unitPrice", rs.getString("unit_price"));
-                item.add("qtyOnHand", rs.getString("qty_on_hand"));
-                item.add("status", rs.getString("status"));
-                itemsArray.add(item);
-            }
-
-            JsonObjectBuilder response = Json.createObjectBuilder();
-            response.add("state", "done");
-            response.add("items", itemsArray);
-            resp.getWriter().print(response.build());
-
-        } catch (SQLException e) {
-            JsonObjectBuilder errorObj = Json.createObjectBuilder();
-            errorObj.add("state", "error");
-            errorObj.add("message", e.getMessage());
-            resp.setStatus(500);
-            resp.getWriter().print(errorObj.build());
-        }
-    }
-
+    private ItemService itemService;
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String itemCode = req.getParameter("item_code");
-        String name = req.getParameter("name");
-        String unitPrice = req.getParameter("unit_price");
-        String qtyOnHand = req.getParameter("qty_on_hand");
-
-        System.out.println(itemCode + " " + name + " " + unitPrice + " " + qtyOnHand);
-        resp.setContentType("application/json");
-
-        try (Connection connection = ((BasicDataSource) getServletContext().getAttribute("dbcp")).getConnection()) {
-            boolean exists = itemExists(connection, itemCode);
-
-            String sql;
-            if (exists) {
-                // Preserve existing status
-                String currentStatus = getItemStatus(connection, itemCode);
-                sql = "UPDATE Item SET name = ?, unit_price = ?, qty_on_hand = ?, status = ? WHERE item_code = ?";
-                try (PreparedStatement psmt = connection.prepareStatement(sql)) {
-                    psmt.setString(1, name);
-                    psmt.setString(2, unitPrice);
-                    psmt.setString(3, qtyOnHand);
-                    psmt.setString(4, currentStatus); // preserve original
-                    psmt.setString(5, itemCode);
-                    boolean result = psmt.executeUpdate() > 0;
-
-                    JsonObjectBuilder response = Json.createObjectBuilder();
-                    response.add("state", result ? "done" : "error");
-                    response.add("message", result ? "Item updated successfully." : "Item update failed!");
-                    resp.getWriter().print(response.build());
-                }
-
-            } else {
-                sql = "INSERT INTO Item (item_code, name, unit_price, qty_on_hand, status) VALUES (?, ?, ?, ?, ?)";
-                try (PreparedStatement psmt = connection.prepareStatement(sql)) {
-                    psmt.setString(1, itemCode);
-                    psmt.setString(2, name);
-                    psmt.setString(3, unitPrice);
-                    psmt.setString(4, qtyOnHand);
-                    psmt.setString(5, "A"); // New customer = Active
-                    boolean result = psmt.executeUpdate() > 0;
-
-                    JsonObjectBuilder response = Json.createObjectBuilder();
-                    response.add("state", result ? "done" : "error");
-                    response.add("message", result ? "Item created successfully." : "Item creation failed!");
-                    resp.getWriter().print(response.build());
-                }
-            }
-
-        } catch (SQLException e) {
-            JsonObjectBuilder errorObj = Json.createObjectBuilder();
-            errorObj.add("state", "error");
-            errorObj.add("message", e.getMessage());
-            resp.setStatus(400);
-            resp.getWriter().print(errorObj.build());
-        }
+    public void init() {
+        DataSource dataSource = (DataSource) getServletContext().getAttribute(DBConstants.DBCP_LABEL);
+        this.itemService = new ItemServiceImpl(dataSource);
     }
 
     /**
-     * This method can be used to get the item's status
-     * @param connection
-     * @param itemCode
-     * @return
-     * @throws SQLException
+     * This method is used to get all the available items
      */
-    private String getItemStatus(Connection connection, String itemCode) throws SQLException {
-        String sql = "SELECT status FROM Item WHERE item_code = ?";
-        try (PreparedStatement psmt = connection.prepareStatement(sql)) {
-            psmt.setString(1, itemCode);
-            try (ResultSet rs = psmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getString("status");
-                }
-            }
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        List<Item> items = itemService.getAllItems();
+
+        JsonArrayBuilder itemArray = Json.createArrayBuilder();
+        for (Item i : items) {
+            itemArray.add(Json.createObjectBuilder()
+                    .add("itemCode", i.getItemCode())
+                    .add("name", i.getName())
+                    .add("unitPrice", i.getUnitPrice())
+                    .add("qtyOnHand", i.getQtyOnHand())
+                    .add("status", String.valueOf(i.getStatus()))
+            );
         }
-        return "I"; // fallback default if somehow not found
+
+        JsonObject json = Json.createObjectBuilder()
+                .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_DONE)
+                .add("items", itemArray)
+                .build();
+
+        writeJson(response, json);
     }
 
 
-
     /**
-     * This method can be used to find if the item already exists
+     * This method is used to create/save a new item
      *
-     * @param connection
-     * @param itemCode
-     * @return
-     * @throws SQLException
+     * @param request
+     * @param response
+     * @throws IOException
      */
-    private boolean itemExists(Connection connection, String itemCode) throws SQLException {
-        String sql = "SELECT item_code FROM Item WHERE item_code = ?";
-        try (PreparedStatement psmt = connection.prepareStatement(sql)) {
-            psmt.setString(1, itemCode);
-            return psmt.executeQuery().next(); // true if record found
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String code = request.getParameter("item_code");
+        String name = request.getParameter("name");
+        BigDecimal price = new BigDecimal(request.getParameter("unit_price"));
+        int qty = Integer.parseInt(request.getParameter("qty_on_hand"));
+        char status = request.getParameter("status") != null ?
+                request.getParameter("status").charAt(0) : CommonConstants.STATUS_ACTIVE_CHAR;
+
+        Item item = new Item(code, name, price, qty, status);
+
+        boolean exists = itemService.isItemExists(code);
+        if (exists) {
+            itemService.updateItem(item);
+        } else {
+            itemService.saveItem(item);
         }
+
+        JsonObject json = Json.createObjectBuilder()
+                .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_DONE)
+                .add(CommonConstants.LABEL_MESSAGE, exists ? ResponseMessages.MESSAGE_ITEM_UPDATED_SUCCESSFULLY :
+                        ResponseMessages.MESSAGE_ITEM_SAVED_SUCCESSFULLY)
+                .build();
+
+        writeJson(response, json);
     }
 
 
+    /**
+     * This method is used to update the item's status
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        JsonObject json = Json.createReader(req.getReader()).readObject();
-        String itemCode = json.getString("item_code", null);
-        String newStatus = json.getString("status", null);
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try (JsonReader reader = Json.createReader(request.getReader())) {
+            JsonObject json = reader.readObject();
+            String code = json.getString("item_code", null);
+            String stat = json.getString("status", null);
 
-        resp.setContentType("application/json");
-
-        if (itemCode == null || newStatus == null || !newStatus.matches("[AID]")) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().print(Json.createObjectBuilder()
-                    .add("state", "error")
-                    .add("message", "Invalid request payload.").build());
-            return;
-        }
-
-        try (Connection connection = ((BasicDataSource) getServletContext().getAttribute("dbcp")).getConnection()) {
-            String sql = "UPDATE Item SET status = ? WHERE item_code = ?";
-            try (PreparedStatement psmt = connection.prepareStatement(sql)) {
-                psmt.setString(1, newStatus);
-                psmt.setString(2, itemCode);
-                boolean result = psmt.executeUpdate() > 0;
-
-                JsonObjectBuilder response = Json.createObjectBuilder();
-                response.add("state", result ? "done" : "error");
-                response.add("message", result ? "Status updated successfully." : "Update failed. Item not found.");
-                resp.getWriter().print(response.build());
+            if (code == null || stat == null || !stat.matches("[AID]")) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                writeJson(response, Json.createObjectBuilder()
+                        .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
+                        .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.INVALID_REQUEST_PAYLOAD)
+                        .build());
+                return;
             }
 
-        } catch (SQLException e) {
-            JsonObjectBuilder errorObj = Json.createObjectBuilder();
-            errorObj.add("state", "error");
-            errorObj.add("message", e.getMessage());
-            resp.setStatus(500);
-            resp.getWriter().print(errorObj.build());
+            itemService.updateStatus(code, stat.charAt(0));
+
+            String actionText = stat.equals(CommonConstants.STATUS_ACTIVE_STRING) ? "activated" :
+                    stat.equals(CommonConstants.STATUS_INACTIVE_STRING) ? "inactivated" :
+                            "deleted";
+
+            writeJson(response, Json.createObjectBuilder()
+                    .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_DONE)
+                    .add(CommonConstants.LABEL_MESSAGE,
+                            ResponseMessages.MESSAGE_ITEM_STATUS_UPDATED.replace(CommonConstants.REPLACER, actionText))
+                    .build());
         }
+    }
+
+    /**
+     * This method is used to compile the final common response as a JSON
+     *
+     * @param response
+     * @param data
+     * @throws IOException
+     */
+    private void writeJson(HttpServletResponse response, JsonObject data) throws IOException {
+        response.setContentType(CommonConstants.MIME_TYPE_JSON);
+        response.getWriter().print(data.toString());
     }
 
 }
