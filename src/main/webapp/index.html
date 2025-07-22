@@ -6,6 +6,7 @@
     <title>📚 Pahana Edu Bookshop - Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
@@ -15,26 +16,20 @@
 <body class="container-fluid">
 <div class="row">
 
-<!--     topbar and side navigation-->
+    <!--     topbar and side navigation-->
     <nav class="col-md-2 d-none d-md-block bg-dark sidebar vh-100">
         <div class="position-sticky pt-3">
             <h5 class="text-white text-center py-3">📚 Pahana Edu</h5>
             <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" id="manage-dashboard-tab">📊 Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" id="manage-customers-tab">👤 Manage Customers</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" id="manage-items-tab">📦 Manage Items</a>
-                </li>
-                <li class="nav-item mt-3">
-                    <form action="logout" method="get">
-                        <button type="submit" class="btn btn-danger w-100">Log Out</button>
-                    </form>
-                </li>
+                <li><a href="#" id="manage-dashboard-tab"><i class="bi bi-house-door-fill me-2"></i>Dashboard</a></li>
+                <li><a href="#" id="manage-customers-tab"><i class="bi bi-person-lines-fill me-2"></i>Manage Customers</a></li>
+                <li><a href="#" id="manage-items-tab"><i class="bi bi-box-seam me-2"></i>Manage Items</a></li>
+                <li><a href="#" id="place-order-tab"><i class="bi bi-credit-card-2-front-fill me-2"></i>Billing</a></li>
+                <li><a href="#" id="reports-tab"><i class="bi bi-bar-chart-fill me-2"></i>Reports</a></li>
+                <li><a href="#" id="help-section-tab"><i class="bi bi-question-circle-fill me-2"></i>Help</a></li>
+                <li><a href="#" id="user-logout-tab"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
             </ul>
+
         </div>
     </nav>
 
@@ -84,7 +79,8 @@
                         <div class="row g-3">
                             <div class="col-md-3">
                                 <label for="customer-account-number" class="form-label">Account Number</label>
-                                <input type="text" name="account_number" id="customer-account-number" class="form-control"
+                                <input type="text" name="account_number" id="customer-account-number"
+                                       class="form-control"
                                        required>
                             </div>
                             <div class="col-md-3">
@@ -103,8 +99,10 @@
                             <input type="hidden" id="customer-status" name="status"/>
                         </div>
                         <div class="mt-3 text-end">
-                            <button type="submit" id="btn-create-customer" class="btn btn-success me-2">Add Customer</button>
-                            <button type="reset" id="btn-reset-customer-form" class="btn btn-outline-secondary">Reset</button>
+                            <button type="submit" id="btn-create-customer" class="btn btn-success me-2">Add Customer
+                            </button>
+                            <button type="reset" id="btn-reset-customer-form" class="btn btn-outline-secondary">Reset
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -122,7 +120,8 @@
                                    placeholder="Search by Account Number">
                         </div>
                         <div class="col-md-3">
-                            <input type="text" id="searchCustomerName" class="form-control" placeholder="Search by Name">
+                            <input type="text" id="searchCustomerName" class="form-control"
+                                   placeholder="Search by Name">
                         </div>
                         <div class="col-md-3">
                             <input type="text" id="searchCustomerAddress" class="form-control"
@@ -133,7 +132,8 @@
                                    placeholder="Search by Telephone">
                         </div>
                         <div class="col-md-3 d-flex align-items-end">
-                            <button id="btn-customer-reset-filters" class="btn btn-outline-secondary w-100">Reset Filters
+                            <button id="btn-customer-reset-filters" class="btn btn-outline-secondary w-100">Reset
+                                Filters
                             </button>
                         </div>
                     </div>
@@ -189,7 +189,8 @@
                         </div>
                         <div class="mt-3 text-end">
                             <button type="submit" id="btn-create-item" class="btn btn-success me-2">Add Item</button>
-                            <button type="reset" id="btn-reset-item-form" class="btn btn-outline-secondary">Reset</button>
+                            <button type="reset" id="btn-reset-item-form" class="btn btn-outline-secondary">Reset
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -210,14 +211,16 @@
                             <input type="text" id="searchItemName" class="form-control" placeholder="Search by Name">
                         </div>
                         <div class="col-md-3">
-                            <input type="text" id="searchItemUnitPrice" class="form-control" placeholder="Search by Unit Price">
+                            <input type="text" id="searchItemUnitPrice" class="form-control"
+                                   placeholder="Search by Unit Price">
                         </div>
                         <div class="col-md-3">
                             <input type="text" id="searchItemQtyOnHand" class="form-control"
                                    placeholder="Search by Qty On Hand">
                         </div>
                         <div class="col-md-3 d-flex align-items-end">
-                            <button id="btn-reset-item-filters" class="btn btn-outline-secondary w-100">Reset Filters</button>
+                            <button id="btn-reset-item-filters" class="btn btn-outline-secondary w-100">Reset Filters
+                            </button>
                         </div>
                     </div>
 
