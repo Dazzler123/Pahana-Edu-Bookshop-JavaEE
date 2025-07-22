@@ -2,68 +2,47 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Pahana Edu Bookshop - Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 Pahana Edu Bookshop - Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
 
-    <!-- ✅ Bootstrap 5 CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <style>
-        body {
-            font-family: "Segoe UI", sans-serif;
-            background-color: #f8f9fa;
-        }
-
-        .sidebar {
-            height: 100vh;
-            background-color: #343a40;
-            color: white;
-            padding-top: 1rem;
-        }
-
-        .sidebar a {
-            color: white;
-            text-decoration: none;
-            padding: 0.75rem 1rem;
-            display: block;
-        }
-
-        .sidebar a:hover {
-            background-color: #495057;
-        }
-
-        .card {
-            box-shadow: 0 0 8px rgba(0,0,0,0.05);
-        }
-    </style>
 </head>
-<body>
+<body class="container-fluid">
+<div class="row">
 
-<!-- Header -->
-<nav class="navbar navbar-dark bg-dark">
-    <div class="container-fluid">
-        <span class="navbar-brand mb-2 mt-2 h1">📚 Pahana Edu Bookshop - Admin Dashboard</span>
-    </div>
-</nav>
+<!--     topbar and side navigation-->
+    <nav class="col-md-2 d-none d-md-block bg-dark sidebar vh-100">
+        <div class="position-sticky pt-3">
+            <h5 class="text-white text-center py-3">📚 Pahana Edu</h5>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" id="manage-dashboard-tab">📊 Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" id="manage-customers-tab">👤 Manage Customers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" id="manage-items-tab">📦 Manage Items</a>
+                </li>
+                <li class="nav-item mt-3">
+                    <form action="logout" method="get">
+                        <button type="submit" class="btn btn-danger w-100">Log Out</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
-<div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <nav class="col-md-2 d-none d-md-block bg-dark sidebar">
-            <div class="position-sticky">
-                <ul class="nav flex-column">
-                    <li><a href="customer.html">👤 Manage Customers</a></li>
-                    <li><a href="item.html">📦 Manage Items</a></li>
-                    <li><a href="billing.html">💳 Billing</a></li>
-                    <li><a href="reports.html">📊 Reports</a></li>
-                    <li><a href="help.html">❓ Help</a></li>
-                    <li><a href="logout.html">🚪 Logout</a></li>
-                </ul>
-            </div>
-        </nav>
+    <!-- Main Content Area -->
+    <div class="col-md-10 px-md-4 py-4">
 
-        <!-- Main Content -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+        <!-- Dashboard Section -->
+        <div id="dashboard-content" class="mt-4">
             <h2>Welcome, Admin</h2>
             <div class="row g-4 mt-3">
                 <div class="col-md-4">
@@ -91,14 +70,183 @@
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
+
+        <!-- Customer Section -->
+        <div id="customer-content" class="mt-4">
+            <h2 class="mb-4">👤 Customer Management</h2>
+
+            <!-- Add New Customer -->
+            <div class="card mb-4">
+                <div id="add-new-customer-form-header" class="card-header bg-primary text-white">Add New Customer</div>
+                <div class="card-body">
+                    <form id="addCustomerForm">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label for="customer-account-number" class="form-label">Account Number</label>
+                                <input type="text" name="account_number" id="customer-account-number" class="form-control"
+                                       required>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="customer-name" class="form-label">Name</label>
+                                <input type="text" name="name" id="customer-name" class="form-control" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="customer-address" class="form-label">Address</label>
+                                <input type="text" name="address" id="customer-address" class="form-control" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="customer-telephone" class="form-label">Telephone</label>
+                                <input type="text" name="telephone" id="customer-telephone" class="form-control"
+                                       required>
+                            </div>
+                            <input type="hidden" id="customer-status" name="status"/>
+                        </div>
+                        <div class="mt-3 text-end">
+                            <button type="submit" id="btn-create-customer" class="btn btn-success me-2">Add Customer</button>
+                            <button type="reset" id="btn-reset-customer-form" class="btn btn-outline-secondary">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Customer Table -->
+            <div class="card">
+                <div class="card-header bg-secondary text-white">Customer List</div>
+                <div class="card-body">
+
+                    <!-- filters -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-3">
+                            <input type="text" id="searchCustomerAccountNumber" class="form-control"
+                                   placeholder="Search by Account Number">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" id="searchCustomerName" class="form-control" placeholder="Search by Name">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" id="searchCustomerAddress" class="form-control"
+                                   placeholder="Search by Address">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" id="searchCustomerTelephone" class="form-control"
+                                   placeholder="Search by Telephone">
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button id="btn-customer-reset-filters" class="btn btn-outline-secondary w-100">Reset Filters
+                            </button>
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered table-hover table-striped">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>Account Number</th>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Telephone</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="customerTableBody">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Item Section -->
+        <div id="item-content" class="mt-4">
+            <h2 class="mb-4">📦 Item Management</h2>
+
+            <!-- Add New Item -->
+            <div class="card mb-4">
+                <div id="add-new-item-form-header" class="card-header bg-primary text-white">Add New Item</div>
+                <div class="card-body">
+                    <form id="addItemForm">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label for="item_code" class="form-label">Item Code</label>
+                                <input type="text" name="item_code" id="item_code" class="form-control"
+                                       required>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="item_name" class="form-label">Name</label>
+                                <input type="text" name="name" id="item_name" class="form-control" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="item_unit_price" class="form-label">Unit Price</label>
+                                <input type="text" name="unit_price" id="item_unit_price" class="form-control" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="item_qty_on_hand" class="form-label">Qty On Hand</label>
+                                <input type="text" name="qty_on_hand" id="item_qty_on_hand" class="form-control"
+                                       required>
+                            </div>
+                            <input type="hidden" id="item-status" name="status"/>
+                        </div>
+                        <div class="mt-3 text-end">
+                            <button type="submit" id="btn-create-item" class="btn btn-success me-2">Add Item</button>
+                            <button type="reset" id="btn-reset-item-form" class="btn btn-outline-secondary">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Item Table -->
+            <div class="card">
+                <div class="card-header bg-secondary text-white">Item List</div>
+                <div class="card-body">
+
+                    <!-- filters -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-3">
+                            <input type="text" id="searchItemCode" class="form-control"
+                                   placeholder="Search by Item Code">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" id="searchItemName" class="form-control" placeholder="Search by Name">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" id="searchItemUnitPrice" class="form-control" placeholder="Search by Unit Price">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" id="searchItemQtyOnHand" class="form-control"
+                                   placeholder="Search by Qty On Hand">
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button id="btn-reset-item-filters" class="btn btn-outline-secondary w-100">Reset Filters</button>
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered table-hover table-striped">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>Item Code</th>
+                            <th>Name</th>
+                            <th>Unit Price</th>
+                            <th>Qty On Hand</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="itemTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
+
 </div>
 
-<!-- Footer -->
-<footer class="bg-light text-center py-3 mt-auto">
-    &copy; 2025 Pahana Edu Bookshop. All Rights Reserved.
-</footer>
+<!--controllers-->
+<script src="controller/CommonConfig.js"></script>
+<script src="controller/Navigation.js"></script>
+<script src="controller/CustomerController.js"></script>
+<script src="controller/ItemController.js"></script>
 
 </body>
 </html>
