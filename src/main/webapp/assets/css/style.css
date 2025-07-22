@@ -1,0 +1,12 @@
+.sidebar {
+    min-height: 100vh;
+}
+
+.nav-link.active {
+    background-color: #0d6efd;
+    color: #fff !important;
+}
+
+body {
+    overflow-x: hidden;
+}
