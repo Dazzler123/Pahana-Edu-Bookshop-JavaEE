@@ -3,6 +3,7 @@ package com.icbt.pahanaedubookshopjavaee.controller;
 import com.icbt.pahanaedubookshopjavaee.model.Customer;
 import com.icbt.pahanaedubookshopjavaee.service.CustomerService;
 import com.icbt.pahanaedubookshopjavaee.service.impl.CustomerServiceImpl;
+import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
 import com.icbt.pahanaedubookshopjavaee.util.constants.CommonConstants;
 import com.icbt.pahanaedubookshopjavaee.util.constants.DBConstants;
 import com.icbt.pahanaedubookshopjavaee.util.constants.ResponseMessages;
@@ -24,11 +25,13 @@ import javax.json.JsonReader;
 public class CustomerServlet extends HttpServlet {
 
     private CustomerService customerService;
+    private AbstractResponseUtility abstractResponseUtility;
 
     @Override
     public void init() {
         DataSource dataSource = (DataSource) getServletContext().getAttribute(DBConstants.DBCP_LABEL);
         this.customerService = new CustomerServiceImpl(dataSource);
+        this.abstractResponseUtility = new AbstractResponseUtility();
     }
 
     /**
@@ -59,7 +62,7 @@ public class CustomerServlet extends HttpServlet {
                 .add("customers", customersArray)
                 .build();
 
-        writeJson(response, json);
+        abstractResponseUtility.writeJson(response, json);
     }
 
     /**
@@ -94,7 +97,7 @@ public class CustomerServlet extends HttpServlet {
                         ResponseMessages.MESSAGE_CUSTOMER_SAVED_SUCCESSFULLY)
                 .build();
 
-        writeJson(response, json);
+        abstractResponseUtility.writeJson(response, json);
     }
 
 
@@ -115,7 +118,7 @@ public class CustomerServlet extends HttpServlet {
 
             if (acc == null || stat == null || !stat.matches("[AID]")) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                writeJson(response, Json.createObjectBuilder()
+                abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
                         .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
                         .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.INVALID_REQUEST_PAYLOAD)
                         .build());
@@ -128,24 +131,12 @@ public class CustomerServlet extends HttpServlet {
                     stat.equals(CommonConstants.STATUS_INACTIVE_STRING) ? "inactivated" :
                             "deleted";
 
-            writeJson(response, Json.createObjectBuilder()
+            abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
                     .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_DONE)
                     .add(CommonConstants.LABEL_MESSAGE,
                             ResponseMessages.MESSAGE_CUSTOMER_STATUS_UPDATED.replace(CommonConstants.REPLACER, actionText))
                     .build());
         }
-    }
-
-    /**
-     * This method is used to compile the final common response as a JSON
-     *
-     * @param response
-     * @param data
-     * @throws IOException
-     */
-    private void writeJson(HttpServletResponse response, JsonObject data) throws IOException {
-        response.setContentType(CommonConstants.MIME_TYPE_JSON);
-        response.getWriter().print(data.toString());
     }
 
 }
