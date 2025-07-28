@@ -5,54 +5,73 @@ $(document).ready(function () {
         placeholder: 'Search...'
     });
 
+    // load data on page ready
+    loadCustomerIds();
+    loadItems();
+
     let selectedCustomer = null;
     let cart = [];
 
-    // Load customers into dropdown
-    function loadCustomers() {
+    // load customer IDs only
+    function loadCustomerIds() {
         $.ajax({
-            url: baseURL + 'customer',
+            url: baseURL + 'customer?action=ids',
             method: 'GET',
             success: function (response) {
-                if (response.customers) {
-                    $('#selectCustomer').empty().append('<option value="">Select Customer</option>');
-                    response.customers.forEach(c => {
-                        if (c.status === 'A') { // Only active customers
-                            $('#selectCustomer').append(`<option value="${c.accountNumber}" 
-                                data-name="${c.name}" 
-                                data-address="${c.address}" 
-                                data-telephone="${c.telephone}">
-                                ${c.accountNumber} - ${c.name}
-                            </option>`);
-                        }
-                    });
-                }
+                $('#selectCustomer').empty().append('<option value="">Select Customer</option>');
+                response.customerIds.forEach(id => {
+                    $('#selectCustomer').append(`<option value="${id}">${id}</option>`);
+                });
             },
-            error: function (err) {
-                alert("Failed to load customers!");
+            error: function () {
+                alert("Failed to load customer IDs!");
             }
         });
     }
 
-    // Load items into dropdown
+    // when the customer is selected, fetch its details
+    $('#selectCustomer').on('change', function () {
+        const accountNumber = $(this).val();
+        if (!accountNumber) {
+            selectedCustomer = null;
+            $('#customerDetails').hide();
+            return;
+        }
+
+        $.ajax({
+            url: baseURL + 'customer?accountNumber=' + accountNumber,
+            method: 'GET',
+            success: function (customer) {
+                selectedCustomer = customer;
+                $('#custAcc').text(customer.accountNumber);
+                $('#custName').text(customer.name);
+                $('#custAddress').text(customer.address);
+                $('#custPhone').text(customer.telephone);
+                $('#customerDetails').show();
+            },
+            error: function () {
+                alert("Failed to fetch customer details!");
+            }
+        });
+    });
+
+    // load items into dropdown (with details upfront)
     function loadItems() {
         $.ajax({
             url: baseURL + 'item',
             method: 'GET',
             success: function (response) {
-                if (response.items) {
-                    $('#selectItem').empty().append('<option value="">Select Item</option>');
-                    response.items.forEach(i => {
-                        if (i.status === 'A') { // Only active items
-                            $('#selectItem').append(`<option value="${i.itemCode}" 
-                                data-name="${i.name}" 
-                                data-price="${i.unitPrice}" 
-                                data-stock="${i.qtyOnHand}">
-                                ${i.itemCode} - ${i.name}
-                            </option>`);
-                        }
-                    });
-                }
+                $('#selectItem').empty().append('<option value="">Select Item</option>');
+                response.items.forEach(i => {
+                    if (i.status === 'A') { // Only active items
+                        $('#selectItem').append(`<option value="${i.itemCode}" 
+                            data-name="${i.name}" 
+                            data-price="${i.unitPrice}" 
+                            data-stock="${i.qtyOnHand}">
+                            ${i.itemCode} - ${i.name}
+                        </option>`);
+                    }
+                });
             },
             error: function () {
                 alert("Failed to load items!");
@@ -60,28 +79,7 @@ $(document).ready(function () {
         });
     }
 
-    // Show selected customer details
-    $('#selectCustomer').on('change', function () {
-        const option = $(this).find(':selected');
-        if (option.val()) {
-            selectedCustomer = {
-                accountNumber: option.val(),
-                name: option.data('name'),
-                address: option.data('address'),
-                telephone: option.data('telephone')
-            };
-            $('#custAcc').text(selectedCustomer.accountNumber);
-            $('#custName').text(selectedCustomer.name);
-            $('#custAddress').text(selectedCustomer.address);
-            $('#custPhone').text(selectedCustomer.telephone);
-            $('#customerDetails').show();
-        } else {
-            selectedCustomer = null;
-            $('#customerDetails').hide();
-        }
-    });
-
-    // Show selected item details
+    // show selected item details
     $('#selectItem').on('change', function () {
         const option = $(this).find(':selected');
         if (option.val()) {
@@ -95,7 +93,7 @@ $(document).ready(function () {
         }
     });
 
-    // Add item to cart
+    // add item to cart
     $('#btnAddItem').on('click', function () {
         const option = $('#selectItem').find(':selected');
         const qty = parseInt($('#itemQty').val());
@@ -120,7 +118,7 @@ $(document).ready(function () {
         $('#itemQty').val('');
     });
 
-    // Render cart table
+    // render cart table
     function renderCart() {
         $('#orderTableBody').empty();
         let total = 0;
@@ -141,14 +139,14 @@ $(document).ready(function () {
         $('#grandTotal').text(total.toFixed(2));
     }
 
-    // Remove item from cart
+    // remove item from cart
     $(document).on('click', '.remove-item', function () {
         const index = $(this).data('index');
         cart.splice(index, 1);
         renderCart();
     });
 
-    // Place order
+    // place order
     $('#btnPlaceOrder').on('click', function () {
         if (!selectedCustomer) return alert("Select a customer!");
         if (cart.length === 0) return alert("Cart is empty!");
@@ -177,7 +175,4 @@ $(document).ready(function () {
         });
     });
 
-    // Load data on page ready
-    loadCustomers();
-    loadItems();
 });
