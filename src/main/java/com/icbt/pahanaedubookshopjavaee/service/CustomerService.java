@@ -8,6 +8,10 @@ public interface CustomerService {
 
     List<Customer> getAllCustomers();
 
+    List<String> getAllCustomerIds();
+
+    Customer getCustomerById(String accountNumber);
+
     boolean isExistingCustomer(String accountNumber);
 
     void saveCustomer(Customer customer);

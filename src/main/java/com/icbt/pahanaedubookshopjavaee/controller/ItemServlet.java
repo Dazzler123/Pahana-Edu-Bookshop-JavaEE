@@ -3,6 +3,7 @@ package com.icbt.pahanaedubookshopjavaee.controller;
 import com.icbt.pahanaedubookshopjavaee.model.Item;
 import com.icbt.pahanaedubookshopjavaee.service.ItemService;
 import com.icbt.pahanaedubookshopjavaee.service.impl.ItemServiceImpl;
+import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
 import com.icbt.pahanaedubookshopjavaee.util.constants.CommonConstants;
 import com.icbt.pahanaedubookshopjavaee.util.constants.DBConstants;
 import com.icbt.pahanaedubookshopjavaee.util.constants.ResponseMessages;
@@ -21,11 +22,13 @@ import java.util.List;
 public class ItemServlet extends HttpServlet {
 
     private ItemService itemService;
+    private AbstractResponseUtility abstractResponseUtility;
 
     @Override
     public void init() {
         DataSource dataSource = (DataSource) getServletContext().getAttribute(DBConstants.DBCP_LABEL);
         this.itemService = new ItemServiceImpl(dataSource);
+        this.abstractResponseUtility = new AbstractResponseUtility();
     }
 
     /**
@@ -51,7 +54,7 @@ public class ItemServlet extends HttpServlet {
                 .add("items", itemArray)
                 .build();
 
-        writeJson(response, json);
+        abstractResponseUtility.writeJson(response, json);
     }
 
 
@@ -86,7 +89,7 @@ public class ItemServlet extends HttpServlet {
                         ResponseMessages.MESSAGE_ITEM_SAVED_SUCCESSFULLY)
                 .build();
 
-        writeJson(response, json);
+        abstractResponseUtility.writeJson(response, json);
     }
 
 
@@ -106,7 +109,7 @@ public class ItemServlet extends HttpServlet {
 
             if (code == null || stat == null || !stat.matches("[AID]")) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                writeJson(response, Json.createObjectBuilder()
+                abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
                         .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
                         .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.INVALID_REQUEST_PAYLOAD)
                         .build());
@@ -119,24 +122,12 @@ public class ItemServlet extends HttpServlet {
                     stat.equals(CommonConstants.STATUS_INACTIVE_STRING) ? "inactivated" :
                             "deleted";
 
-            writeJson(response, Json.createObjectBuilder()
+            abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
                     .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_DONE)
                     .add(CommonConstants.LABEL_MESSAGE,
                             ResponseMessages.MESSAGE_ITEM_STATUS_UPDATED.replace(CommonConstants.REPLACER, actionText))
                     .build());
         }
-    }
-
-    /**
-     * This method is used to compile the final common response as a JSON
-     *
-     * @param response
-     * @param data
-     * @throws IOException
-     */
-    private void writeJson(HttpServletResponse response, JsonObject data) throws IOException {
-        response.setContentType(CommonConstants.MIME_TYPE_JSON);
-        response.getWriter().print(data.toString());
     }
 
 }
