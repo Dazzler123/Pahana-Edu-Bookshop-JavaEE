@@ -42,28 +42,61 @@ public class CustomerServlet extends HttpServlet {
      * @throws IOException
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
-        List<Customer> customers = customerService.getAllCustomers();
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String action = request.getParameter("action");
+        String accountNumber = request.getParameter("accountNumber");
 
-        JsonArrayBuilder customersArray = Json.createArrayBuilder();
+        // this is to load all customer's ids
+        if ("ids".equals(action)) {
+            List<String> ids = customerService.getAllCustomerIds();
+            JsonArrayBuilder idArray = Json.createArrayBuilder();
+            ids.forEach(id -> idArray.add(id));
+
+            JsonObject json = Json.createObjectBuilder()
+                    .add("customerIds", idArray)
+                    .build();
+            abstractResponseUtility.writeJson(response, json);
+            return;
+        }
+
+        // this is for select customer operations
+        if (accountNumber != null && !accountNumber.isEmpty()) {
+            Customer customer = customerService.getCustomerById(accountNumber);
+            if (customer == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
+                        .add("message", "Customer not found")
+                        .build());
+                return;
+            }
+
+            JsonObject json = Json.createObjectBuilder()
+                    .add("accountNumber", customer.getAccountNumber())
+                    .add("name", customer.getName())
+                    .add("address", customer.getAddress())
+                    .add("telephone", customer.getTelephone())
+                    .build();
+            abstractResponseUtility.writeJson(response, json);
+            return;
+        }
+
+        List<Customer> customers = customerService.getAllCustomers();
+        JsonArrayBuilder customerArray = Json.createArrayBuilder();
         for (Customer c : customers) {
-            customersArray.add(Json.createObjectBuilder()
+            customerArray.add(Json.createObjectBuilder()
                     .add("accountNumber", c.getAccountNumber())
                     .add("name", c.getName())
                     .add("address", c.getAddress())
                     .add("telephone", c.getTelephone())
-                    .add("status", String.valueOf(c.getStatus()))
-            );
+                    .add("status", String.valueOf(c.getStatus())));
         }
 
         JsonObject json = Json.createObjectBuilder()
-                .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_DONE)
-                .add("customers", customersArray)
+                .add("customers", customerArray)
                 .build();
-
         abstractResponseUtility.writeJson(response, json);
     }
+
 
     /**
      * This method is used to create/save new customer
