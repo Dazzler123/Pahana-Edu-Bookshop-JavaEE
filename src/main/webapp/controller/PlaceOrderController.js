@@ -221,29 +221,32 @@ $(document).ready(function () {
         if (!selectedCustomer) return alert("Select a customer!");
         if (cart.length === 0) return alert("Cart is empty!");
 
-        const order = {
+        const orderPayload = {
             customerAccount: selectedCustomer.accountNumber,
-            items: cart
+            items: cart.map(item => ({
+                itemCode: item.code,
+                qty: item.qty,
+                unitPrice: item.price,
+                discount: item.discount,
+                total: item.total
+            }))
         };
 
         $.ajax({
-            url: baseURL + 'order',
+            url: baseURL + 'place-order',
             method: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify(order),
+            data: JSON.stringify(orderPayload),
             success: function (response) {
                 alert(response.message || "Order placed successfully!");
-                cart = [];
-                renderCart();
-                $('#selectCustomer').val('').trigger('change');
-                $('#selectItem').val('').trigger('change');
-                $('#customerDetails, #itemDetails').hide();
+                resetOrderForm();
             },
             error: function () {
                 alert("Failed to place order!");
             }
         });
     });
+
 
     // reset place order form
     $('#btnResetOrder').on('click', function () {
