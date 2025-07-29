@@ -17,4 +17,8 @@ public interface CustomerDAO {
     void updateStatus(String acc, char status);
 
     char getStatus(String accountNumber);
+
+    List<String> getAllIds();
+
+    Customer getCustomer(String accountNumber);
 }
