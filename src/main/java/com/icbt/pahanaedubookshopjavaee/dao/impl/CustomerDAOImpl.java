@@ -22,7 +22,6 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     /**
      * This method will return all the available customers in the database
-     *
      */
     public List<Customer> findAll() {
         List<Customer> customers = new ArrayList<>();
@@ -163,6 +162,54 @@ public class CustomerDAOImpl implements CustomerDAO {
             throw new RuntimeException(ExceptionMessages.FAILED_TO_GET_CUSTOMER_STATUS, e);
         }
         return CommonConstants.STATUS_INACTIVE_CHAR;
+    }
+
+    /**
+     * This method can be used to fetch all available customer's ids
+     *
+     * @return
+     */
+    public List<String> getAllIds() {
+        List<String> ids = new ArrayList<>();
+        String sql = "SELECT account_number FROM Customer WHERE status = 'A'"; // Only active customers
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                ids.add(rs.getString("account_number"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ids;
+    }
+
+    /**
+     * This method can be used to find and fetch customer using the account number
+     *
+     * @param accountNumber
+     * @return
+     */
+    public Customer getCustomer(String accountNumber) {
+        String sql = "SELECT account_number, name, address, telephone, status FROM Customer WHERE account_number = ?";
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, accountNumber);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Customer(
+                            rs.getString("account_number"),
+                            rs.getString("name"),
+                            rs.getString("address"),
+                            rs.getString("telephone"),
+                            rs.getString("status").charAt(0)
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
