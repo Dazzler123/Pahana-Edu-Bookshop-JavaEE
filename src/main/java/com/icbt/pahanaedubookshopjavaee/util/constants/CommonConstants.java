@@ -15,6 +15,7 @@ public class CommonConstants {
     public static final char STATUS_ACTIVE_CHAR = 'A';
     public static final char STATUS_INACTIVE_CHAR = 'I';
     public static final String STATUS_DELETED_STRING = "D";
+    public static final String PAYMENT_STATUS_PENDING= "P";
 
     public static final String LABEL_STATE = "state";
     public static final String LABEL_DONE = "done";
