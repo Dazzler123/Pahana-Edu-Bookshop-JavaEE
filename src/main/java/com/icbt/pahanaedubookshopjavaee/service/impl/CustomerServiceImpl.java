@@ -21,6 +21,16 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public List<String> getAllCustomerIds() {
+        return customerDAO.getAllIds();
+    }
+
+    @Override
+    public Customer getCustomerById(String accountNumber) {
+        return customerDAO.getCustomer(accountNumber);
+    }
+
+    @Override
     public boolean isExistingCustomer(String accountNumber) {
         return customerDAO.exists(accountNumber);
     }

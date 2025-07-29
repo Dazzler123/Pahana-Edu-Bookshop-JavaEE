@@ -2,6 +2,24 @@
     min-height: 100vh;
 }
 
+.sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* adds spacing between icon and text */
+    padding: 0.75rem 1rem;
+    color: white;
+    text-decoration: none;
+}
+
+.sidebar a:hover {
+    background-color: #495057;
+}
+
+.sidebar a.active {
+    background-color: #0d6efd;
+    font-weight: bold;
+}
+
 .nav-link.active {
     background-color: #0d6efd;
     color: #fff !important;
