@@ -255,13 +255,13 @@ $(document).ready(function () {
     }
 
     // enable/disable payment buttons based on payment method selection
-    $('#paymentMethod').on('change', function() {
+    $('#paymentMethod').on('change', function () {
         const isSelected = $(this).val() !== '';
         $('#btnProceedPayment, #btnPrintBill').prop('disabled', !isSelected);
     });
 
     // proceed to payment
-    $('#btnProceedPayment').on('click', function() {
+    $('#btnProceedPayment').on('click', function () {
         const paymentMethod = $('#paymentMethod').val();
 
         const orderPayload = {
@@ -313,11 +313,11 @@ $(document).ready(function () {
         // Create a temporary link to download PDF
         const link = document.createElement('a');
         link.href = baseURL + 'generate-bill?orderCode=' + window.currentOrderCode;
-        link.download = 'bill_' + window.currentOrderCode + '.pdf';
+        link.download = 'bill_' + selectedCustomer.accountNumber + '_' + window.currentOrderCode + '.pdf';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-
+        
         // Close modal and reset form after successful print
         setTimeout(() => {
             $('#placeOrderModal').modal('hide');
@@ -326,7 +326,7 @@ $(document).ready(function () {
     });
 
     // reset modal when closed
-    $('#placeOrderModal').on('hidden.bs.modal', function() {
+    $('#placeOrderModal').on('hidden.bs.modal', function () {
         $('#paymentMethod').val('');
         $('#btnProceedPayment, #btnPrintBill').prop('disabled', true);
         $('#btnProceedPayment').show().text('Proceed to Payment');

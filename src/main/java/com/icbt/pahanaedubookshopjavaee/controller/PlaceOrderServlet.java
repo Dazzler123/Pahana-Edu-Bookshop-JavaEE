@@ -94,6 +94,7 @@ public class PlaceOrderServlet extends HttpServlet {
             abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
                     .add("state", "done")
                     .add("message", "Order placed successfully. Order Code: " + orderCode)
+                    .add("orderCode", orderCode)
                     .build());
 
         } catch (Exception e) {
