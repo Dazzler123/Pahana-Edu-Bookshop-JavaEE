@@ -150,6 +150,27 @@ $(document).ready(function () {
         });
     });
 
+    // Update order status function
+    function updateOrderStatus(orderCode, newStatus) {
+        $.ajax({
+            url: baseURL + 'manage-orders',
+            method: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify({ 
+                orderCode: orderCode, 
+                status: newStatus 
+            }),
+            success: function (response) {
+                alert(response.message);
+                loadCustomerOrders($('#selectOrderCustomer').val());
+            },
+            error: function (xhr, status, error) {
+                console.error('Failed to update order status:', error);
+                alert("Failed to update order status!");
+            }
+        });
+    }
+
     // Cancel edit
     $('#btnCancelOrderEdit').on('click', function() {
         $('#orderEditForm').hide();
