@@ -216,21 +216,67 @@ $(document).ready(function () {
         renderCart();
     });
 
-    // place order
+    // place order - show modal instead of direct submission
     $('#btnPlaceOrder').on('click', function () {
         if (!selectedCustomer) return alert("Select a customer!");
         if (cart.length === 0) return alert("Cart is empty!");
 
+        // Populate modal with cart items
+        populateOrderModal();
+
+        // Show the modal
+        $('#placeOrderModal').modal('show');
+    });
+
+    // populate order confirmation modal
+    function populateOrderModal() {
+        $('#modalOrderTableBody').empty();
+        let total = 0;
+
+        cart.forEach((item) => {
+            const discountedPrice = item.price - (item.price * (item.discount / 100));
+            const itemTotal = discountedPrice * item.qty;
+            total += itemTotal;
+
+            $('#modalOrderTableBody').append(`
+                <tr>
+                    <td>${item.code}</td>
+                    <td>${item.name}</td>
+                    <td>${item.qty}</td>
+                    <td>${item.price.toFixed(2)}</td>
+                    <td>${item.discount.toFixed(2)}%</td>
+                    <td>${itemTotal.toFixed(2)}</td>
+                </tr>
+            `);
+        });
+
+        $('#modalSubTotal').text(total.toFixed(2));
+        $('#modalGrandTotal').text(total.toFixed(2));
+    }
+
+    // enable/disable payment buttons based on payment method selection
+    $('#paymentMethod').on('change', function () {
+        const isSelected = $(this).val() !== '';
+        $('#btnProceedPayment, #btnPrintBill').prop('disabled', !isSelected);
+    });
+
+    // proceed to payment
+    $('#btnProceedPayment').on('click', function () {
+        const paymentMethod = $('#paymentMethod').val();
+
         const orderPayload = {
             customerAccount: selectedCustomer.accountNumber,
+            paymentMethod: paymentMethod,
             items: cart.map(item => ({
                 itemCode: item.code,
                 qty: item.qty,
                 unitPrice: item.price,
-                discount: item.discount,
-                total: item.total
+                discount: item.discount
             }))
         };
+
+        // Disable proceed button during processing
+        $('#btnProceedPayment').prop('disabled', true).text('Processing...');
 
         $.ajax({
             url: baseURL + 'place-order',
@@ -239,14 +285,54 @@ $(document).ready(function () {
             data: JSON.stringify(orderPayload),
             success: function (response) {
                 alert(response.message || "Order placed successfully!");
-                resetOrderForm();
+
+                // Store order code for PDF generation
+                window.currentOrderCode = response.orderCode;
+
+                // Enable print bill button and disable proceed button
+                $('#btnPrintBill').prop('disabled', false);
+                $('#btnProceedPayment').hide();
+
+                // Show success message in modal
+                $('.modal-footer').prepend('<div class="alert alert-success mb-0 me-auto">Order placed successfully!</div>');
             },
             error: function () {
                 alert("Failed to place order!");
+                $('#btnProceedPayment').prop('disabled', false).text('Proceed to Payment');
             }
         });
     });
 
+    // print bill - download PDF
+    $('#btnPrintBill').on('click', function() {
+        if (!window.currentOrderCode) {
+            alert("No order to print!");
+            return;
+        }
+
+        // Create a temporary link to download PDF
+        const link = document.createElement('a');
+        link.href = baseURL + 'generate-bill?orderCode=' + window.currentOrderCode;
+        link.download = 'bill_' + selectedCustomer.accountNumber + '_' + window.currentOrderCode + '.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Close modal and reset form after successful print
+        setTimeout(() => {
+            $('#placeOrderModal').modal('hide');
+            resetOrderForm();
+        }, 1000);
+    });
+
+    // reset modal when closed
+    $('#placeOrderModal').on('hidden.bs.modal', function () {
+        $('#paymentMethod').val('');
+        $('#btnProceedPayment, #btnPrintBill').prop('disabled', true);
+        $('#btnProceedPayment').show().text('Proceed to Payment');
+        $('.modal-footer .alert').remove();
+        window.currentOrderCode = null;
+    });
 
     // reset place order form
     $('#btnResetOrder').on('click', function () {
