@@ -1,4 +1,12 @@
 $(document).ready(function () {
+    // Initialize Select2 for customer dropdown
+    $('#selectOrderCustomer').select2({
+        theme: 'bootstrap-5',
+        placeholder: 'Search...',
+        allowClear: true,
+        width: '100%'
+    });
+
     loadCustomerIdsForOrders();
     attachOrderSearchFilters();
     
@@ -12,19 +20,23 @@ $(document).ready(function () {
         $("#searchOrderCode").focus();
     });
 
-    // Load customer IDs for dropdown
+    // Load customer IDs for dropdown with full customer details
     function loadCustomerIdsForOrders() {
         $.ajax({
-            url: baseURL + 'customer?action=ids',
+            url: baseURL + 'customer',
             method: 'GET',
             success: function (response) {
                 $('#selectOrderCustomer').empty().append('<option value="">Select Customer...</option>');
-                response.customerIds.forEach(id => {
-                    $('#selectOrderCustomer').append(`<option value="${id}">${id}</option>`);
+                response.customers.forEach(customer => {
+                    if (customer.status === 'A') { // Only active customers
+                        $('#selectOrderCustomer').append(`<option value="${customer.accountNumber}">
+                            ${customer.accountNumber} - ${customer.name}
+                        </option>`);
+                    }
                 });
             },
             error: function () {
-                NotificationService.error("Failed to load customer IDs!");
+                NotificationService.error("Failed to load customers!");
             }
         });
     }
