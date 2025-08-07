@@ -31,12 +31,12 @@ $("#addItemForm").on("submit", function (e) {
     })
         .then(res => res.ok ? res.json() : res.json().then(err => Promise.reject(err)))
         .then(data => {
-            alert(data.message);
+            NotificationService.success(data.message);
             form.reset();
             resetItemFormUI();
             loadAllItems();
         })
-        .catch(error => alert("Error: " + error.message));
+        .catch(error => NotificationService.error("Error: " + error.message));
 });
 
 function resetItemFormUI() {
@@ -85,21 +85,27 @@ function loadAllItems() {
 
                 row.find(".activate-btn").on("click", () => updateItemStatus(c.itemCode, 'A'));
                 row.find(".inactivate-btn").on("click", () => {
-                    if (confirm("Are you sure to inactivate this item?")) {
-                        updateItemStatus(c.itemCode, 'I');
-                    }
+                    NotificationService.confirm("Are you sure to inactivate this item?")
+                        .then((result) => {
+                            if (result.isConfirmed) {
+                                updateItemStatus(c.itemCode, 'I');
+                            }
+                        });
                 });
                 row.find(".delete-btn").on("click", () => {
-                    if (confirm("Are you sure to delete this item?")) {
-                        updateItemStatus(c.itemCode, 'D');
-                    }
+                    NotificationService.confirm("Are you sure to delete this item?")
+                        .then((result) => {
+                            if (result.isConfirmed) {
+                                updateItemStatus(c.itemCode, 'D');
+                            }
+                        });
                 });
 
                 tbody.append(row);
             });
             filterItems(); // apply current filters after loading
         })
-        .catch(error => alert("Failed to load items: " + error.message));
+        .catch(error => NotificationService.error("Failed to load items: " + error.message));
 }
 
 function updateItemStatus(itemCode, newStatus) {
@@ -110,10 +116,10 @@ function updateItemStatus(itemCode, newStatus) {
     })
         .then(res => res.ok ? res.json() : res.json().then(err => Promise.reject(err)))
         .then(data => {
-            alert(data.message);
+            NotificationService.success(data.message);
             loadAllItems();
         })
-        .catch(error => alert("Error: " + error.message));
+        .catch(error => NotificationService.error("Error: " + error.message));
 }
 
 function attachItemSearchFilters() {
