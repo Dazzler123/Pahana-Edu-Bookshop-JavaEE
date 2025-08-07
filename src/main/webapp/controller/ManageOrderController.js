@@ -1,7 +1,16 @@
 $(document).ready(function () {
     loadCustomerIdsForOrders();
+    attachOrderSearchFilters();
     
     let selectedOrderForEdit = null;
+
+    // Reset filters button
+    $("#btn-reset-order-filters").on("click", function () {
+        $("#searchOrderCode, #searchOrderDate, #searchTotalAmount").val("");
+        $("#searchOrderStatus, #searchPaymentStatus").val("");
+        filterOrders();
+        $("#searchOrderCode").focus();
+    });
 
     // Load customer IDs for dropdown
     function loadCustomerIdsForOrders() {
@@ -108,11 +117,58 @@ $(document).ready(function () {
 
                     tbody.append(row);
                 });
+                
+                filterOrders(); // Apply current filters after loading
             },
             error: function (xhr, status, error) {
                 console.error('Failed to load orders:', error); // Debug log
                 NotificationService.error("Failed to load orders!");
             }
+        });
+    }
+
+    // Attach search filter event listeners
+    function attachOrderSearchFilters() {
+        $("#searchOrderCode, #searchOrderDate, #searchTotalAmount, #searchOrderStatus, #searchPaymentStatus").on("input change", filterOrders);
+    }
+
+    // Filter orders function
+    function filterOrders() {
+        const codeFilter = $("#searchOrderCode").val().toLowerCase();
+        const dateFilter = $("#searchOrderDate").val();
+        const amountFilter = $("#searchTotalAmount").val().toLowerCase();
+        const statusFilter = $("#searchOrderStatus").val();
+        const paymentStatusFilter = $("#searchPaymentStatus").val();
+
+        $("#manageOrderTableBody tr").each(function () {
+            const cells = $(this).children();
+            if (cells.length < 7) return; // skip malformed rows
+
+            const orderDate = cells.eq(1).text();
+            const dateMatch = !dateFilter || (orderDate && new Date(orderDate).toISOString().slice(0, 10) === dateFilter);
+            
+            // Get status from badge text
+            const statusBadge = cells.eq(4).find('.badge').text();
+            const statusMatch = !statusFilter || 
+                (statusFilter === 'A' && statusBadge === 'Active') ||
+                (statusFilter === 'I' && statusBadge === 'Inactive') ||
+                (statusFilter === 'D' && statusBadge === 'Deleted');
+            
+            // Get payment status from badge text
+            const paymentBadge = cells.eq(5).find('.badge').text();
+            const paymentMatch = !paymentStatusFilter ||
+                (paymentStatusFilter === 'P' && paymentBadge === 'Pending') ||
+                (paymentStatusFilter === 'paid' && paymentBadge === 'Paid') ||
+                (paymentStatusFilter === 'cancelled' && paymentBadge === 'Cancelled');
+
+            const match =
+                cells.eq(0).text().toLowerCase().includes(codeFilter) &&
+                dateMatch &&
+                cells.eq(2).text().toLowerCase().includes(amountFilter) &&
+                statusMatch &&
+                paymentMatch;
+                
+            $(this).toggle(match);
         });
     }
 
