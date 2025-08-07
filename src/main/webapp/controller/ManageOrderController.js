@@ -15,7 +15,7 @@ $(document).ready(function () {
                 });
             },
             error: function () {
-                alert("Failed to load customer IDs!");
+                NotificationService.error("Failed to load customer IDs!");
             }
         });
     }
@@ -90,14 +90,20 @@ $(document).ready(function () {
                     // Status update buttons
                     row.find('.activate-btn').on('click', () => updateOrderStatus(order.orderCode, 'A'));
                     row.find('.inactivate-btn').on('click', () => {
-                        if (confirm("Are you sure to inactivate this order?")) {
-                            updateOrderStatus(order.orderCode, 'I');
-                        }
+                        NotificationService.confirm("Are you sure to inactivate this order?")
+                            .then((result) => {
+                                if (result.isConfirmed) {
+                                    updateOrderStatus(order.orderCode, 'I');
+                                }
+                            });
                     });
                     row.find('.delete-btn').on('click', () => {
-                        if (confirm("Are you sure to delete this order?")) {
-                            updateOrderStatus(order.orderCode, 'D');
-                        }
+                        NotificationService.confirm("Are you sure to delete this order?")
+                            .then((result) => {
+                                if (result.isConfirmed) {
+                                    updateOrderStatus(order.orderCode, 'D');
+                                }
+                            });
                     });
 
                     tbody.append(row);
@@ -105,7 +111,7 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.error('Failed to load orders:', error); // Debug log
-                alert("Failed to load orders!");
+                NotificationService.error("Failed to load orders!");
             }
         });
     }
@@ -139,13 +145,13 @@ $(document).ready(function () {
             contentType: 'application/json',
             data: JSON.stringify(updatedOrder),
             success: function (response) {
-                alert(response.message);
+                NotificationService.success(response.message);
                 loadCustomerOrders($('#selectOrderCustomer').val());
                 $('#orderEditForm').hide();
                 selectedOrderForEdit = null;
             },
             error: function () {
-                alert("Failed to update order!");
+                NotificationService.error("Failed to update order!");
             }
         });
     });
@@ -161,12 +167,12 @@ $(document).ready(function () {
                 status: newStatus 
             }),
             success: function (response) {
-                alert(response.message);
+                NotificationService.success(response.message);
                 loadCustomerOrders($('#selectOrderCustomer').val());
             },
             error: function (xhr, status, error) {
                 console.error('Failed to update order status:', error);
-                alert("Failed to update order status!");
+                NotificationService.error("Failed to update order status!");
             }
         });
     }
