@@ -29,7 +29,7 @@
                 <li><a href="#" id="manage-items-tab"><i class="bi bi-box-seam me-2"></i>Manage Items</a></li>
                 <li><a href="#" id="manage-orders-tab"><i class="bi bi-receipt me-2"></i>Manage Orders</a></li>
                 <li><a href="#" id="place-order-tab"><i class="bi bi-credit-card-2-front-fill me-2"></i>Place Order</a></li>
-                <li><a href="#" id="reports-tab"><i class="bi bi-bar-chart-fill me-2"></i>Reports</a></li>
+                <li><a href="#" id="reports-tab"><i class="bi bi-graph-up me-2"></i>Reports</a></li>
                 <li><a href="#" id="help-section-tab"><i class="bi bi-question-circle-fill me-2"></i>Help</a></li>
                 <li><a href="#" id="user-logout-tab"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
             </ul>
@@ -555,6 +555,140 @@
             </div>
         </div>
 
+        <!-- Reports Section -->
+        <div id="reports-content" class="mt-4">
+            <h2 class="mb-4">📊 Reports & Analytics</h2>
+
+            <!-- Filter Section -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <i class="bi bi-funnel-fill me-2"></i>Report Filters
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Customer</label>
+                            <select id="reportCustomerFilter" class="form-control select2">
+                                <option value="">All Customers</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Order ID</label>
+                            <input type="text" id="reportOrderFilter" class="form-control" placeholder="Search Order ID">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Item</label>
+                            <select id="reportItemFilter" class="form-control select2">
+                                <option value="">All Items</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Status</label>
+                            <select id="reportStatusFilter" class="form-control">
+                                <option value="">All Status</option>
+                                <option value="A">Active</option>
+                                <option value="I">Inactive</option>
+                                <option value="D">Deleted</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-3">
+                            <label class="form-label">Payment Status</label>
+                            <select id="reportPaymentFilter" class="form-control">
+                                <option value="">All Payment Status</option>
+                                <option value="N">Not Paid</option>
+                                <option value="P">Pending</option>
+                                <option value="A">Paid</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" id="reportStartDate" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">End Date</label>
+                            <input type="date" id="reportEndDate" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Report Type</label>
+                            <select id="reportTimeType" class="form-control">
+                                <option value="DAILY">Daily</option>
+                                <option value="MONTHLY">Monthly</option>
+                                <option value="ANNUAL">Annual</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <button id="btnGenerateReport" class="btn btn-primary me-2">
+                                <i class="bi bi-play-fill"></i> Generate Report
+                            </button>
+                            <button id="btnGenerateTimeReport" class="btn btn-info me-2">
+                                <i class="bi bi-calendar3"></i> Time-Based Report
+                            </button>
+                            <button id="btnClearFilters" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-clockwise"></i> Clear Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="row g-4 mb-4" id="reportSummaryCards" style="display: none;">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <h5>Total Orders</h5>
+                            <h3 id="summaryTotalOrders">0</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <h5>Total Revenue</h5>
+                            <h3 id="summaryTotalRevenue">Rs. 0.00</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-dark">
+                        <div class="card-body">
+                            <h5>Total Discounts</h5>
+                            <h3 id="summaryTotalDiscounts">Rs. 0.00</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <h5>Avg Order Value</h5>
+                            <h3 id="summaryAvgOrderValue">Rs. 0.00</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Table -->
+            <div class="card" id="reportsTableCard" style="display: none;">
+                <div class="card-header bg-secondary text-white">
+                    <i class="bi bi-table me-2"></i>Report Results
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-striped">
+                            <thead class="table-dark" id="reportsTableHead">
+                            </thead>
+                            <tbody id="reportsTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 </div>
@@ -568,6 +702,7 @@
 <script src="controller/ItemController.js"></script>
 <script src="controller/PlaceOrderController.js"></script>
 <script src="controller/ManageOrderController.js"></script>
+<script src="controller/ReportsController.js"></script>
 
 <!-- Place Order Confirmation Modal -->
 <div class="modal fade" id="placeOrderModal" tabindex="-1" aria-labelledby="placeOrderModalLabel" aria-hidden="true">
