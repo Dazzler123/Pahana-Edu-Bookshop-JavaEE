@@ -28,7 +28,7 @@ $(document).ready(function () {
             success: function (response) {
                 $('#selectOrderCustomer').empty().append('<option value="">Select Customer...</option>');
                 response.customers.forEach(customer => {
-                    if (customer.status === 'A') { // Only active customers
+                    if (customer.status === 'A') { // only active customers
                         $('#selectOrderCustomer').append(`<option value="${customer.accountNumber}">
                             ${customer.accountNumber} - ${customer.name}
                         </option>`);
@@ -68,20 +68,17 @@ $(document).ready(function () {
                 }
                 
                 response.orders.forEach(order => {
-                    console.log('Processing order:', order); // Debug log
                     const statusMap = { A: "Active", I: "Inactive", D: "Deleted" };
                     const statusClass = { A: "bg-success", I: "bg-secondary", D: "bg-danger" };
                     const paymentStatusMap = { 
-                        P: "Pending", 
-                        pending: "Pending",
-                        paid: "Paid", 
-                        cancelled: "Cancelled" 
+                        N: "Not Paid",
+                        P: "Pending",
+                        A: "Paid"
                     };
-                    const paymentStatusClass = { 
+                    const paymentStatusClass = {
+                        N: "bg-danger",
                         P: "bg-warning",
-                        pending: "bg-warning", 
-                        paid: "bg-success", 
-                        cancelled: "bg-danger" 
+                        A: "bg-success"
                     };
                     
                     const row = $(`
@@ -169,9 +166,9 @@ $(document).ready(function () {
             // Get payment status from badge text
             const paymentBadge = cells.eq(5).find('.badge').text();
             const paymentMatch = !paymentStatusFilter ||
+                (paymentStatusFilter === 'N' && paymentBadge === 'Not Paid') ||
                 (paymentStatusFilter === 'P' && paymentBadge === 'Pending') ||
-                (paymentStatusFilter === 'paid' && paymentBadge === 'Paid') ||
-                (paymentStatusFilter === 'cancelled' && paymentBadge === 'Cancelled');
+                (paymentStatusFilter === 'A' && paymentBadge === 'Paid');
 
             const match =
                 cells.eq(0).text().toLowerCase().includes(codeFilter) &&
