@@ -32,12 +32,12 @@ $("#addCustomerForm").on("submit", function (e) {
     })
         .then(res => res.ok ? res.json() : res.json().then(err => Promise.reject(err)))
         .then(data => {
-            alert(data.message);
+            NotificationService.success(data.message);
             form.reset();
             resetCustomerFormUI();
             loadAllCustomers();
         })
-        .catch(error => alert("Error: " + error.message));
+        .catch(error => NotificationService.error("Error: " + error.message));
 });
 
 function resetCustomerFormUI() {
@@ -87,21 +87,27 @@ function loadAllCustomers() {
 
                 row.find(".activate-btn").on("click", () => updateCustomerStatus(c.accountNumber, 'A'));
                 row.find(".inactivate-btn").on("click", () => {
-                    if (confirm("Are you sure to inactivate this customer?")) {
-                        updateCustomerStatus(c.accountNumber, 'I');
-                    }
+                    NotificationService.confirm("Are you sure to inactivate this customer?")
+                        .then((result) => {
+                            if (result.isConfirmed) {
+                                updateCustomerStatus(c.accountNumber, 'I');
+                            }
+                        });
                 });
                 row.find(".delete-btn").on("click", () => {
-                    if (confirm("Are you sure to delete this customer?")) {
-                        updateCustomerStatus(c.accountNumber, 'D');
-                    }
+                    NotificationService.confirm("Are you sure to delete this customer?")
+                        .then((result) => {
+                            if (result.isConfirmed) {
+                                updateCustomerStatus(c.accountNumber, 'D');
+                            }
+                        });
                 });
 
                 tbody.append(row);
             });
             filterCustomers(); // apply current filters after loading
         })
-        .catch(error => alert("Failed to load customers: " + error.message));
+        .catch(error => NotificationService.error("Failed to load customers: " + error.message));
 }
 
 function updateCustomerStatus(accountNumber, newStatus) {
@@ -112,10 +118,10 @@ function updateCustomerStatus(accountNumber, newStatus) {
     })
         .then(res => res.ok ? res.json() : res.json().then(err => Promise.reject(err)))
         .then(data => {
-            alert(data.message);
+            NotificationService.success(data.message);
             loadAllCustomers();
         })
-        .catch(error => alert("Error: " + error.message));
+        .catch(error => NotificationService.error("Error: " + error.message));
 }
 
 function attachCustomerSearchFilters() {
