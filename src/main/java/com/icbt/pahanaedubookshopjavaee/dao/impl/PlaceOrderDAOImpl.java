@@ -40,7 +40,7 @@ public class PlaceOrderDAOImpl implements PlaceOrderDAO {
             connection = dataSource.getConnection();
             connection.setAutoCommit(false);
 
-            // Insert into orders table
+            // insert into orders table
             String insertOrderSQL = "INSERT INTO Orders(order_code, customer_id, total_amount, total_discount_applied, " +
                     "order_date, status, payment_status) VALUES (?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement ps = connection.prepareStatement(insertOrderSQL)) {
@@ -50,7 +50,7 @@ public class PlaceOrderDAOImpl implements PlaceOrderDAO {
                 ps.setBigDecimal(4, totalDiscount);
                 ps.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
                 ps.setString(6, CommonConstants.STATUS_ACTIVE_STRING);
-                ps.setString(7, CommonConstants.PAYMENT_STATUS_PENDING); // unpaid
+                ps.setString(7, CommonConstants.PAYMENT_STATUS_PAID); // mark as paid
                 ps.executeUpdate();
             }
 
