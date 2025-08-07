@@ -38,7 +38,7 @@ $(document).ready(function () {
                 });
             },
             error: function () {
-                alert("Failed to load customer IDs!");
+                NotificationService.error("Failed to load customer IDs!");
             }
         });
     }
@@ -66,7 +66,7 @@ $(document).ready(function () {
                 disableOrderInputs(false); // Enable item selection now
             },
             error: function () {
-                alert("Failed to fetch customer details!");
+                NotificationService.error("Failed to fetch customer details!");
             }
         });
     });
@@ -90,7 +90,7 @@ $(document).ready(function () {
                 });
             },
             error: function () {
-                alert("Failed to load items!");
+                NotificationService.error("Failed to load items!");
             }
         });
     }
@@ -116,17 +116,17 @@ $(document).ready(function () {
         const qty = parseInt($('#itemQty').val());
         const discount = parseFloat($('#itemDiscount').val()) || 0;
 
-        if (!option.val()) return alert("Please select an item!");
-        if (!qty || qty <= 0) return alert("Please enter a valid quantity!");
-        if (discount < 0 || discount > 100) return alert("Discount must be between 0 and 100!");
+        if (!option.val()) return NotificationService.error("Please select an item!");
+        if (!qty || qty <= 0) return NotificationService.error("Please enter a valid quantity!");
+        if (discount < 0 || discount > 100) return NotificationService.error("Discount must be between 0 and 100!");
 
         const stock = parseInt(option.data('stock'));
-        if (qty > stock) return alert("Not enough stock!");
+        if (qty > stock) return NotificationService.error("Not enough stock!");
 
         if (editIndex !== null) {
             // validate new qty against stock
             const availableStock = stock + cart[editIndex].qty; // add back old qty
-            if (qty > availableStock) return alert("Not enough stock!");
+            if (qty > availableStock) return NotificationService.error("Not enough stock!");
 
             // update item
             cart[editIndex].qty = qty;
@@ -142,7 +142,7 @@ $(document).ready(function () {
             const existing = cart.find(item => item.code === option.val());
             if (existing) {
                 if (existing.qty + qty > stock) {
-                    return alert(`Cannot add more than stock (${stock})`);
+                    return NotificationService.error(`Cannot add more than stock (${stock})`);
                 }
                 existing.qty += qty;
                 existing.discount = discount;
@@ -218,8 +218,8 @@ $(document).ready(function () {
 
     // place order - show modal instead of direct submission
     $('#btnPlaceOrder').on('click', function () {
-        if (!selectedCustomer) return alert("Select a customer!");
-        if (cart.length === 0) return alert("Cart is empty!");
+        if (!selectedCustomer) return NotificationService.error("Select a customer!");
+        if (cart.length === 0) return NotificationService.error("Cart is empty!");
 
         // Populate modal with cart items
         populateOrderModal();
@@ -284,7 +284,7 @@ $(document).ready(function () {
             contentType: 'application/json',
             data: JSON.stringify(orderPayload),
             success: function (response) {
-                alert(response.message || "Order placed successfully!");
+                NotificationService.success(response.message || "Order placed successfully!");
 
                 // Store order code for PDF generation
                 window.currentOrderCode = response.orderCode;
@@ -297,7 +297,7 @@ $(document).ready(function () {
                 $('.modal-footer').prepend('<div class="alert alert-success mb-0 me-auto">Order placed successfully!</div>');
             },
             error: function () {
-                alert("Failed to place order!");
+                NotificationService.error("Failed to place order!");
                 $('#btnProceedPayment').prop('disabled', false).text('Proceed to Payment');
             }
         });
@@ -306,7 +306,7 @@ $(document).ready(function () {
     // print bill - download PDF
     $('#btnPrintBill').on('click', function() {
         if (!window.currentOrderCode) {
-            alert("No order to print!");
+            NotificationService.error("No order to print!");
             return;
         }
 
@@ -336,24 +336,27 @@ $(document).ready(function () {
 
     // reset place order form
     $('#btnResetOrder').on('click', function () {
-        if (confirm("Are you sure you want to reset this order?")) {
-            cart = [];
-            selectedCustomer = null;
-            $('#selectCustomer').val('').trigger('change');
+        NotificationService.confirm("Are you sure you want to reset this order?")
+            .then((result) => {
+                if (result.isConfirmed) {
+                    cart = [];
+                    selectedCustomer = null;
+                    $('#selectCustomer').val('').trigger('change');
 
-            $('#btnResetItem').hide();
-            $('#selectItem').prop('disabled', false); // re-enable dropdown
-            $('#selectItem').val('').trigger('change');
+                    $('#btnResetItem').hide();
+                    $('#selectItem').prop('disabled', false);
+                    $('#selectItem').val('').trigger('change');
 
-            $('#btnAddItem').text('Add Item').removeClass('btn-primary').addClass('btn-success');
-            editIndex = null;
-            $('#customerDetails, #itemDetails').hide();
-            $('#itemQty').val('');
-            $('#itemDiscount').val('');
-            renderCart();
-            disableOrderInputs(true);
-            $('#btnPlaceOrder').prop('disabled', true);
-        }
+                    $('#btnAddItem').text('Add Item').removeClass('btn-primary').addClass('btn-success');
+                    editIndex = null;
+                    $('#customerDetails, #itemDetails').hide();
+                    $('#itemQty').val('');
+                    $('#itemDiscount').val('');
+                    renderCart();
+                    disableOrderInputs(true);
+                    $('#btnPlaceOrder').prop('disabled', true);
+                }
+            });
     });
 
     // this is to keep the place order button disabled if the cart is empty
