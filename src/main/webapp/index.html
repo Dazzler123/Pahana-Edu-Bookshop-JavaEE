@@ -12,6 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="assets/css/style.css">
 
 </head>
@@ -41,29 +42,98 @@
 
         <!-- Dashboard Section -->
         <div id="dashboard-content" class="mt-4">
-            <h2>Welcome, Admin</h2>
+            <h2><i class="bi bi-speedometer2 me-2"></i>Dashboard Overview</h2>
+            
+            <!-- Key Metrics Cards -->
             <div class="row g-4 mt-3">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="card border-success">
-                        <div class="card-body">
-                            <h5 class="card-title">Total Customers</h5>
-                            <p class="card-text display-6 text-success">123</p>
+                        <div class="card-body text-center">
+                            <i class="bi bi-people-fill text-success" style="font-size: 2rem;"></i>
+                            <h5 class="card-title mt-2">Total Customers</h5>
+                            <p class="card-text display-6 text-success" id="totalCustomers">0</p>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="card border-primary">
-                        <div class="card-body">
-                            <h5 class="card-title">Daily Sales</h5>
-                            <p class="card-text display-6 text-primary">456</p>
+                        <div class="card-body text-center">
+                            <i class="bi bi-cart-fill text-primary" style="font-size: 2rem;"></i>
+                            <h5 class="card-title mt-2">Total Orders</h5>
+                            <p class="card-text display-6 text-primary" id="totalOrders">0</p>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card border-danger">
+                <div class="col-md-3">
+                    <div class="card border-warning">
+                        <div class="card-body text-center">
+                            <i class="bi bi-clock-fill text-warning" style="font-size: 2rem;"></i>
+                            <h5 class="card-title mt-2">Pending Orders</h5>
+                            <p class="card-text display-6 text-warning" id="pendingOrders">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-info">
+                        <div class="card-body text-center">
+                            <i class="bi bi-currency-dollar text-info" style="font-size: 2rem;"></i>
+                            <h5 class="card-title mt-2">Total Revenue</h5>
+                            <p class="card-text display-6 text-info" id="totalRevenue">Rs. 0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Most Visited Customers & Top Items -->
+            <div class="row g-4 mt-4">
+                <!-- Most Visited Customers -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-secondary text-white">
+                            <i class="bi bi-people-fill me-2"></i>Most Visited Customers
+                        </div>
                         <div class="card-body">
-                            <h5 class="card-title">Pending Bills</h5>
-                            <p class="card-text display-6 text-danger">12</p>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Rank</th>
+                                            <th>Customer</th>
+                                            <th>Orders</th>
+                                            <th>Total Spent</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentOrdersTable">
+                                        <tr><td colspan="4" class="text-center">Loading...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Items -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <i class="bi bi-trophy-fill me-2"></i>Top Selling Items
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Rank & Item</th>
+                                            <th>Sales</th>
+                                            <th>Revenue</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="topItemsTable">
+                                        <tr><td colspan="3" class="text-center">Loading...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -361,13 +431,14 @@
             <div class="row mb-4">
                 <div class="col-md-6">
                     <div class="card">
-                        <div class="card-header bg-info text-white">
+                        <div class="card-header bg-primary text-white">
                             <i class="bi bi-person-fill me-2"></i>Select Customer
                         </div>
                         <div class="card-body">
-                            <label for="selectOrderCustomer" class="form-label">Customer Account</label>
-                            <select id="selectOrderCustomer" class="form-control">
-                                <option value="">Select Customer...</option>
+                            <label for="selectOrderCustomer" class="form-label">Customer</label>
+                            <select id="selectOrderCustomer" class="form-control select2">
+                                <option></option>
+                                <!-- data will be dynamically populated here...-->
                             </select>
                         </div>
                     </div>
@@ -406,9 +477,9 @@
                         <div class="col-md-2">
                             <select id="searchPaymentStatus" class="form-control">
                                 <option value="">All Payment Status</option>
+                                <option value="N">Not Paid</option>
                                 <option value="P">Pending</option>
-                                <option value="paid">Paid</option>
-                                <option value="cancelled">Cancelled</option>
+                                <option value="A">Paid</option>
                             </select>
                         </div>
                     </div>
@@ -468,9 +539,9 @@
                                 <div class="mb-3">
                                     <label for="editPaymentStatus" class="form-label">Payment Status</label>
                                     <select class="form-control" id="editPaymentStatus">
+                                        <option value="N">Not Paid</option>
                                         <option value="P">Pending</option>
-                                        <option value="paid">Paid</option>
-                                        <option value="cancelled">Cancelled</option>
+                                        <option value="A">Paid</option>
                                     </select>
                                 </div>
                             </div>
@@ -492,6 +563,7 @@
 <script src="controller/CommonConfig.js"></script>
 <script src="controller/NotificationService.js"></script>
 <script src="controller/Navigation.js"></script>
+<script src="controller/DashboardController.js"></script>
 <script src="controller/CustomerController.js"></script>
 <script src="controller/ItemController.js"></script>
 <script src="controller/PlaceOrderController.js"></script>

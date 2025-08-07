@@ -26,15 +26,19 @@ $(document).ready(function () {
         $('#orderTable').toggleClass('table-disabled', state);
     }
 
-    // load customer IDs only
+    // load customer IDs with names
     function loadCustomerIds() {
         $.ajax({
-            url: baseURL + 'customer?action=ids',
+            url: baseURL + 'customer',
             method: 'GET',
             success: function (response) {
                 $('#selectCustomer').empty().append('<option value="">Select Customer</option>');
-                response.customerIds.forEach(id => {
-                    $('#selectCustomer').append(`<option value="${id}">${id}</option>`);
+                response.customers.forEach(customer => {
+                    if (customer.status === 'A') { // Only active customers
+                        $('#selectCustomer').append(`<option value="${customer.accountNumber}">
+                            ${customer.accountNumber} - ${customer.name}
+                        </option>`);
+                    }
                 });
             },
             error: function () {

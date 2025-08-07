@@ -1,4 +1,12 @@
 $(document).ready(function () {
+    // Initialize Select2 for customer dropdown
+    $('#selectOrderCustomer').select2({
+        theme: 'bootstrap-5',
+        placeholder: 'Search...',
+        allowClear: true,
+        width: '100%'
+    });
+
     loadCustomerIdsForOrders();
     attachOrderSearchFilters();
     
@@ -12,19 +20,23 @@ $(document).ready(function () {
         $("#searchOrderCode").focus();
     });
 
-    // Load customer IDs for dropdown
+    // Load customer IDs for dropdown with full customer details
     function loadCustomerIdsForOrders() {
         $.ajax({
-            url: baseURL + 'customer?action=ids',
+            url: baseURL + 'customer',
             method: 'GET',
             success: function (response) {
                 $('#selectOrderCustomer').empty().append('<option value="">Select Customer...</option>');
-                response.customerIds.forEach(id => {
-                    $('#selectOrderCustomer').append(`<option value="${id}">${id}</option>`);
+                response.customers.forEach(customer => {
+                    if (customer.status === 'A') { // only active customers
+                        $('#selectOrderCustomer').append(`<option value="${customer.accountNumber}">
+                            ${customer.accountNumber} - ${customer.name}
+                        </option>`);
+                    }
                 });
             },
             error: function () {
-                NotificationService.error("Failed to load customer IDs!");
+                NotificationService.error("Failed to load customers!");
             }
         });
     }
@@ -56,20 +68,17 @@ $(document).ready(function () {
                 }
                 
                 response.orders.forEach(order => {
-                    console.log('Processing order:', order); // Debug log
                     const statusMap = { A: "Active", I: "Inactive", D: "Deleted" };
                     const statusClass = { A: "bg-success", I: "bg-secondary", D: "bg-danger" };
                     const paymentStatusMap = { 
-                        P: "Pending", 
-                        pending: "Pending",
-                        paid: "Paid", 
-                        cancelled: "Cancelled" 
+                        N: "Not Paid",
+                        P: "Pending",
+                        A: "Paid"
                     };
-                    const paymentStatusClass = { 
+                    const paymentStatusClass = {
+                        N: "bg-danger",
                         P: "bg-warning",
-                        pending: "bg-warning", 
-                        paid: "bg-success", 
-                        cancelled: "bg-danger" 
+                        A: "bg-success"
                     };
                     
                     const row = $(`
@@ -157,9 +166,9 @@ $(document).ready(function () {
             // Get payment status from badge text
             const paymentBadge = cells.eq(5).find('.badge').text();
             const paymentMatch = !paymentStatusFilter ||
+                (paymentStatusFilter === 'N' && paymentBadge === 'Not Paid') ||
                 (paymentStatusFilter === 'P' && paymentBadge === 'Pending') ||
-                (paymentStatusFilter === 'paid' && paymentBadge === 'Paid') ||
-                (paymentStatusFilter === 'cancelled' && paymentBadge === 'Cancelled');
+                (paymentStatusFilter === 'A' && paymentBadge === 'Paid');
 
             const match =
                 cells.eq(0).text().toLowerCase().includes(codeFilter) &&
