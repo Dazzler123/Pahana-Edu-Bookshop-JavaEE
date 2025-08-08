@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>📚 Pahana Edu Bookshop - Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+          rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -21,19 +22,31 @@
 
     <!--     topbar and side navigation-->
     <nav class="col-md-2 d-none d-md-block bg-dark sidebar vh-100">
-        <div class="position-sticky pt-3">
-            <h5 class="text-white text-center py-3">📚 Pahana Edu</h5>
-            <ul class="nav flex-column">
-                <li><a href="#" id="manage-dashboard-tab"><i class="bi bi-house-door-fill me-2"></i>Dashboard</a></li>
-                <li><a href="#" id="manage-customers-tab"><i class="bi bi-person-lines-fill me-2"></i>Manage Customers</a></li>
-                <li><a href="#" id="manage-items-tab"><i class="bi bi-box-seam me-2"></i>Manage Items</a></li>
-                <li><a href="#" id="manage-orders-tab"><i class="bi bi-receipt me-2"></i>Manage Orders</a></li>
-                <li><a href="#" id="place-order-tab"><i class="bi bi-credit-card-2-front-fill me-2"></i>Place Order</a></li>
-                <li><a href="#" id="reports-tab"><i class="bi bi-graph-up me-2"></i>Reports</a></li>
-                <li><a href="#" id="help-section-tab"><i class="bi bi-question-circle-fill me-2"></i>Help</a></li>
-                <li><a href="#" id="user-logout-tab"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
-            </ul>
-
+        <div class="position-sticky pt-3 d-flex flex-column h-100">
+            <div>
+                <h5 class="text-white text-center py-3">📚 Pahana Edu</h5>
+                <div class="text-center text-white mb-3">
+                    <small>Welcome, <span id="usernameDisplay">Admin</span></small>
+                </div>
+                <ul class="nav flex-column">
+                    <li><a href="#" id="manage-dashboard-tab"><i class="bi bi-house-door-fill me-2"></i>Dashboard</a>
+                    </li>
+                    <li><a href="#" id="manage-customers-tab"><i class="bi bi-person-lines-fill me-2"></i>Manage
+                        Customers</a></li>
+                    <li><a href="#" id="manage-items-tab"><i class="bi bi-box-seam me-2"></i>Manage Items</a></li>
+                    <li><a href="#" id="manage-orders-tab"><i class="bi bi-receipt me-2"></i>Manage Orders</a></li>
+                    <li><a href="#" id="place-order-tab"><i class="bi bi-credit-card-2-front-fill me-2"></i>Place Order</a>
+                    </li>
+                    <li><a href="#" id="reports-tab"><i class="bi bi-graph-up me-2"></i>Reports</a></li>
+                    <li><a href="#" id="help-section-tab"><i class="bi bi-question-circle-fill me-2"></i>Help</a></li>
+                    <li><a href="#" id="user-logout-tab"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                </ul>
+            </div>
+            <div class="mt-auto pb-3 text-center">
+                <small class="text-info" style="font-size: 0.7rem;">
+                    © 2025 Designed and Developed by Dasindu Hewagamage.
+                </small>
+            </div>
         </div>
     </nav>
 
@@ -43,7 +56,7 @@
         <!-- Dashboard Section -->
         <div id="dashboard-content" class="mt-4">
             <h2><i class="bi bi-speedometer2 me-2"></i>Dashboard Overview</h2>
-            
+
             <!-- Key Metrics Cards -->
             <div class="row g-4 mt-3">
                 <div class="col-md-3">
@@ -97,15 +110,17 @@
                             <div class="table-responsive">
                                 <table class="table table-sm">
                                     <thead>
-                                        <tr>
-                                            <th>Rank</th>
-                                            <th>Customer</th>
-                                            <th>Orders</th>
-                                            <th>Total Spent</th>
-                                        </tr>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Customer</th>
+                                        <th>Orders</th>
+                                        <th>Total Spent</th>
+                                    </tr>
                                     </thead>
                                     <tbody id="recentOrdersTable">
-                                        <tr><td colspan="4" class="text-center">Loading...</td></tr>
+                                    <tr>
+                                        <td colspan="4" class="text-center">Loading...</td>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -123,14 +138,16 @@
                             <div class="table-responsive">
                                 <table class="table table-sm">
                                     <thead>
-                                        <tr>
-                                            <th>Rank & Item</th>
-                                            <th>Sales</th>
-                                            <th>Revenue</th>
-                                        </tr>
+                                    <tr>
+                                        <th>Rank & Item</th>
+                                        <th>Sales</th>
+                                        <th>Revenue</th>
+                                    </tr>
                                     </thead>
                                     <tbody id="topItemsTable">
-                                        <tr><td colspan="3" class="text-center">Loading...</td></tr>
+                                    <tr>
+                                        <td colspan="3" class="text-center">Loading...</td>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -335,7 +352,7 @@
                         <div class="card-body">
                             <label for="selectCustomer" class="form-label">Customer</label>
                             <select id="selectCustomer" class="form-control select2">
-<!--                                <option value="">Search Customer...</option>-->
+                                <!--                                <option value="">Search Customer...</option>-->
                                 <option></option>
                                 <!-- data will be dynamically populated here...-->
                             </select>
@@ -358,7 +375,7 @@
                         <div class="card-body">
                             <label for="selectItem" class="form-label">Item</label>
                             <select id="selectItem" class="form-control select2">
-<!--                                <option value="">Search Item...</option>-->
+                                <!--                                <option value="">Search Item...</option>-->
                                 <option></option>
                                 <!-- Dynamically populated -->
                             </select>
@@ -374,7 +391,8 @@
                             </div>
                             <div class="mt-3">
                                 <label for="itemDiscount" class="form-label">Discount (%)</label>
-                                <input type="number" id="itemDiscount" class="form-control" min="0" max="100" step="0.01" placeholder="Enter discount">
+                                <input type="number" id="itemDiscount" class="form-control" min="0" max="100"
+                                       step="0.01" placeholder="Enter discount">
                             </div>
                             <div class="mt-3 text-end">
                                 <button class="btn btn-secondary me-2" id="btnResetItem" style="display:none;">
@@ -455,7 +473,7 @@
                     <i class="bi bi-list-ul me-2"></i>Customer Orders
                 </div>
                 <div class="card-body">
-                    
+
                     <!-- filters -->
                     <div class="row g-3 mb-3">
                         <div class="col-md-3">
@@ -580,7 +598,8 @@
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Order ID</label>
-                            <input type="text" id="reportOrderFilter" class="form-control" placeholder="Search Order ID">
+                            <input type="text" id="reportOrderFilter" class="form-control"
+                                   placeholder="Search Order ID">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Item</label>
@@ -702,22 +721,26 @@
             <!-- Help Navigation Tabs -->
             <ul class="nav nav-tabs mb-4" id="helpTabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="user-guide-tab" data-bs-toggle="tab" data-bs-target="#user-guide" type="button" role="tab">
+                    <button class="nav-link active" id="user-guide-tab" data-bs-toggle="tab"
+                            data-bs-target="#user-guide" type="button" role="tab">
                         <i class="bi bi-book me-2"></i>User Guide
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="faq-tab" data-bs-toggle="tab" data-bs-target="#faq" type="button" role="tab">
+                    <button class="nav-link" id="faq-tab" data-bs-toggle="tab" data-bs-target="#faq" type="button"
+                            role="tab">
                         <i class="bi bi-question-circle me-2"></i>FAQ
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="system-info-tab" data-bs-toggle="tab" data-bs-target="#system-info" type="button" role="tab">
+                    <button class="nav-link" id="system-info-tab" data-bs-toggle="tab" data-bs-target="#system-info"
+                            type="button" role="tab">
                         <i class="bi bi-info-circle me-2"></i>System Info
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab">
+                    <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact"
+                            type="button" role="tab">
                         <i class="bi bi-envelope me-2"></i>Contact Support
                     </button>
                 </li>
@@ -725,32 +748,43 @@
 
             <!-- Help Tab Content -->
             <div class="tab-content" id="helpTabContent">
-                
+
                 <!-- User Guide Tab -->
                 <div class="tab-pane fade show active" id="user-guide" role="tabpanel">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="accordion" id="userGuideAccordion">
-                                
+
                                 <!-- Dashboard Guide -->
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#dashboardGuide">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#dashboardGuide">
                                             <i class="bi bi-speedometer2 me-2"></i>Dashboard Overview
                                         </button>
                                     </h2>
-                                    <div id="dashboardGuide" class="accordion-collapse collapse show" data-bs-parent="#userGuideAccordion">
+                                    <div id="dashboardGuide" class="accordion-collapse collapse show"
+                                         data-bs-parent="#userGuideAccordion">
                                         <div class="accordion-body">
                                             <h5>Dashboard Features:</h5>
                                             <ul>
-                                                <li><strong>Statistics Cards:</strong> View total orders, pending orders, and total revenue at a glance</li>
-                                                <li><strong>Top Selling Items:</strong> See which products are performing best</li>
-                                                <li><strong>Most Visited Customers:</strong> Identify your most valuable customers</li>
-                                                <li><strong>Quick Actions:</strong> Access frequently used functions directly from dashboard</li>
+                                                <li><strong>Statistics Cards:</strong> View total orders, pending
+                                                    orders, and total revenue at a glance
+                                                </li>
+                                                <li><strong>Top Selling Items:</strong> See which products are
+                                                    performing best
+                                                </li>
+                                                <li><strong>Most Visited Customers:</strong> Identify your most valuable
+                                                    customers
+                                                </li>
+                                                <li><strong>Quick Actions:</strong> Access frequently used functions
+                                                    directly from dashboard
+                                                </li>
                                             </ul>
                                             <div class="alert alert-info">
                                                 <i class="bi bi-lightbulb me-2"></i>
-                                                <strong>Tip:</strong> Dashboard data refreshes automatically when you navigate to it.
+                                                <strong>Tip:</strong> Dashboard data refreshes automatically when you
+                                                navigate to it.
                                             </div>
                                         </div>
                                     </div>
@@ -759,22 +793,33 @@
                                 <!-- Customer Management Guide -->
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#customerGuide">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#customerGuide">
                                             <i class="bi bi-person-lines-fill me-2"></i>Managing Customers
                                         </button>
                                     </h2>
-                                    <div id="customerGuide" class="accordion-collapse collapse" data-bs-parent="#userGuideAccordion">
+                                    <div id="customerGuide" class="accordion-collapse collapse"
+                                         data-bs-parent="#userGuideAccordion">
                                         <div class="accordion-body">
                                             <h5>Customer Management Features:</h5>
                                             <ul>
-                                                <li><strong>Add Customer:</strong> Fill the form and click "Save Customer"</li>
-                                                <li><strong>Edit Customer:</strong> Click the edit icon in the customer table</li>
-                                                <li><strong>Update Status:</strong> Use the status dropdown to activate/deactivate/delete customers</li>
-                                                <li><strong>Search:</strong> Use the search box to find specific customers</li>
+                                                <li><strong>Add Customer:</strong> Fill the form and click "Save
+                                                    Customer"
+                                                </li>
+                                                <li><strong>Edit Customer:</strong> Click the edit icon in the customer
+                                                    table
+                                                </li>
+                                                <li><strong>Update Status:</strong> Use the status dropdown to
+                                                    activate/deactivate/delete customers
+                                                </li>
+                                                <li><strong>Search:</strong> Use the search box to find specific
+                                                    customers
+                                                </li>
                                             </ul>
                                             <div class="alert alert-warning">
                                                 <i class="bi bi-exclamation-triangle me-2"></i>
-                                                <strong>Note:</strong> Account numbers must be unique and cannot be changed after creation.
+                                                <strong>Note:</strong> Account numbers must be unique and cannot be
+                                                changed after creation.
                                             </div>
                                         </div>
                                     </div>
@@ -783,22 +828,31 @@
                                 <!-- Item Management Guide -->
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#itemGuide">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#itemGuide">
                                             <i class="bi bi-box-seam me-2"></i>Managing Items
                                         </button>
                                     </h2>
-                                    <div id="itemGuide" class="accordion-collapse collapse" data-bs-parent="#userGuideAccordion">
+                                    <div id="itemGuide" class="accordion-collapse collapse"
+                                         data-bs-parent="#userGuideAccordion">
                                         <div class="accordion-body">
                                             <h5>Item Management Features:</h5>
                                             <ul>
-                                                <li><strong>Add Item:</strong> Enter item details including code, name, price, and quantity</li>
-                                                <li><strong>Update Inventory:</strong> Edit existing items to update stock levels</li>
+                                                <li><strong>Add Item:</strong> Enter item details including code, name,
+                                                    price, and quantity
+                                                </li>
+                                                <li><strong>Update Inventory:</strong> Edit existing items to update
+                                                    stock levels
+                                                </li>
                                                 <li><strong>Price Management:</strong> Update unit prices as needed</li>
-                                                <li><strong>Status Control:</strong> Activate, deactivate, or delete items</li>
+                                                <li><strong>Status Control:</strong> Activate, deactivate, or delete
+                                                    items
+                                                </li>
                                             </ul>
                                             <div class="alert alert-success">
                                                 <i class="bi bi-check-circle me-2"></i>
-                                                <strong>Best Practice:</strong> Keep item codes consistent and descriptive for easy identification.
+                                                <strong>Best Practice:</strong> Keep item codes consistent and
+                                                descriptive for easy identification.
                                             </div>
                                         </div>
                                     </div>
@@ -807,18 +861,26 @@
                                 <!-- Order Management Guide -->
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#orderGuide">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#orderGuide">
                                             <i class="bi bi-receipt me-2"></i>Order Management
                                         </button>
                                     </h2>
-                                    <div id="orderGuide" class="accordion-collapse collapse" data-bs-parent="#userGuideAccordion">
+                                    <div id="orderGuide" class="accordion-collapse collapse"
+                                         data-bs-parent="#userGuideAccordion">
                                         <div class="accordion-body">
                                             <h5>Order Processing:</h5>
                                             <ul>
-                                                <li><strong>Place Order:</strong> Select customer, add items, apply discounts</li>
-                                                <li><strong>View Orders:</strong> Monitor all orders with filtering options</li>
+                                                <li><strong>Place Order:</strong> Select customer, add items, apply
+                                                    discounts
+                                                </li>
+                                                <li><strong>View Orders:</strong> Monitor all orders with filtering
+                                                    options
+                                                </li>
                                                 <li><strong>Update Status:</strong> Change order status as needed</li>
-                                                <li><strong>Generate Bills:</strong> Create PDF bills for completed orders</li>
+                                                <li><strong>Generate Bills:</strong> Create PDF bills for completed
+                                                    orders
+                                                </li>
                                             </ul>
                                             <div class="alert alert-info">
                                                 <i class="bi bi-info-circle me-2"></i>
@@ -831,18 +893,25 @@
                                 <!-- Reports Guide -->
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#reportsGuide">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#reportsGuide">
                                             <i class="bi bi-graph-up me-2"></i>Reports & Analytics
                                         </button>
                                     </h2>
-                                    <div id="reportsGuide" class="accordion-collapse collapse" data-bs-parent="#userGuideAccordion">
+                                    <div id="reportsGuide" class="accordion-collapse collapse"
+                                         data-bs-parent="#userGuideAccordion">
                                         <div class="accordion-body">
                                             <h5>Report Types:</h5>
                                             <ul>
-                                                <li><strong>Detailed Reports:</strong> Complete order information with filters</li>
-                                                <li><strong>Time-Based Reports:</strong> Daily, monthly, or annual summaries</li>
+                                                <li><strong>Detailed Reports:</strong> Complete order information with
+                                                    filters
+                                                </li>
+                                                <li><strong>Time-Based Reports:</strong> Daily, monthly, or annual
+                                                    summaries
+                                                </li>
                                                 <li><strong>Customer Reports:</strong> Filter by specific customers</li>
-                                                <li><strong>Item Reports:</strong> Track specific product performance</li>
+                                                <li><strong>Item Reports:</strong> Track specific product performance
+                                                </li>
                                             </ul>
                                             <h5>Available Filters:</h5>
                                             <ul>
@@ -866,10 +935,11 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="accordion" id="faqAccordion">
-                                
+
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#faq1">
                                             How do I add a new customer?
                                         </button>
                                     </h2>
@@ -887,7 +957,8 @@
 
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#faq2">
                                             How do I update item inventory?
                                         </button>
                                     </h2>
@@ -905,7 +976,8 @@
 
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#faq3">
                                             How do I generate a bill for an order?
                                         </button>
                                     </h2>
@@ -923,7 +995,8 @@
 
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#faq4">
                                             How do I filter reports by date range?
                                         </button>
                                     </h2>
@@ -941,22 +1014,33 @@
 
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#faq5">
                                             What do the different order statuses mean?
                                         </button>
                                     </h2>
                                     <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                                         <div class="accordion-body">
                                             <ul>
-                                                <li><span class="badge bg-success">Active (A)</span> - Order is confirmed and being processed</li>
-                                                <li><span class="badge bg-secondary">Inactive (I)</span> - Order is on hold or suspended</li>
-                                                <li><span class="badge bg-danger">Deleted (D)</span> - Order has been cancelled</li>
+                                                <li><span class="badge bg-success">Active (A)</span> - Order is
+                                                    confirmed and being processed
+                                                </li>
+                                                <li><span class="badge bg-secondary">Inactive (I)</span> - Order is on
+                                                    hold or suspended
+                                                </li>
+                                                <li><span class="badge bg-danger">Deleted (D)</span> - Order has been
+                                                    cancelled
+                                                </li>
                                             </ul>
                                             <h6 class="mt-3">Payment Status:</h6>
                                             <ul>
-                                                <li><span class="badge bg-danger">Not Paid (N)</span> - Payment pending</li>
-                                                <li><span class="badge bg-warning">Pending (P)</span> - Payment processing</li>
-                                                <li><span class="badge bg-success">Paid (A)</span> - Payment completed</li>
+                                                <li><span class="badge bg-danger">Not Paid (N)</span> - Payment pending
+                                                </li>
+                                                <li><span class="badge bg-warning">Pending (P)</span> - Payment
+                                                    processing
+                                                </li>
+                                                <li><span class="badge bg-success">Paid (A)</span> - Payment completed
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>
@@ -964,7 +1048,8 @@
 
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#faq6">
                                             How do I apply discounts to orders?
                                         </button>
                                     </h2>
@@ -1041,7 +1126,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row mt-4">
                         <div class="col-md-12">
                             <div class="card">
@@ -1111,8 +1196,8 @@
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Description</label>
-                                            <textarea class="form-control" id="supportDescription" rows="5" required 
-                                                     placeholder="Please describe your issue in detail..."></textarea>
+                                            <textarea class="form-control" id="supportDescription" rows="5" required
+                                                      placeholder="Please describe your issue in detail..."></textarea>
                                         </div>
                                         <button type="submit" class="btn btn-primary">
                                             <i class="bi bi-send me-2"></i>Submit Support Request
@@ -1129,59 +1214,22 @@
                                 <div class="card-body">
                                     <h6>Support Hours:</h6>
                                     <p>Monday - Friday: 9:00 AM - 6:00 PM<br>
-                                       Saturday: 9:00 AM - 2:00 PM<br>
-                                       Sunday: Closed</p>
-                                    
+                                        Saturday: 9:00 AM - 2:00 PM<br>
+                                        Sunday: Closed</p>
+
                                     <h6>Contact Information:</h6>
                                     <p>
                                         <i class="bi bi-telephone me-2"></i>+94 76 209 3858<br>
                                         <i class="bi bi-envelope me-2"></i>support@pahanaedu.lk<br>
                                         <i class="bi bi-geo-alt me-2"></i>Gampaha, Sri Lanka
                                     </p>
-                                    
+
                                     <div class="alert alert-info">
                                         <i class="bi bi-clock me-2"></i>
                                         <strong>Response Time:</strong><br>
                                         High/Urgent: 2-4 hours<br>
                                         Medium: 24 hours<br>
                                         Low: 48-72 hours
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Keyboard Shortcuts Tab -->
-                <div class="tab-pane fade" id="shortcuts" role="tabpanel">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header bg-dark text-white">
-                                    <i class="bi bi-keyboard me-2"></i>Keyboard Shortcuts
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <h6>Navigation:</h6>
-                                            <table class="table table-sm">
-                                                <tr><td><kbd>Alt + D</kbd></td><td>Dashboard</td></tr>
-                                                <tr><td><kbd>Alt + C</kbd></td><td>Customers</td></tr>
-                                                <tr><td><kbd>Alt + I</kbd></td><td>Items</td></tr>
-                                                <tr><td><kbd>Alt + O</kbd></td><td>Orders</td></tr>
-                                                <tr><td><kbd>Alt + P</kbd></td><td>Place Order</td></tr>
-                                                <tr><td><kbd>Alt + R</kbd></td><td>Reports</td></tr>
-                                            </table>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <h6>Actions:</h6>
-                                            <table class="table table-sm">
-                                                <tr><td><kbd>Ctrl + S</kbd></td><td>Save Form</td></tr>
-                                                <tr><td><kbd>Ctrl + N</kbd></td><td>New Record</td></tr>
-                                                <tr><td><kbd>Escape</kbd></td><td>Cancel/Close</td></tr>
-                                                <tr><td><kbd>F5</kbd></td><td>Refresh Data</td></tr>
-                                            </table>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1197,6 +1245,8 @@
 
 <!--controllers-->
 <script src="controller/CommonConfig.js"></script>
+<script src="controller/AuthController.js"></script>
+<script src="controller/LogoutController.js"></script>
 <script src="controller/NotificationService.js"></script>
 <script src="controller/Navigation.js"></script>
 <script src="controller/DashboardController.js"></script>
@@ -1215,7 +1265,8 @@
                 <h5 class="modal-title" id="placeOrderModalLabel">
                     <i class="bi bi-bag-check-fill me-2"></i>Confirm Order
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <!-- Order Items Table -->
@@ -1223,14 +1274,14 @@
                     <h6 class="mb-3">Order Items</h6>
                     <table class="table table-bordered table-sm">
                         <thead class="table-dark">
-                            <tr>
-                                <th>Item Code</th>
-                                <th>Name</th>
-                                <th>Qty</th>
-                                <th>Unit Price</th>
-                                <th>Discount (%)</th>
-                                <th>Total</th>
-                            </tr>
+                        <tr>
+                            <th>Item Code</th>
+                            <th>Name</th>
+                            <th>Qty</th>
+                            <th>Unit Price</th>
+                            <th>Discount (%)</th>
+                            <th>Total</th>
+                        </tr>
                         </thead>
                         <tbody id="modalOrderTableBody">
                         </tbody>
