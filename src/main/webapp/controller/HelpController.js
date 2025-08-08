@@ -42,6 +42,9 @@ $(document).ready(function () {
         
         // Add search functionality to help content
         addHelpSearch();
+        
+        // Fix tab navigation - ensure proper active states
+        initializeHelpTabs();
     }
 
     function checkDatabaseStatus() {
@@ -162,6 +165,32 @@ $(document).ready(function () {
         });
     }
 
+    function initializeHelpTabs() {
+        // Handle tab clicks manually to ensure proper active states
+        $('#helpTabs .nav-link').on('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all tabs
+            $('#helpTabs .nav-link').removeClass('active');
+            
+            // Add active class to clicked tab
+            $(this).addClass('active');
+            
+            // Hide all tab panes
+            $('.tab-pane').removeClass('show active');
+            
+            // Show the target pane
+            const targetPane = $(this).attr('data-bs-target');
+            $(targetPane).addClass('show active');
+        });
+        
+        // Set initial active state - make sure one tab is always active
+        if ($('#helpTabs .nav-link.active').length === 0) {
+            $('#user-guide-tab').addClass('active');
+            $('#user-guide').addClass('show active');
+        }
+    }
+
     // Export help functions for global access
     window.HelpController = {
         openHelpTopic: function(topic) {
@@ -176,6 +205,21 @@ $(document).ready(function () {
             setTimeout(() => {
                 $('#shortcuts-tab').click();
             }, 100);
+        },
+        
+        // Function to manually activate a specific tab
+        activateTab: function(tabId) {
+            $('#helpTabs .nav-link').removeClass('active');
+            $('.tab-pane').removeClass('show active');
+            
+            $(`#${tabId}-tab`).addClass('active');
+            $(`#${tabId}`).addClass('show active');
         }
     };
+
+    // Auto-activate system-info tab if it's being shown
+    if ($('#system-info').hasClass('show') || $('#system-info').hasClass('active')) {
+        $('#system-info-tab').addClass('active');
+        $('#helpTabs .nav-link').not('#system-info-tab').removeClass('active');
+    }
 });

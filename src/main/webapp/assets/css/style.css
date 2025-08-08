@@ -33,3 +33,30 @@ body {
     opacity: 0.5;
     pointer-events: none;
 }
+
+/* Help section tab styling */
+#helpTabs .nav-link {
+    color: #6c757d;
+    border: 1px solid transparent;
+    border-bottom: none;
+}
+
+#helpTabs .nav-link:hover {
+    color: #495057;
+    background-color: #f8f9fa;
+}
+
+#helpTabs .nav-link.active {
+    color: #0d6efd !important;
+    background-color: #fff !important;
+    border-color: #dee2e6 #dee2e6 #fff !important;
+    font-weight: 600;
+}
+
+/* Ensure tab content is properly styled */
+.tab-content {
+    border: 1px solid #dee2e6;
+    border-top: none;
+    padding: 1rem;
+    background-color: #fff;
+}
