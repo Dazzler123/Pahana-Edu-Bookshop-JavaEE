@@ -59,6 +59,16 @@ public class CustomerServlet extends HttpServlet {
             return;
         }
 
+        // this is to generate next account number
+        if ("generateAccountNumber".equals(action)) {
+            String nextAccountNumber = customerService.generateNextAccountNumber();
+            JsonObject json = Json.createObjectBuilder()
+                    .add("accountNumber", nextAccountNumber)
+                    .build();
+            abstractResponseUtility.writeJson(response, json);
+            return;
+        }
+
         // this is for select customer operations
         if (accountNumber != null && !accountNumber.isEmpty()) {
             Customer customer = customerService.getCustomerById(accountNumber);
@@ -112,8 +122,10 @@ public class CustomerServlet extends HttpServlet {
         String name = request.getParameter("name");
         String addr = request.getParameter("address");
         String tel = request.getParameter("telephone");
-        char status = request.getParameter("status") != null ?
-                request.getParameter("status").charAt(0) : CommonConstants.STATUS_ACTIVE_CHAR;
+        
+        String statusParam = request.getParameter("status");
+        char status = (statusParam != null && !statusParam.isEmpty()) ?
+                statusParam.charAt(0) : CommonConstants.STATUS_ACTIVE_CHAR;
 
         Customer customer = new Customer(accountNumber, name, addr, tel, status);
 

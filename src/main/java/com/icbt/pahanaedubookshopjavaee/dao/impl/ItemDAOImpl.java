@@ -170,4 +170,28 @@ public class ItemDAOImpl implements ItemDAO {
         }
         return CommonConstants.STATUS_INACTIVE_CHAR;
     }
+
+    /**
+     * This method generates the next unique item code
+     */
+    @Override
+    public String generateNextItemCode() {
+        String sql = "SELECT item_code FROM Item WHERE item_code LIKE 'ITM-%' ORDER BY item_code DESC LIMIT 1";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement psmt = connection.prepareStatement(sql);
+             ResultSet rs = psmt.executeQuery()) {
+
+            if (rs.next()) {
+                String lastItemCode = rs.getString("item_code");
+                int lastNumber = Integer.parseInt(lastItemCode.substring(4)); // Remove "ITM-" prefix
+                return "ITM-" + String.format("%04d", lastNumber + 1);
+            } else {
+                return "ITM-0001"; // First item
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to generate item code", e);
+        }
+    }
 }

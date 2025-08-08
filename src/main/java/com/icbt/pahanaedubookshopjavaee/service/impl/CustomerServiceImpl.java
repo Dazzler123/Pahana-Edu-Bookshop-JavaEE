@@ -49,4 +49,9 @@ public class CustomerServiceImpl implements CustomerService {
     public void updateStatus(String accountNumber, char status) {
         customerDAO.updateStatus(accountNumber, status);
     }
+
+    @Override
+    public String generateNextAccountNumber() {
+        return customerDAO.generateNextAccountNumber();
+    }
 }

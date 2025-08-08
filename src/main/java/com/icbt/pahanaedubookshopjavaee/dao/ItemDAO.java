@@ -16,4 +16,6 @@ public interface ItemDAO {
     void updateStatus(String acc, char status);
 
     char getStatus(String itemCode);
+
+    String generateNextItemCode();
 }
