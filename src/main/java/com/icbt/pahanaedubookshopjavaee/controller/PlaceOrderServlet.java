@@ -66,14 +66,16 @@ public class PlaceOrderServlet extends HttpServlet {
                 return;
             }
 
-            // Determine payment status based on payment method
+            // determine payment status based on payment method
             String paymentStatus;
             if ("cash".equalsIgnoreCase(paymentMethod)) {
-                paymentStatus = CommonConstants.PAYMENT_STATUS_PAID; // "A" for Paid
+                paymentStatus = CommonConstants.PAYMENT_STATUS_PAID;
             } else if ("card".equalsIgnoreCase(paymentMethod)) {
-                paymentStatus = CommonConstants.PAYMENT_STATUS_PENDING; // "P" for Pending  
+                paymentStatus = CommonConstants.PAYMENT_STATUS_PENDING;
+            } else if ("other".equalsIgnoreCase(paymentMethod)) {
+                paymentStatus = CommonConstants.PAYMENT_STATUS_NOT_PAID;
             } else {
-                paymentStatus = CommonConstants.PAYMENT_STATUS_NOT_PAID; // default as not paid
+                paymentStatus = CommonConstants.PAYMENT_STATUS_NOT_PAID; // default as Not Paid
             }
 
             BigDecimal totalAmount = BigDecimal.ZERO;
