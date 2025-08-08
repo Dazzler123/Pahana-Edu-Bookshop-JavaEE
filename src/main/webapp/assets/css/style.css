@@ -1,5 +1,24 @@
 .sidebar {
     min-height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+/* Adjust main content to account for fixed sidebar */
+.col-md-10 {
+    margin-left: 16.666667%; /* Same as col-md-2 width */
+}
+
+@media (max-width: 767.98px) {
+    .sidebar {
+        position: relative;
+    }
+    
+    .col-md-10 {
+        margin-left: 0;
+    }
 }
 
 .sidebar a {
