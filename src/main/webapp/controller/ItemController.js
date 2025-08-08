@@ -16,6 +16,21 @@ $(document).ready(function () {
 let isItemUpdateMode = false;
 let currentItemStatus = null;
 
+// Generate item code when form loads
+function generateItemCode() {
+    fetch(baseURL + "item?action=generateItemCode")
+        .then(res => res.ok ? res.json() : res.json().then(err => Promise.reject(err)))
+        .then(data => {
+            $("#item-code").val(data.itemCode);
+        })
+        .catch(error => NotificationService.error("Failed to generate item code: " + error.message));
+}
+
+// Call generate item code when page loads and form resets
+$(document).ready(function() {
+    generateItemCode();
+});
+
 // create item
 $("#addItemForm").on("submit", function (e) {
     e.preventDefault();
@@ -43,8 +58,10 @@ function resetItemFormUI() {
     isItemUpdateMode = false;
     currentItemStatus = null;
     $("#add-new-item-form-header").text("Add New Item");
-    $("#btn-create-item").text("Add Item").removeClass("btn-warning").addClass("btn-success");
-    $("#item_code").prop("readOnly", false);
+    const submitBtn = $("#btn-create-item");
+    submitBtn.text("Add Item").removeClass("btn-warning").addClass("btn-success");
+    $("#item-code").prop("readOnly", true); // Make it read-only
+    generateItemCode(); // Generate new item code
 }
 
 function loadAllItems() {
@@ -73,11 +90,10 @@ function loadAllItems() {
 
                 row.find(".edit-btn").on("click", () => {
                     $("#add-new-item-form-header").text("Update Item");
-                    $("#item_code").val(c.itemCode).prop("readOnly", true);
+                    $("#item-code").val(c.itemCode).prop("readOnly", true);
                     $("#item_name").val(c.name);
                     $("#item_unit_price").val(c.unitPrice);
                     $("#item_qty_on_hand").val(c.qtyOnHand);
-                    $("#item-status").val(c.status);
                     isItemUpdateMode = true;
                     currentItemStatus = c.status;
                     $("#btn-create-item").text("Update Item").removeClass("btn-success").addClass("btn-warning");

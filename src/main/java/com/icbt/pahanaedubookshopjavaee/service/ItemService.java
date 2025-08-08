@@ -14,4 +14,6 @@ public interface ItemService {
     void updateItem(Item item);
 
     void updateStatus(String itemCode, char status);
+
+    String generateNextItemCode();
 }

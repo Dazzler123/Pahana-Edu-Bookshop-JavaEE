@@ -36,6 +36,18 @@ public class ItemServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String action = request.getParameter("action");
+        
+        // Generate next item code
+        if ("generateItemCode".equals(action)) {
+            String nextItemCode = itemService.generateNextItemCode();
+            JsonObject json = Json.createObjectBuilder()
+                    .add("itemCode", nextItemCode)
+                    .build();
+            abstractResponseUtility.writeJson(response, json);
+            return;
+        }
+
         List<Item> items = itemService.getAllItems();
 
         JsonArrayBuilder itemArray = Json.createArrayBuilder();
@@ -71,8 +83,10 @@ public class ItemServlet extends HttpServlet {
         String name = request.getParameter("name");
         BigDecimal price = new BigDecimal(request.getParameter("unit_price"));
         int qty = Integer.parseInt(request.getParameter("qty_on_hand"));
-        char status = request.getParameter("status") != null ?
-                request.getParameter("status").charAt(0) : CommonConstants.STATUS_ACTIVE_CHAR;
+        
+        String statusParam = request.getParameter("status");
+        char status = (statusParam != null && !statusParam.isEmpty()) ?
+                statusParam.charAt(0) : CommonConstants.STATUS_ACTIVE_CHAR;
 
         Item item = new Item(code, name, price, qty, status);
 
