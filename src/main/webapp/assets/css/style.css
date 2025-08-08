@@ -60,3 +60,22 @@ body {
     padding: 1rem;
     background-color: #fff;
 }
+
+/* Items table scrollable container */
+.items-table-container {
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+}
+
+.items-table-container .table {
+    margin-bottom: 0;
+}
+
+.items-table-container .table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #212529;
+    z-index: 10;
+}
