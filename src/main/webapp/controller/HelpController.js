@@ -63,19 +63,63 @@ $(document).ready(function () {
             priority: $('#priority').val(),
             subject: $('#supportSubject').val(),
             description: $('#supportDescription').val(),
+            userEmail: $('#userEmail').val(),
             timestamp: new Date().toISOString(),
             userAgent: navigator.userAgent
         };
 
-        // Simulate support request submission
+        // Validate required fields
+        if (!formData.issueType || !formData.subject || !formData.description) {
+            NotificationService.error('Please fill in all required fields.');
+            return;
+        }
+
         NotificationService.loading('Submitting support request...');
         
+        $.ajax({
+            url: baseURL + 'support-request',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function(response) {
+                NotificationService.closeLoading();
+                
+                if (response.success) {
+                    const message = `Support request submitted successfully!\n\nTicket ID: ${response.ticketId}\nExpected response time: ${response.responseTime}`;
+                    NotificationService.success(message);
+                    $('#supportForm')[0].reset();
+                    
+                    // Show ticket ID in a more prominent way
+                    showTicketConfirmation(response.ticketId, response.responseTime);
+                } else {
+                    NotificationService.error(response.message || 'Failed to submit support request.');
+                }
+            },
+            error: function(xhr) {
+                NotificationService.closeLoading();
+                const errorMsg = xhr.responseJSON?.message || 'Failed to submit support request. Please try again.';
+                NotificationService.error(errorMsg);
+            }
+        });
+    }
+
+    function showTicketConfirmation(ticketId, responseTime) {
+        const confirmationHtml = `
+            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                <h5><i class="bi bi-check-circle me-2"></i>Request Submitted Successfully!</h5>
+                <p><strong>Ticket ID:</strong> <code>${ticketId}</code></p>
+                <p><strong>Expected Response Time:</strong> ${responseTime}</p>
+                <small>Please save your ticket ID for future reference.</small>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+        
+        $('#supportForm').after(confirmationHtml);
+        
+        // Auto-remove after 10 seconds
         setTimeout(() => {
-            NotificationService.closeLoading();
-            NotificationService.success('Support request submitted successfully! You will receive a response within ' + 
-                                      getResponseTime(formData.priority) + '.');
-            $('#supportForm')[0].reset();
-        }, 2000);
+            $('.alert-success').fadeOut();
+        }, 10000);
     }
 
     function getResponseTime(priority) {
