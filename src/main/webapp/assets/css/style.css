@@ -1,5 +1,24 @@
 .sidebar {
     min-height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+/* Adjust main content to account for fixed sidebar */
+.col-md-10 {
+    margin-left: 16.666667%; /* Same as col-md-2 width */
+}
+
+@media (max-width: 767.98px) {
+    .sidebar {
+        position: relative;
+    }
+    
+    .col-md-10 {
+        margin-left: 0;
+    }
 }
 
 .sidebar a {
@@ -59,4 +78,32 @@ body {
     border-top: none;
     padding: 1rem;
     background-color: #fff;
+}
+
+/* Scrollable table containers */
+.items-table-container,
+.customers-table-container,
+.orders-table-container,
+.reports-table-container {
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+}
+
+.items-table-container .table,
+.customers-table-container .table,
+.orders-table-container .table,
+.reports-table-container .table {
+    margin-bottom: 0;
+}
+
+.items-table-container .table thead th,
+.customers-table-container .table thead th,
+.orders-table-container .table thead th,
+.reports-table-container .table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #212529;
+    z-index: 10;
 }
