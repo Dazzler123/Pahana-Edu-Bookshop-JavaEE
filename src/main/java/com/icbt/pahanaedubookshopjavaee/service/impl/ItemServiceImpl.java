@@ -40,4 +40,9 @@ public class ItemServiceImpl implements ItemService {
     public void updateStatus(String itemCode, char status) {
         itemDAO.updateStatus(itemCode, status);
     }
+
+    @Override
+    public String generateNextItemCode() {
+        return itemDAO.generateNextItemCode();
+    }
 }
