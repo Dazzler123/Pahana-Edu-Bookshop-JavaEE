@@ -1,12 +1,8 @@
 package com.icbt.pahanaedubookshopjavaee.service;
 
-import com.icbt.pahanaedubookshopjavaee.model.OrderItem;
-
-import java.math.BigDecimal;
-import java.util.List;
+import com.icbt.pahanaedubookshopjavaee.dto.PlaceOrderDTO;
 
 public interface PlaceOrderService {
-    String placeOrder(String customerId, BigDecimal totalAmount, BigDecimal totalDiscount,
-                      List<OrderItem> orderItems) throws Exception;
+    String placeOrder(PlaceOrderDTO placeOrderDTO) throws Exception;
 }
 

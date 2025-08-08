@@ -2,6 +2,7 @@ package com.icbt.pahanaedubookshopjavaee.service.impl;
 
 import com.icbt.pahanaedubookshopjavaee.dao.PlaceOrderDAO;
 import com.icbt.pahanaedubookshopjavaee.dao.impl.PlaceOrderDAOImpl;
+import com.icbt.pahanaedubookshopjavaee.dto.PlaceOrderDTO;
 import com.icbt.pahanaedubookshopjavaee.model.OrderItem;
 import com.icbt.pahanaedubookshopjavaee.service.PlaceOrderService;
 
@@ -18,8 +19,15 @@ public class PlaceOrderServiceImpl implements PlaceOrderService {
     }
 
     @Override
-    public String placeOrder(String customerId, BigDecimal totalAmount, BigDecimal totalDiscount, List<OrderItem> orderItems) throws Exception {
-        return placeOrderDAO.createOrder(customerId, totalAmount, totalDiscount, orderItems);
+    public String placeOrder(PlaceOrderDTO placeOrderDTO) throws Exception {
+        return placeOrderDAO.createOrder(
+            placeOrderDTO.getCustomerId(),
+            placeOrderDTO.getTotalAmount(),
+            placeOrderDTO.getTotalDiscount(),
+            placeOrderDTO.getOrderItems(),
+            placeOrderDTO.getPaymentStatus(),
+            placeOrderDTO.getPaymentMethod()
+        );
     }
 
 }
