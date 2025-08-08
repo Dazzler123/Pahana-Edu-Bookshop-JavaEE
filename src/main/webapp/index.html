@@ -23,6 +23,9 @@
     <nav class="col-md-2 d-none d-md-block bg-dark sidebar vh-100">
         <div class="position-sticky pt-3">
             <h5 class="text-white text-center py-3">📚 Pahana Edu</h5>
+            <div class="text-center text-white mb-3">
+                <small>Welcome, <span id="usernameDisplay">Admin</span></small>
+            </div>
             <ul class="nav flex-column">
                 <li><a href="#" id="manage-dashboard-tab"><i class="bi bi-house-door-fill me-2"></i>Dashboard</a></li>
                 <li><a href="#" id="manage-customers-tab"><i class="bi bi-person-lines-fill me-2"></i>Manage Customers</a></li>
@@ -33,7 +36,6 @@
                 <li><a href="#" id="help-section-tab"><i class="bi bi-question-circle-fill me-2"></i>Help</a></li>
                 <li><a href="#" id="user-logout-tab"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
             </ul>
-
         </div>
     </nav>
 
@@ -1197,6 +1199,8 @@
 
 <!--controllers-->
 <script src="controller/CommonConfig.js"></script>
+<script src="controller/AuthController.js"></script>
+<script src="controller/LogoutController.js"></script>
 <script src="controller/NotificationService.js"></script>
 <script src="controller/Navigation.js"></script>
 <script src="controller/DashboardController.js"></script>
