@@ -72,7 +72,7 @@ $(document).ready(function () {
                     const statusClass = { A: "bg-success", I: "bg-secondary", D: "bg-danger" };
                     const paymentStatusMap = { 
                         N: "Not Paid",
-                        P: "Pending",
+                        P: "Pending", 
                         A: "Paid"
                     };
                     const paymentStatusClass = {
@@ -89,6 +89,7 @@ $(document).ready(function () {
                             <td>Rs. ${parseFloat(order.totalDiscount).toFixed(2)}</td>
                             <td><span class="badge ${statusClass[order.status] || 'bg-dark'}">${statusMap[order.status] || 'Unknown'}</span></td>
                             <td><span class="badge ${paymentStatusClass[order.paymentStatus] || 'bg-dark'}">${paymentStatusMap[order.paymentStatus] || order.paymentStatus}</span></td>
+                            <td>${order.paymentType || 'N/A'}</td>
                             <td>
                                 <button class="btn btn-sm btn-success activate-btn" ${order.status !== 'I' ? 'disabled' : ''}>Activate</button>
                                 <button class="btn btn-sm btn-warning inactivate-btn" ${order.status !== 'A' ? 'disabled' : ''}>Inactivate</button>
@@ -151,7 +152,7 @@ $(document).ready(function () {
 
         $("#manageOrderTableBody tr").each(function () {
             const cells = $(this).children();
-            if (cells.length < 7) return; // skip malformed rows
+            if (cells.length < 8) return; // skip malformed rows
 
             const orderDate = cells.eq(1).text();
             const dateMatch = !dateFilter || (orderDate && new Date(orderDate).toISOString().slice(0, 10) === dateFilter);
@@ -187,6 +188,8 @@ $(document).ready(function () {
         $('#editOrderDate').val(new Date(order.orderDate).toISOString().slice(0, 16));
         $('#editTotalAmount').val(order.totalAmount);
         $('#editTotalDiscount').val(order.totalDiscount);
+        $('#editPaymentStatus').val(order.paymentStatus);
+        $('#editPaymentType').val(order.paymentType || 'Cash');
     }
 
     // Update order form submission
@@ -201,7 +204,8 @@ $(document).ready(function () {
             totalAmount: parseFloat($('#editTotalAmount').val()),
             totalDiscount: parseFloat($('#editTotalDiscount').val()),
             status: selectedOrderForEdit.status,
-            paymentStatus: selectedOrderForEdit.paymentStatus
+            paymentStatus: $('#editPaymentStatus').val(),
+            paymentType: $('#editPaymentType').val()
         };
 
         $.ajax({

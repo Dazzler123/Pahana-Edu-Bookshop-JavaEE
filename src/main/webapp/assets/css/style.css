@@ -107,3 +107,20 @@ body {
     background-color: #212529;
     z-index: 10;
 }
+
+/* Order management table column widths */
+.orders-table-container .table th:nth-child(5),
+.orders-table-container .table td:nth-child(5),
+.orders-table-container .table th:nth-child(6),
+.orders-table-container .table td:nth-child(6),
+.orders-table-container .table th:nth-child(7),
+.orders-table-container .table td:nth-child(7) {
+    width: 10%;
+    min-width: 80px;
+}
+
+/* Actions column */
+.orders-table-container .table th:nth-child(8),
+.orders-table-container .table td:nth-child(8) {
+    width: 25%;
+}
