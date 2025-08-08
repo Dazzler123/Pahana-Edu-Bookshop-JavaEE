@@ -32,7 +32,7 @@ public class PlaceOrderDAOImpl implements PlaceOrderDAO {
      * @throws Exception
      */
     @Override
-    public String createOrder(String customerId, BigDecimal totalAmount, BigDecimal totalDiscount, List<OrderItem> orderItems) throws Exception {
+    public String createOrder(String customerId, BigDecimal totalAmount, BigDecimal totalDiscount, List<OrderItem> orderItems, String paymentStatus) throws Exception {
         String orderCode = generateOrderCode();
         Connection connection = null;
 
@@ -50,7 +50,7 @@ public class PlaceOrderDAOImpl implements PlaceOrderDAO {
                 ps.setBigDecimal(4, totalDiscount);
                 ps.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
                 ps.setString(6, CommonConstants.STATUS_ACTIVE_STRING);
-                ps.setString(7, CommonConstants.PAYMENT_STATUS_PAID); // mark as paid
+                ps.setString(7, paymentStatus);
                 ps.executeUpdate();
             }
 

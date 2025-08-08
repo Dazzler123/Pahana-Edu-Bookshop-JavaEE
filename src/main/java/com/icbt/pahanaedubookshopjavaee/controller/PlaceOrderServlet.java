@@ -5,6 +5,7 @@ import com.icbt.pahanaedubookshopjavaee.service.PlaceOrderService;
 import com.icbt.pahanaedubookshopjavaee.service.impl.PlaceOrderServiceImpl;
 import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
 import com.icbt.pahanaedubookshopjavaee.util.constants.DBConstants;
+import com.icbt.pahanaedubookshopjavaee.util.constants.CommonConstants;
 
 import javax.json.*;
 import javax.servlet.annotation.WebServlet;
@@ -53,15 +54,26 @@ public class PlaceOrderServlet extends HttpServlet {
             JsonObject json = reader.readObject();
 
             String customerId = json.getString("customerAccount", null);
+            String paymentMethod = json.getString("paymentMethod", null);
             JsonArray itemsArray = json.getJsonArray("items");
 
-            if (customerId == null || itemsArray == null || itemsArray.isEmpty()) {
+            if (customerId == null || paymentMethod == null || itemsArray == null || itemsArray.isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
                         .add("state", "error")
                         .add("message", "Incomplete order data.")
                         .build());
                 return;
+            }
+
+            // Determine payment status based on payment method
+            String paymentStatus;
+            if ("cash".equalsIgnoreCase(paymentMethod)) {
+                paymentStatus = CommonConstants.PAYMENT_STATUS_PAID; // "A" for Paid
+            } else if ("card".equalsIgnoreCase(paymentMethod)) {
+                paymentStatus = CommonConstants.PAYMENT_STATUS_PENDING; // "P" for Pending  
+            } else {
+                paymentStatus = CommonConstants.PAYMENT_STATUS_NOT_PAID; // default as not paid
             }
 
             BigDecimal totalAmount = BigDecimal.ZERO;
@@ -90,7 +102,7 @@ public class PlaceOrderServlet extends HttpServlet {
                 itemList.add(new OrderItem(itemCode, qty, unitPrice, discountAmount, lineTotal));
             }
 
-            String orderCode = placeOrderService.placeOrder(customerId, totalAmount, totalDiscount, itemList);
+            String orderCode = placeOrderService.placeOrder(customerId, totalAmount, totalDiscount, itemList, paymentStatus);
             abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
                     .add("state", "done")
                     .add("message", "Order placed successfully. Order Code: " + orderCode)

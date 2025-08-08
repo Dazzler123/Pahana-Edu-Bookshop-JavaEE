@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface PlaceOrderService {
     String placeOrder(String customerId, BigDecimal totalAmount, BigDecimal totalDiscount,
-                      List<OrderItem> orderItems) throws Exception;
+                      List<OrderItem> orderItems, String paymentStatus) throws Exception;
 }
 

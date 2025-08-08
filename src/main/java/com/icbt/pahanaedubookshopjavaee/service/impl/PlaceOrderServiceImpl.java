@@ -18,8 +18,9 @@ public class PlaceOrderServiceImpl implements PlaceOrderService {
     }
 
     @Override
-    public String placeOrder(String customerId, BigDecimal totalAmount, BigDecimal totalDiscount, List<OrderItem> orderItems) throws Exception {
-        return placeOrderDAO.createOrder(customerId, totalAmount, totalDiscount, orderItems);
+    public String placeOrder(String customerId, BigDecimal totalAmount, BigDecimal totalDiscount, 
+                           List<OrderItem> orderItems, String paymentStatus) throws Exception {
+        return placeOrderDAO.createOrder(customerId, totalAmount, totalDiscount, orderItems, paymentStatus);
     }
 
 }

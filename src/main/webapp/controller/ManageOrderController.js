@@ -72,7 +72,7 @@ $(document).ready(function () {
                     const statusClass = { A: "bg-success", I: "bg-secondary", D: "bg-danger" };
                     const paymentStatusMap = { 
                         N: "Not Paid",
-                        P: "Pending",
+                        P: "Pending", 
                         A: "Paid"
                     };
                     const paymentStatusClass = {
@@ -187,6 +187,7 @@ $(document).ready(function () {
         $('#editOrderDate').val(new Date(order.orderDate).toISOString().slice(0, 16));
         $('#editTotalAmount').val(order.totalAmount);
         $('#editTotalDiscount').val(order.totalDiscount);
+        $('#editPaymentStatus').val(order.paymentStatus);
     }
 
     // Update order form submission
@@ -201,7 +202,7 @@ $(document).ready(function () {
             totalAmount: parseFloat($('#editTotalAmount').val()),
             totalDiscount: parseFloat($('#editTotalDiscount').val()),
             status: selectedOrderForEdit.status,
-            paymentStatus: selectedOrderForEdit.paymentStatus
+            paymentStatus: $('#editPaymentStatus').val() // Get the selected payment status from dropdown
         };
 
         $.ajax({
