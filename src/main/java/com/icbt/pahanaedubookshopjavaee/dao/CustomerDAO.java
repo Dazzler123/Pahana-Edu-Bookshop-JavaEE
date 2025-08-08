@@ -21,4 +21,6 @@ public interface CustomerDAO {
     List<String> getAllIds();
 
     Customer getCustomer(String accountNumber);
+
+    String generateNextAccountNumber();
 }

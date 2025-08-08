@@ -19,4 +19,6 @@ public interface CustomerService {
     void updateCustomer(Customer customer);
 
     void updateStatus(String accountNumber, char status);
+
+    String generateNextAccountNumber();
 }

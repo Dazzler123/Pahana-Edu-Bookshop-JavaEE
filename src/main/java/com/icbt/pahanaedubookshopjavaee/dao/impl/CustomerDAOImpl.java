@@ -212,4 +212,28 @@ public class CustomerDAOImpl implements CustomerDAO {
         return null;
     }
 
+    /**
+     * This method generates the next unique account number
+     */
+    @Override
+    public String generateNextAccountNumber() {
+        String sql = "SELECT account_number FROM Customer WHERE account_number LIKE 'CUS-%' ORDER BY account_number DESC LIMIT 1";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement psmt = connection.prepareStatement(sql);
+             ResultSet rs = psmt.executeQuery()) {
+
+            if (rs.next()) {
+                String lastAccountNumber = rs.getString("account_number");
+                int lastNumber = Integer.parseInt(lastAccountNumber.substring(4)); // Remove "CUS-" prefix
+                return "CUS-" + String.format("%04d", lastNumber + 1);
+            } else {
+                return "CUS-0001"; // First customer
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to generate account number", e);
+        }
+    }
+
 }
