@@ -46,7 +46,8 @@ function resetCustomerFormUI() {
     $("#add-new-customer-form-header").text("Add New Customer");
     const submitBtn = $("#btn-create-customer");
     submitBtn.text("Add Customer").removeClass("btn-warning").addClass("btn-success");
-    $("#customer-account-number").prop("readOnly", false);
+    $("#customer-account-number").prop("readOnly", true); // Make it read-only
+    generateAccountNumber(); // Generate new account number
 }
 
 function loadAllCustomers() {
@@ -146,3 +147,18 @@ function filterCustomers() {
         $(this).toggle(match);
     });
 }
+
+// Generate account number when form loads
+function generateAccountNumber() {
+    fetch(baseURL + "customer?action=generateAccountNumber")
+        .then(res => res.ok ? res.json() : res.json().then(err => Promise.reject(err)))
+        .then(data => {
+            $("#customer-account-number").val(data.accountNumber);
+        })
+        .catch(error => NotificationService.error("Failed to generate account number: " + error.message));
+}
+
+// Call generate account number when page loads and form resets
+$(document).ready(function() {
+    generateAccountNumber();
+});
