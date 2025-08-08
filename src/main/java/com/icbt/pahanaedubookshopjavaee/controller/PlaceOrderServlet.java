@@ -1,10 +1,12 @@
 package com.icbt.pahanaedubookshopjavaee.controller;
 
+import com.icbt.pahanaedubookshopjavaee.dto.PlaceOrderDTO;
 import com.icbt.pahanaedubookshopjavaee.model.OrderItem;
 import com.icbt.pahanaedubookshopjavaee.service.PlaceOrderService;
 import com.icbt.pahanaedubookshopjavaee.service.impl.PlaceOrderServiceImpl;
 import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
 import com.icbt.pahanaedubookshopjavaee.util.constants.DBConstants;
+import com.icbt.pahanaedubookshopjavaee.util.constants.CommonConstants;
 
 import javax.json.*;
 import javax.servlet.annotation.WebServlet;
@@ -53,15 +55,29 @@ public class PlaceOrderServlet extends HttpServlet {
             JsonObject json = reader.readObject();
 
             String customerId = json.getString("customerAccount", null);
+            String paymentMethod = json.getString("paymentMethod", null);
             JsonArray itemsArray = json.getJsonArray("items");
 
-            if (customerId == null || itemsArray == null || itemsArray.isEmpty()) {
+            if (customerId == null || paymentMethod == null || itemsArray == null || itemsArray.isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
                         .add("state", "error")
                         .add("message", "Incomplete order data.")
                         .build());
                 return;
+            }
+
+            // determine payment status based on payment method
+            String paymentStatus;
+
+            if (CommonConstants.PAYMENT_METHOD_CASH.equals(paymentMethod)) {
+                paymentStatus = CommonConstants.PAYMENT_STATUS_PAID;
+            } else if (CommonConstants.PAYMENT_METHOD_CARD.equals(paymentMethod)) {
+                paymentStatus = CommonConstants.PAYMENT_STATUS_PENDING;
+            } else if (CommonConstants.PAYMENT_METHOD_OTHER.equals(paymentMethod)) {
+                paymentStatus = CommonConstants.PAYMENT_STATUS_NOT_PAID;
+            } else {
+                paymentStatus = CommonConstants.PAYMENT_STATUS_NOT_PAID;
             }
 
             BigDecimal totalAmount = BigDecimal.ZERO;
@@ -90,7 +106,16 @@ public class PlaceOrderServlet extends HttpServlet {
                 itemList.add(new OrderItem(itemCode, qty, unitPrice, discountAmount, lineTotal));
             }
 
-            String orderCode = placeOrderService.placeOrder(customerId, totalAmount, totalDiscount, itemList);
+            PlaceOrderDTO placeOrderDTO = new PlaceOrderDTO(
+                    customerId,
+                    totalAmount,
+                    totalDiscount,
+                    itemList,
+                    paymentStatus,
+                    paymentMethod
+            );
+
+            String orderCode = placeOrderService.placeOrder(placeOrderDTO);
             abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
                     .add("state", "done")
                     .add("message", "Order placed successfully. Order Code: " + orderCode)

@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface PlaceOrderDAO {
     String createOrder(String customerId, BigDecimal totalAmount, BigDecimal totalDiscount,
-                      List<OrderItem> orderItems) throws Exception;
+                      List<OrderItem> orderItems, String paymentStatus, String paymentMethod) throws Exception;
 }

@@ -522,6 +522,7 @@
                                 <th>Total Discount</th>
                                 <th>Status</th>
                                 <th>Payment Status</th>
+                                <th>Payment Method</th>
                                 <th>Actions</th>
                             </tr>
                             </thead>
@@ -565,6 +566,14 @@
                                         <option value="N">Not Paid</option>
                                         <option value="P">Pending</option>
                                         <option value="A">Paid</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editPaymentType" class="form-label">Payment Method</label>
+                                    <select class="form-control" id="editPaymentType">
+                                        <option value="Cash">Cash</option>
+                                        <option value="Card">Card</option>
+                                        <option value="Other">Other</option>
                                     </select>
                                 </div>
                             </div>
@@ -1310,8 +1319,9 @@
                     <label for="paymentMethod" class="form-label">Payment Method</label>
                     <select id="paymentMethod" class="form-select">
                         <option value="">Select Payment Method</option>
-                        <option value="cash">Cash</option>
-                        <option value="card">Card</option>
+                        <option value="Cash">Cash</option>
+                        <option value="Card">Card</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
             </div>
