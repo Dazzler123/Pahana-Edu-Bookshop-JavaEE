@@ -77,8 +77,9 @@ public class ManageOrderServlet extends HttpServlet {
             
             String status = json.getString("status");
             String paymentStatus = json.getString("paymentStatus");
+            String paymentType = json.getString("paymentType", "cash"); // Default to cash if not provided
 
-            orderManagementService.updateOrder(orderCode, orderDate, totalAmount, totalDiscount, status, paymentStatus);
+            orderManagementService.updateOrder(orderCode, orderDate, totalAmount, totalDiscount, status, paymentStatus, paymentType);
             
             abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
                     .add("message", "Order updated successfully")

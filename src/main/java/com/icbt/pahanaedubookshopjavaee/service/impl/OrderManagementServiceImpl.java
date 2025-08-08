@@ -23,7 +23,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
     @Override
     public JsonObject getOrdersByCustomer(String customerId) throws Exception {
         String query = "SELECT order_code, customer_id, total_amount, total_discount_applied, " +
-                      "order_date, status, payment_status FROM Orders WHERE customer_id = ? ORDER BY order_date DESC";
+                      "order_date, status, payment_status, payment_method FROM Orders WHERE customer_id = ? ORDER BY order_date DESC";
         
         JsonArrayBuilder ordersArray = Json.createArrayBuilder();
         
@@ -42,6 +42,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
                             .add("orderDate", rs.getTimestamp("order_date").toString())
                             .add("status", rs.getString("status"))
                             .add("paymentStatus", rs.getString("payment_status"))
+                            .add("paymentType", rs.getString("payment_method") != null ? rs.getString("payment_method") : "cash")
                     );
                 }
             }
@@ -53,9 +54,9 @@ public class OrderManagementServiceImpl implements OrderManagementService {
     }
 
     @Override
-    public void updateOrder(String orderCode, String orderDate, double totalAmount, double totalDiscount, String status, String paymentStatus) throws Exception {
+    public void updateOrder(String orderCode, String orderDate, double totalAmount, double totalDiscount, String status, String paymentStatus, String paymentType) throws Exception {
         String query = "UPDATE Orders SET total_amount = ?, total_discount_applied = ?, " +
-                      "order_date = ?, status = ?, payment_status = ? WHERE order_code = ?";
+                      "order_date = ?, status = ?, payment_status = ?, payment_method = ? WHERE order_code = ?";
         
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
@@ -65,7 +66,8 @@ public class OrderManagementServiceImpl implements OrderManagementService {
             ps.setTimestamp(3, Timestamp.valueOf(LocalDateTime.parse(orderDate)));
             ps.setString(4, status);
             ps.setString(5, paymentStatus);
-            ps.setString(6, orderCode);
+            ps.setString(6, paymentType);
+            ps.setString(7, orderCode);
             
             ps.executeUpdate();
         }
