@@ -270,7 +270,7 @@ $(document).ready(function () {
 
         const orderPayload = {
             customerAccount: selectedCustomer.accountNumber,
-            paymentMethod: paymentMethod,
+            paymentMethod: paymentMethod, // This will now be "Cash", "Card", or "Other"
             items: cart.map(item => ({
                 itemCode: item.code,
                 qty: item.qty,

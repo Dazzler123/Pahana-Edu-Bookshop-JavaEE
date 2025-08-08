@@ -19,6 +19,10 @@ public class CommonConstants {
     public static final String PAYMENT_STATUS_PENDING = "P";
     public static final String PAYMENT_STATUS_PAID = "A";
 
+    public static final String PAYMENT_METHOD_CASH = "Cash";
+    public static final String PAYMENT_METHOD_CARD = "Card";
+    public static final String PAYMENT_METHOD_OTHER = "Other";
+
     public static final String LABEL_STATE = "state";
     public static final String LABEL_DONE = "done";
     public static final String LABEL_ERROR = "error";

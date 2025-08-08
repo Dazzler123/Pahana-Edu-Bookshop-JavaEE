@@ -1,5 +1,6 @@
 package com.icbt.pahanaedubookshopjavaee.controller;
 
+import com.icbt.pahanaedubookshopjavaee.dto.PlaceOrderDTO;
 import com.icbt.pahanaedubookshopjavaee.model.OrderItem;
 import com.icbt.pahanaedubookshopjavaee.service.PlaceOrderService;
 import com.icbt.pahanaedubookshopjavaee.service.impl.PlaceOrderServiceImpl;
@@ -68,14 +69,15 @@ public class PlaceOrderServlet extends HttpServlet {
 
             // determine payment status based on payment method
             String paymentStatus;
-            if ("cash".equalsIgnoreCase(paymentMethod)) {
+
+            if (CommonConstants.PAYMENT_METHOD_CASH.equals(paymentMethod)) {
                 paymentStatus = CommonConstants.PAYMENT_STATUS_PAID;
-            } else if ("card".equalsIgnoreCase(paymentMethod)) {
+            } else if (CommonConstants.PAYMENT_METHOD_CARD.equals(paymentMethod)) {
                 paymentStatus = CommonConstants.PAYMENT_STATUS_PENDING;
-            } else if ("other".equalsIgnoreCase(paymentMethod)) {
+            } else if (CommonConstants.PAYMENT_METHOD_OTHER.equals(paymentMethod)) {
                 paymentStatus = CommonConstants.PAYMENT_STATUS_NOT_PAID;
             } else {
-                paymentStatus = CommonConstants.PAYMENT_STATUS_NOT_PAID; // default as Not Paid
+                paymentStatus = CommonConstants.PAYMENT_STATUS_NOT_PAID;
             }
 
             BigDecimal totalAmount = BigDecimal.ZERO;
@@ -104,7 +106,16 @@ public class PlaceOrderServlet extends HttpServlet {
                 itemList.add(new OrderItem(itemCode, qty, unitPrice, discountAmount, lineTotal));
             }
 
-            String orderCode = placeOrderService.placeOrder(customerId, totalAmount, totalDiscount, itemList, paymentStatus);
+            PlaceOrderDTO placeOrderDTO = new PlaceOrderDTO(
+                    customerId,
+                    totalAmount,
+                    totalDiscount,
+                    itemList,
+                    paymentStatus,
+                    paymentMethod
+            );
+
+            String orderCode = placeOrderService.placeOrder(placeOrderDTO);
             abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
                     .add("state", "done")
                     .add("message", "Order placed successfully. Order Code: " + orderCode)
