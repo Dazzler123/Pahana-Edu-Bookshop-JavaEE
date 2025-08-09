@@ -20,7 +20,7 @@
 <body class="container-fluid">
 <div class="row">
 
-    <!--     topbar and side navigation-->
+    <!--topbar and side navigation :ST-->
     <nav class="col-md-2 d-none d-md-block bg-dark sidebar vh-100">
         <div class="position-sticky pt-3 d-flex flex-column h-100">
             <div>
@@ -49,15 +49,16 @@
             </div>
         </div>
     </nav>
+    <!--topbar and side navigation :ED-->
 
-    <!-- Main Content Area -->
+    <!-- Main Content Area :ST-->
     <div class="col-md-10 px-md-4 py-4">
 
-        <!-- Dashboard Section -->
+        <!-- Dashboard Section :ST-->
         <div id="dashboard-content" class="mt-4">
             <h2><i class="bi bi-speedometer2 me-2"></i>Dashboard Overview</h2>
 
-            <!-- Key Metrics Cards -->
+            <!-- Key Metrics Cards :ST-->
             <div class="row g-4 mt-3">
                 <div class="col-md-3">
                     <div class="card border-success">
@@ -96,11 +97,11 @@
                     </div>
                 </div>
             </div>
+            <!-- Key Metrics Cards :ED-->
 
-
-            <!-- Most Visited Customers & Top Items -->
+            <!-- Most Visited Customers & Top Items :ST-->
             <div class="row g-4 mt-4">
-                <!-- Most Visited Customers -->
+                <!-- Most Visited Customers :ST-->
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header bg-secondary text-white">
@@ -127,8 +128,9 @@
                         </div>
                     </div>
                 </div>
+                <!-- Most Visited Customers :ED-->
 
-                <!-- Top Items -->
+                <!-- Top Items :ST-->
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header bg-info text-white">
@@ -154,14 +156,17 @@
                         </div>
                     </div>
                 </div>
+                <!-- Top Items :ED-->
             </div>
+            <!-- Most Visited Customers & Top Items :ED-->
         </div>
+        <!-- Dashboard Section :ED-->
 
-        <!-- Customer Section -->
+        <!-- Customer Section :ST-->
         <div id="customer-content" class="mt-4">
             <h2 class="mb-4">👤 Customer Management</h2>
 
-            <!-- Add New Customer -->
+            <!-- Add New Customer :ST-->
             <div class="card mb-4">
                 <div id="add-new-customer-form-header" class="card-header bg-primary text-white">Add New Customer</div>
                 <div class="card-body">
@@ -196,14 +201,15 @@
                     </form>
                 </div>
             </div>
+            <!-- Add New Customer :ED-->
 
-            <!-- Customer Table -->
+            <!-- Customer Table :ST-->
             <div class="card">
                 <div class="card-header bg-secondary text-white">
                     <i class="bi bi-list-ul me-2"></i>Customer List
                 </div>
                 <div class="card-body">
-                    <!-- filters -->
+                    <!-- filters :ST-->
                     <div class="row g-3 mb-3">
                         <div class="col-md-3">
                             <input type="text" id="searchCustomerAccountNumber" class="form-control"
@@ -227,6 +233,7 @@
                             </button>
                         </div>
                     </div>
+                    <!-- filters :ED-->
 
                     <div class="customers-table-container">
                         <table class="table table-bordered table-hover table-striped">
@@ -247,13 +254,15 @@
                     </div>
                 </div>
             </div>
+            <!-- Customer Table :ED-->
         </div>
+        <!-- Customer Section :ED-->
 
-        <!-- Item Section -->
+        <!-- Item Section :ST-->
         <div id="item-content" class="mt-4">
             <h2 class="mb-4">📦 Item Management</h2>
 
-            <!-- Add New Item -->
+            <!-- Add New Item :ST-->
             <div class="card mb-4">
                 <div id="add-new-item-form-header" class="card-header bg-primary text-white">Add New Item</div>
                 <div class="card-body">
@@ -287,14 +296,14 @@
                     </form>
                 </div>
             </div>
+            <!-- Add New Item :ED-->
 
-            <!-- Item Table -->
             <div class="card">
                 <div class="card-header bg-secondary text-white">
                     <i class="bi bi-list-ul me-2"></i>Item List
                 </div>
                 <div class="card-body">
-                    <!-- filters -->
+                    <!-- filters :ST-->
                     <div class="row g-3 mb-3">
                         <div class="col-md-3">
                             <input type="text" id="searchItemCode" class="form-control"
@@ -316,6 +325,7 @@
                             </button>
                         </div>
                     </div>
+                    <!-- filters :ED-->
 
                     <div class="items-table-container">
                         <table class="table table-bordered table-hover table-striped">
@@ -336,13 +346,14 @@
                 </div>
             </div>
         </div>
+        <!-- Item Section :ED-->
 
-        <!-- Place Order Section -->
+        <!-- Place Order Section :ST-->
         <div id="place-order-content" class="mt-4">
             <h2 class="mb-4"><i class="bi bi-bag-check-fill me-2"></i>Place Order</h2>
 
             <div class="row g-4">
-                <!-- Customer Selection -->
+                <!-- Customer Selection :ST-->
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header bg-primary text-white">
@@ -364,8 +375,9 @@
                         </div>
                     </div>
                 </div>
+                <!-- Customer Selection :ED-->
 
-                <!-- Item Selection -->
+                <!-- Item Selection :ST-->
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header bg-success text-white">
@@ -405,6 +417,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- Item Selection :ED-->
             </div>
 
             <!-- Selected Items Table -->
@@ -443,12 +456,13 @@
                 <button id="btnPlaceOrder" class="btn btn-success">Place Order</button>
             </div>
         </div>
+        <!-- Place Order Section :ED-->
 
-        <!-- Manage Orders Section -->
+        <!-- Manage Orders Section :ST-->
         <div id="order-content" class="mt-4">
             <h2 class="mb-4">📋 Order Management</h2>
 
-            <!-- Customer Selection -->
+            <!-- Customer Selection :ST-->
             <div class="row mb-4">
                 <div class="col-md-6">
                     <div class="card">
@@ -465,6 +479,7 @@
                     </div>
                 </div>
             </div>
+            <!-- Customer Selection :ED-->
 
             <!-- Orders Table -->
             <div class="card mb-4">
@@ -505,6 +520,14 @@
                         </div>
                     </div>
                     <div class="row g-3 mb-3">
+                        <div class="col-md-3">
+                            <select id="searchPaymentMethod" class="form-control">
+                                <option value="">All Payment Methods</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Card">Card</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
                         <div class="col-md-3 d-flex align-items-end">
                             <button id="btn-reset-order-filters" class="btn btn-outline-secondary w-100">Reset
                                 Filters
@@ -586,8 +609,9 @@
                 </div>
             </div>
         </div>
+        <!-- Manage Orders Section :ED-->
 
-        <!-- Reports Section -->
+        <!-- Reports Section :ST-->
         <div id="reports-content" class="mt-4">
             <h2 class="mb-4">📊 Reports & Analytics</h2>
 
@@ -721,12 +745,13 @@
                 </div>
             </div>
         </div>
+        <!-- Reports Section :ED-->
 
-        <!-- Help Section -->
+        <!-- Help Section :ST-->
         <div id="help-content" class="mt-4">
             <h2 class="mb-4">❓ Help & Support</h2>
 
-            <!-- Help Navigation Tabs -->
+            <!-- Help Navigation Tabs :ST-->
             <ul class="nav nav-tabs mb-4" id="helpTabs" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="user-guide-tab" data-bs-toggle="tab"
@@ -753,6 +778,7 @@
                     </button>
                 </li>
             </ul>
+            <!-- Help Navigation Tabs :ED-->
 
             <!-- Help Tab Content -->
             <div class="tab-content" id="helpTabContent">
@@ -1246,8 +1272,10 @@
                 </div>
             </div>
         </div>
+        <!-- Help Section :ED-->
 
     </div>
+    <!-- Main Content Area :ED-->
 
 </div>
 
@@ -1265,7 +1293,7 @@
 <script src="controller/ReportsController.js"></script>
 <script src="controller/HelpController.js"></script>
 
-<!-- Place Order Confirmation Modal -->
+<!-- Place Order Confirmation Modal :ST-->
 <div class="modal fade" id="placeOrderModal" tabindex="-1" aria-labelledby="placeOrderModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
@@ -1337,6 +1365,7 @@
         </div>
     </div>
 </div>
+<!-- Place Order Confirmation Modal :ED-->
 
 </body>
 </html>
