@@ -2,6 +2,7 @@ package com.icbt.pahanaedubookshopjavaee.controller;
 
 import com.icbt.pahanaedubookshopjavaee.dto.SupportRequestDTO;
 import com.icbt.pahanaedubookshopjavaee.service.SupportRequestService;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ResponseMessages;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -46,7 +47,7 @@ public class SupportRequestServlet extends BaseServlet {
             
             JsonObject errorResponse = Json.createObjectBuilder()
                     .add("success", false)
-                    .add("message", "Invalid request format: " + e.getMessage())
+                    .add("message", ResponseMessages.MESSAGE_INVALID_REQUEST_FORMAT + ": " + e.getMessage())
                     .build();
                     
             abstractResponseUtility.writeJson(response, errorResponse);
@@ -69,7 +70,7 @@ public class SupportRequestServlet extends BaseServlet {
             
             JsonObject errorResponse = Json.createObjectBuilder()
                     .add("success", false)
-                    .add("message", "Ticket ID is required")
+                    .add("message", ResponseMessages.MESSAGE_TICKET_ID_REQUIRED)
                     .build();
                     
             abstractResponseUtility.writeJson(response, errorResponse);
@@ -98,7 +99,7 @@ public class SupportRequestServlet extends BaseServlet {
             
             JsonObject errorResponse = Json.createObjectBuilder()
                     .add("success", false)
-                    .add("message", "Support request not found: " + e.getMessage())
+                    .add("message", ResponseMessages.MESSAGE_SUPPORT_REQUEST_NOT_FOUND + ": " + e.getMessage())
                     .build();
                     
             abstractResponseUtility.writeJson(response, errorResponse);
