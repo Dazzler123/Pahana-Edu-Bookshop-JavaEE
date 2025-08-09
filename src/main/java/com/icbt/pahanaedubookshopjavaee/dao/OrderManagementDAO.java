@@ -1,17 +1,13 @@
-package com.icbt.pahanaedubookshopjavaee.service;
+package com.icbt.pahanaedubookshopjavaee.dao;
 
 import javax.json.JsonObject;
 
-public interface OrderManagementService {
+public interface OrderManagementDAO {
     JsonObject getOrdersByCustomer(String customerId) throws Exception;
 
     void updateOrder(String orderCode, String orderDate, double totalAmount, double totalDiscount, String status, String paymentStatus, String paymentType) throws Exception;
 
     void updateOrderStatus(String orderCode, String status) throws Exception;
 
-    JsonObject processGetOrdersRequest(String customerId);
-
-    JsonObject processUpdateOrderRequest(JsonObject orderRequest);
-
-    JsonObject processUpdateOrderStatusRequest(JsonObject statusRequest);
+    boolean orderExists(String orderCode) throws Exception;
 }
