@@ -6,6 +6,7 @@ import com.icbt.pahanaedubookshopjavaee.model.Customer;
 import com.icbt.pahanaedubookshopjavaee.service.CustomerService;
 import com.icbt.pahanaedubookshopjavaee.util.constants.CommonConstants;
 import com.icbt.pahanaedubookshopjavaee.util.constants.ResponseMessages;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ExceptionMessages;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -87,7 +88,7 @@ public class CustomerServiceImpl implements CustomerService {
         } catch (Exception e) {
             return Json.createObjectBuilder()
                     .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
-                    .add(CommonConstants.LABEL_MESSAGE, "Failed to retrieve customers: " + e.getMessage())
+                    .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.MESSAGE_FAILED_TO_RETRIEVE_CUSTOMERS + ": " + e.getMessage())
                     .build();
         }
     }
@@ -171,7 +172,7 @@ public class CustomerServiceImpl implements CustomerService {
         } catch (Exception e) {
             return Json.createObjectBuilder()
                     .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
-                    .add(CommonConstants.LABEL_MESSAGE, "Failed to generate account number: " + e.getMessage())
+                    .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.MESSAGE_FAILED_TO_GENERATE_ACCOUNT_NUMBER + ": " + e.getMessage())
                     .build();
         }
     }
@@ -193,7 +194,28 @@ public class CustomerServiceImpl implements CustomerService {
             if (name == null || name.trim().isEmpty()) {
                 return Json.createObjectBuilder()
                         .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
-                        .add(CommonConstants.LABEL_MESSAGE, "Customer name is required")
+                        .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.MESSAGE_CUSTOMER_NAME_REQUIRED)
+                        .build();
+            }
+
+            if (name.length() > 100) {
+                return Json.createObjectBuilder()
+                        .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
+                        .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.MESSAGE_CUSTOMER_NAME_TOO_LONG)
+                        .build();
+            }
+
+            if (address != null && address.length() > 200) {
+                return Json.createObjectBuilder()
+                        .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
+                        .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.MESSAGE_CUSTOMER_ADDRESS_TOO_LONG)
+                        .build();
+            }
+
+            if (telephone != null && telephone.length() > 20) {
+                return Json.createObjectBuilder()
+                        .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
+                        .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.MESSAGE_CUSTOMER_TELEPHONE_TOO_LONG)
                         .build();
             }
 
@@ -226,7 +248,7 @@ public class CustomerServiceImpl implements CustomerService {
         } catch (Exception e) {
             return Json.createObjectBuilder()
                     .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
-                    .add(CommonConstants.LABEL_MESSAGE, "Failed to save customer: " + e.getMessage())
+                    .add(CommonConstants.LABEL_MESSAGE, ExceptionMessages.FAILED_TO_SAVE_CUSTOMER + ": " + e.getMessage())
                     .build();
         }
     }
@@ -260,7 +282,7 @@ public class CustomerServiceImpl implements CustomerService {
             if (!isExistingCustomer(accountNumber)) {
                 return Json.createObjectBuilder()
                         .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
-                        .add(CommonConstants.LABEL_MESSAGE, "Customer not found")
+                        .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.MESSAGE_CUSTOMER_NOT_FOUND)
                         .build();
             }
 
@@ -279,7 +301,7 @@ public class CustomerServiceImpl implements CustomerService {
         } catch (Exception e) {
             return Json.createObjectBuilder()
                     .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
-                    .add(CommonConstants.LABEL_MESSAGE, "Failed to update customer status: " + e.getMessage())
+                    .add(CommonConstants.LABEL_MESSAGE, ExceptionMessages.FAILED_TO_UPDATE_CUSTOMER_STATUS + ": " + e.getMessage())
                     .build();
         }
     }

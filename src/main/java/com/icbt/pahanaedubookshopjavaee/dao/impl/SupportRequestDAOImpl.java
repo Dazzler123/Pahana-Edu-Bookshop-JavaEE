@@ -3,6 +3,7 @@ package com.icbt.pahanaedubookshopjavaee.dao.impl;
 import com.icbt.pahanaedubookshopjavaee.dao.SupportRequestDAO;
 import com.icbt.pahanaedubookshopjavaee.dto.SupportRequestDTO;
 import com.icbt.pahanaedubookshopjavaee.util.constants.CommonConstants;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ExceptionMessages;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -44,11 +45,11 @@ public class SupportRequestDAOImpl implements SupportRequestDAO {
             
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
-                throw new Exception("Failed to save support request");
+                throw new Exception(ExceptionMessages.FAILED_TO_SAVE_SUPPORT_REQUEST);
             }
             
         } catch (SQLException e) {
-            throw new Exception("Database error while saving support request: " + supportRequest.getTicketId(), e);
+            throw new Exception(ExceptionMessages.DATABASE_ERROR_SAVING_SUPPORT_REQUEST + ": " + supportRequest.getTicketId(), e);
         }
     }
 
@@ -83,12 +84,12 @@ public class SupportRequestDAOImpl implements SupportRequestDAO {
                             .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
                     return supportRequest;
                 } else {
-                    throw new Exception("Support request not found: " + ticketId);
+                    throw new Exception(ExceptionMessages.FAILED_TO_RETRIEVE_SUPPORT_REQUEST + ": " + ticketId);
                 }
             }
             
         } catch (SQLException e) {
-            throw new Exception("Database error while retrieving support request: " + ticketId, e);
+            throw new Exception(ExceptionMessages.DATABASE_ERROR_RETRIEVING_SUPPORT_REQUEST + ": " + ticketId, e);
         }
     }
 
@@ -112,11 +113,11 @@ public class SupportRequestDAOImpl implements SupportRequestDAO {
             
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
-                throw new Exception("Support request not found: " + ticketId);
+                throw new Exception(ExceptionMessages.FAILED_TO_RETRIEVE_SUPPORT_REQUEST + ": " + ticketId);
             }
             
         } catch (SQLException e) {
-            throw new Exception("Database error while updating support request status: " + ticketId, e);
+            throw new Exception(ExceptionMessages.DATABASE_ERROR_UPDATING_SUPPORT_REQUEST + ": " + ticketId, e);
         }
     }
 
@@ -141,7 +142,7 @@ public class SupportRequestDAOImpl implements SupportRequestDAO {
             }
             
         } catch (SQLException e) {
-            throw new Exception("Database error while checking ticket existence: " + ticketId, e);
+            throw new Exception(ExceptionMessages.DATABASE_ERROR_CHECKING_TICKET + ": " + ticketId, e);
         }
     }
 
