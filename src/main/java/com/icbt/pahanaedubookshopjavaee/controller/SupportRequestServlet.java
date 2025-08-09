@@ -1,7 +1,7 @@
 package com.icbt.pahanaedubookshopjavaee.controller;
 
 import com.icbt.pahanaedubookshopjavaee.dto.SupportRequestDTO;
-import com.icbt.pahanaedubookshopjavaee.service.EmailService;
+import com.icbt.pahanaedubookshopjavaee.service.SupportRequestService;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -10,81 +10,99 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.UUID;
 
 @WebServlet("/support-request")
-public class SupportRequestServlet extends BaseStatelessServlet {
+public class SupportRequestServlet extends BaseServlet {
 
-    private EmailService emailService;
+    private SupportRequestService supportRequestService;
 
     @Override
     protected void initializeServices() {
-        this.emailService = serviceFactory.createEmailService();
+        this.supportRequestService = serviceFactory.createSupportRequestService();
     }
 
+    /**
+     * This method is used to submit a support request
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try (JsonReader reader = Json.createReader(request.getReader())) {
-            JsonObject json = reader.readObject();
-
-            // Generate unique ticket ID
-            String ticketId = "TKT-" + System.currentTimeMillis();
-
-            // Create support request DTO
-            SupportRequestDTO supportRequest = new SupportRequestDTO();
-            supportRequest.setTicketId(ticketId);
-            supportRequest.setIssueType(json.getString("issueType", ""));
-            supportRequest.setPriority(json.getString("priority", "medium"));
-            supportRequest.setSubject(json.getString("subject", ""));
-            supportRequest.setDescription(json.getString("description", ""));
-            supportRequest.setUserEmail(json.getString("userEmail", null));
-            supportRequest.setUserAgent(json.getString("userAgent", ""));
-            supportRequest.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-
-            // Send email to support team
-            emailService.sendSupportRequestEmail(supportRequest);
-
-            // Send confirmation email to user if email provided
-            if (supportRequest.getUserEmail() != null && !supportRequest.getUserEmail().trim().isEmpty()) {
-                emailService.sendSupportConfirmationEmail(supportRequest.getUserEmail(), ticketId);
+            JsonObject requestJson = reader.readObject();
+            
+            JsonObject result = supportRequestService.processSupportRequest(requestJson);
+            
+            if (!result.getBoolean("success", false)) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
-
-            // Return success response
-            JsonObject responseJson = Json.createObjectBuilder()
-                    .add("success", true)
-                    .add("message", "Support request submitted successfully!")
-                    .add("ticketId", ticketId)
-                    .add("responseTime", getResponseTime(supportRequest.getPriority()))
-                    .build();
-
-            abstractResponseUtility.writeJson(response, responseJson);
-
+            
+            abstractResponseUtility.writeJson(response, result);
+            
         } catch (Exception e) {
-            e.printStackTrace();
-
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            
             JsonObject errorResponse = Json.createObjectBuilder()
                     .add("success", false)
-                    .add("message", "Failed to submit support request: " + e.getMessage())
+                    .add("message", "Invalid request format: " + e.getMessage())
                     .build();
-
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    
             abstractResponseUtility.writeJson(response, errorResponse);
         }
     }
 
-    private String getResponseTime(String priority) {
-        switch (priority.toLowerCase()) {
-            case "urgent":
-            case "high":
-                return "2-4 hours";
-            case "medium":
-                return "24 hours";
-            case "low":
-                return "48-72 hours";
-            default:
-                return "24-48 hours";
+    /**
+     * This method is used to get a support request
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String ticketId = request.getParameter("ticketId");
+        
+        if (ticketId == null || ticketId.trim().isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            
+            JsonObject errorResponse = Json.createObjectBuilder()
+                    .add("success", false)
+                    .add("message", "Ticket ID is required")
+                    .build();
+                    
+            abstractResponseUtility.writeJson(response, errorResponse);
+            return;
+        }
+
+        try {
+            SupportRequestDTO supportRequest = supportRequestService.getSupportRequest(ticketId);
+            
+            JsonObject result = Json.createObjectBuilder()
+                    .add("success", true)
+                    .add("ticketId", supportRequest.getTicketId())
+                    .add("issueType", supportRequest.getIssueType())
+                    .add("priority", supportRequest.getPriority())
+                    .add("subject", supportRequest.getSubject())
+                    .add("description", supportRequest.getDescription())
+                    .add("userEmail", supportRequest.getUserEmail() != null ? supportRequest.getUserEmail() : "")
+                    .add("timestamp", supportRequest.getTimestamp())
+                    .add("responseTime", supportRequestService.getResponseTime(supportRequest.getPriority()))
+                    .build();
+                    
+            abstractResponseUtility.writeJson(response, result);
+            
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            
+            JsonObject errorResponse = Json.createObjectBuilder()
+                    .add("success", false)
+                    .add("message", "Support request not found: " + e.getMessage())
+                    .build();
+                    
+            abstractResponseUtility.writeJson(response, errorResponse);
         }
     }
+    
 }
