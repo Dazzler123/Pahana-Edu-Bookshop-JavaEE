@@ -56,4 +56,46 @@ public class ResponseMessages {
     public static final String MESSAGE_TICKET_ID_REQUIRED = "Ticket ID is required";
     public static final String MESSAGE_INVALID_REQUEST_FORMAT = "Invalid request format";
 
+    // =========== PLACE ORDER RESPONSE MESSAGES =========== -ST
+    public static final String MESSAGE_ORDER_PLACED_SUCCESSFULLY = "Order placed successfully. Order Code: " + CommonConstants.REPLACER;
+    public static final String MESSAGE_CUSTOMER_ACCOUNT_REQUIRED = "Customer account is required";
+    public static final String MESSAGE_PAYMENT_METHOD_REQUIRED = "Payment method is required";
+    public static final String MESSAGE_ORDER_ITEMS_REQUIRED = "Order must contain at least one item";
+    public static final String MESSAGE_INVALID_PAYMENT_METHOD = "Invalid payment method. Allowed: Cash, Card, Other";
+    public static final String MESSAGE_ORDER_TOTAL_MUST_BE_POSITIVE = "Order total must be greater than zero";
+    public static final String MESSAGE_DISCOUNT_PERCENTAGE_INVALID = "Discount percentage must be between 0 and 100 for item: " + CommonConstants.REPLACER;
+    public static final String MESSAGE_INVALID_LINE_TOTAL_CALCULATION = "Invalid line total calculation for item: " + CommonConstants.REPLACER;
+    public static final String MESSAGE_INSUFFICIENT_STOCK = "Insufficient stock for item: " + CommonConstants.REPLACER;
+    
+    // Order Item Validation Messages
+    public static final String MESSAGE_ITEM_CODE_REQUIRED_FOR_ORDER = "Item code is required for order item";
+    public static final String MESSAGE_QUANTITY_REQUIRED_FOR_ORDER = "Quantity is required for item: " + CommonConstants.REPLACER;
+    public static final String MESSAGE_UNIT_PRICE_REQUIRED_FOR_ORDER = "Unit price is required for item: " + CommonConstants.REPLACER;
+    public static final String MESSAGE_DISCOUNT_REQUIRED_FOR_ORDER = "Discount is required for item: " + CommonConstants.REPLACER;
+    public static final String MESSAGE_QUANTITY_MUST_BE_POSITIVE = "Quantity must be greater than zero for item: " + CommonConstants.REPLACER;
+    public static final String MESSAGE_UNIT_PRICE_MUST_BE_POSITIVE_FOR_ORDER = "Unit price must be greater than zero for item: " + CommonConstants.REPLACER;
+    public static final String MESSAGE_INVALID_NUMERIC_VALUE_IN_ITEM = "Invalid numeric value in item data";
+    public static final String MESSAGE_INVALID_ITEM_DATA_FORMAT = "Invalid item data format";
+    // =========== PLACE ORDER RESPONSE MESSAGES =========== -ED
+
+    // =========== MANAGE ORDER RESPONSE MESSAGES =========== -ST
+    public static final String MESSAGE_ORDER_UPDATED_SUCCESSFULLY = "Order updated successfully";
+    public static final String MESSAGE_ORDER_STATUS_UPDATED_SUCCESSFULLY = "Order " + CommonConstants.REPLACER + " successfully";
+    public static final String MESSAGE_ORDER_NOT_FOUND = "Order not found";
+    public static final String MESSAGE_ORDER_CODE_REQUIRED = "Order code is required";
+    public static final String MESSAGE_ORDER_DATE_REQUIRED = "Order date is required";
+    public static final String MESSAGE_TOTAL_AMOUNT_REQUIRED = "Total amount is required";
+    public static final String MESSAGE_TOTAL_DISCOUNT_REQUIRED = "Total discount is required";
+    public static final String MESSAGE_STATUS_REQUIRED = "Status is required";
+    public static final String MESSAGE_TOTAL_AMOUNT_CANNOT_BE_NEGATIVE = "Total amount cannot be negative";
+    public static final String MESSAGE_TOTAL_DISCOUNT_CANNOT_BE_NEGATIVE = "Total discount cannot be negative";
+    public static final String MESSAGE_DISCOUNT_CANNOT_EXCEED_TOTAL = "Total discount cannot exceed total amount";
+    public static final String MESSAGE_INVALID_ORDER_DATE_FORMAT = "Invalid order date format";
+    public static final String MESSAGE_INVALID_ORDER_STATUS = "Invalid order status. Must be A (Active), I (Inactive), or D (Deleted)";
+    public static final String MESSAGE_INVALID_PAYMENT_STATUS = "Invalid payment status. Must be P (Paid), N (Not Paid), or R (Refunded)";
+    public static final String MESSAGE_INVALID_PAYMENT_TYPE = "Invalid payment type. Must be cash, card, or other";
+    public static final String MESSAGE_INVALID_NUMERIC_VALUE_IN_ORDER = "Invalid numeric value in order data";
+    public static final String MESSAGE_FAILED_TO_LOAD_ORDERS = "Failed to load orders";
+    // =========== MANAGE ORDER RESPONSE MESSAGES =========== -ED
+
 }

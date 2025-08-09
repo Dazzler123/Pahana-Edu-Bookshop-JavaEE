@@ -47,4 +47,30 @@ public class ExceptionMessages {
     public static final String DATABASE_ERROR_CHECKING_TICKET = "Database error while checking ticket existence";
     // =========== SUPPORT REQUEST EXCEPTION MESSAGES =========== -ED
 
+    // =========== PLACE ORDER EXCEPTION MESSAGES =========== -ST
+    public static final String FAILED_TO_PLACE_ORDER = "Failed to place order";
+    public static final String FAILED_TO_CREATE_ORDER = "Failed to create order";
+    public static final String FAILED_TO_GENERATE_ORDER_CODE = "Failed to generate order code";
+    public static final String FAILED_TO_VALIDATE_ORDER_ITEMS = "Failed to validate order items";
+    public static final String FAILED_TO_CALCULATE_ORDER_TOTALS = "Failed to calculate order totals";
+    public static final String FAILED_TO_UPDATE_STOCK = "Failed to update stock";
+    public static final String DATABASE_ERROR_CREATING_ORDER = "Database error while creating order";
+    public static final String DATABASE_ERROR_INSERTING_ORDER_ITEMS = "Database error while inserting order items";
+    public static final String DATABASE_ERROR_UPDATING_STOCK = "Database error while updating stock";
+    public static final String TRANSACTION_ROLLBACK_ERROR = "Transaction rollback error";
+    // =========== PLACE ORDER EXCEPTION MESSAGES =========== -ED
+
+    // =========== MANAGE ORDER EXCEPTION MESSAGES =========== -ST
+    public static final String FAILED_TO_RETRIEVE_ORDERS = "Failed to retrieve orders";
+    public static final String FAILED_TO_UPDATE_ORDER = "Failed to update order";
+    public static final String FAILED_TO_UPDATE_ORDER_STATUS = "Failed to update order status";
+    public static final String FAILED_TO_CHECK_ORDER_EXISTS = "Failed to check if order exists";
+    public static final String FAILED_TO_PROCESS_ORDER_REQUEST = "Failed to process order request";
+    public static final String FAILED_TO_PROCESS_STATUS_REQUEST = "Failed to process status request";
+    public static final String DATABASE_ERROR_RETRIEVING_ORDERS = "Database error while retrieving orders";
+    public static final String DATABASE_ERROR_UPDATING_ORDER = "Database error while updating order";
+    public static final String DATABASE_ERROR_UPDATING_ORDER_STATUS = "Database error while updating order status";
+    public static final String DATABASE_ERROR_CHECKING_ORDER_EXISTS = "Database error while checking order existence";
+    // =========== MANAGE ORDER EXCEPTION MESSAGES =========== -ED
+
 }

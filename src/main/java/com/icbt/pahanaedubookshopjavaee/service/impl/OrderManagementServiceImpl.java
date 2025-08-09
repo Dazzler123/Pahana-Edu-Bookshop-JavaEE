@@ -3,6 +3,8 @@ package com.icbt.pahanaedubookshopjavaee.service.impl;
 import com.icbt.pahanaedubookshopjavaee.dao.OrderManagementDAO;
 import com.icbt.pahanaedubookshopjavaee.dao.impl.OrderManagementDAOImpl;
 import com.icbt.pahanaedubookshopjavaee.service.OrderManagementService;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ResponseMessages;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ExceptionMessages;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -72,7 +74,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
             if (customerId == null || customerId.trim().isEmpty()) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Customer ID is required")
+                        .add("message", ResponseMessages.MESSAGE_CUSTOMER_ACCOUNT_REQUIRED)
                         .build();
             }
 
@@ -85,7 +87,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
         } catch (Exception e) {
             return Json.createObjectBuilder()
                     .add("state", "error")
-                    .add("message", "Failed to load orders: " + e.getMessage())
+                    .add("message", ResponseMessages.MESSAGE_FAILED_TO_LOAD_ORDERS + ": " + e.getMessage())
                     .build();
         }
     }
@@ -103,14 +105,14 @@ public class OrderManagementServiceImpl implements OrderManagementService {
             if (!orderRequest.containsKey("orderCode") || orderRequest.getString("orderCode").trim().isEmpty()) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Order code is required")
+                        .add("message", ResponseMessages.MESSAGE_ORDER_CODE_REQUIRED)
                         .build();
             }
 
             if (!orderRequest.containsKey("orderDate") || orderRequest.getString("orderDate").trim().isEmpty()) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Order date is required")
+                        .add("message", ResponseMessages.MESSAGE_ORDER_DATE_REQUIRED)
                         .build();
             }
 
@@ -131,7 +133,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
                 } else {
                     return Json.createObjectBuilder()
                             .add("state", "error")
-                            .add("message", "Total amount is required")
+                            .add("message", ResponseMessages.MESSAGE_TOTAL_AMOUNT_REQUIRED)
                             .build();
                 }
 
@@ -144,13 +146,13 @@ public class OrderManagementServiceImpl implements OrderManagementService {
                 } else {
                     return Json.createObjectBuilder()
                             .add("state", "error")
-                            .add("message", "Total discount is required")
+                            .add("message", ResponseMessages.MESSAGE_TOTAL_DISCOUNT_REQUIRED)
                             .build();
                 }
             } catch (NumberFormatException e) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Invalid numeric value in order data")
+                        .add("message", ResponseMessages.MESSAGE_INVALID_NUMERIC_VALUE_IN_ORDER)
                         .build();
             }
 
@@ -158,21 +160,21 @@ public class OrderManagementServiceImpl implements OrderManagementService {
             if (totalAmount < 0) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Total amount cannot be negative")
+                        .add("message", ResponseMessages.MESSAGE_TOTAL_AMOUNT_CANNOT_BE_NEGATIVE)
                         .build();
             }
 
             if (totalDiscount < 0) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Total discount cannot be negative")
+                        .add("message", ResponseMessages.MESSAGE_TOTAL_DISCOUNT_CANNOT_BE_NEGATIVE)
                         .build();
             }
 
             if (totalDiscount > totalAmount) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Total discount cannot exceed total amount")
+                        .add("message", ResponseMessages.MESSAGE_DISCOUNT_CANNOT_EXCEED_TOTAL)
                         .build();
             }
 
@@ -182,7 +184,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
             } catch (DateTimeParseException e) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Invalid order date format")
+                        .add("message", ResponseMessages.MESSAGE_INVALID_ORDER_DATE_FORMAT)
                         .build();
             }
 
@@ -195,14 +197,14 @@ public class OrderManagementServiceImpl implements OrderManagementService {
             if (!status.matches("[AID]")) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Invalid order status. Must be A, I, or D")
+                        .add("message", ResponseMessages.MESSAGE_INVALID_ORDER_STATUS)
                         .build();
             }
 
             if (!paymentStatus.matches("[PNR]")) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Invalid payment status. Must be P, N, or R")
+                        .add("message", ResponseMessages.MESSAGE_INVALID_PAYMENT_STATUS)
                         .build();
             }
 
@@ -210,7 +212,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
             if (!isValidPaymentType(paymentType)) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Invalid payment type. Must be cash, card, or other")
+                        .add("message", ResponseMessages.MESSAGE_INVALID_PAYMENT_TYPE)
                         .build();
             }
 
@@ -219,13 +221,13 @@ public class OrderManagementServiceImpl implements OrderManagementService {
 
             return Json.createObjectBuilder()
                     .add("state", "success")
-                    .add("message", "Order updated successfully")
+                    .add("message", ResponseMessages.MESSAGE_ORDER_UPDATED_SUCCESSFULLY)
                     .build();
                     
         } catch (Exception e) {
             return Json.createObjectBuilder()
                     .add("state", "error")
-                    .add("message", "Failed to update order: " + e.getMessage())
+                    .add("message", ExceptionMessages.FAILED_TO_UPDATE_ORDER + ": " + e.getMessage())
                     .build();
         }
     }
@@ -243,14 +245,14 @@ public class OrderManagementServiceImpl implements OrderManagementService {
             if (!statusRequest.containsKey("orderCode") || statusRequest.getString("orderCode").trim().isEmpty()) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Order code is required")
+                        .add("message", ResponseMessages.MESSAGE_ORDER_CODE_REQUIRED)
                         .build();
             }
 
             if (!statusRequest.containsKey("status") || statusRequest.getString("status").trim().isEmpty()) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Status is required")
+                        .add("message", ResponseMessages.MESSAGE_STATUS_REQUIRED)
                         .build();
             }
 
@@ -261,7 +263,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
             if (!status.matches("[AID]")) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Invalid status. Must be A (Active), I (Inactive), or D (Deleted)")
+                        .add("message", ResponseMessages.MESSAGE_INVALID_ORDER_STATUS)
                         .build();
             }
 
@@ -274,13 +276,13 @@ public class OrderManagementServiceImpl implements OrderManagementService {
 
             return Json.createObjectBuilder()
                     .add("state", "success")
-                    .add("message", "Order " + actionText + " successfully")
+                    .add("message", ResponseMessages.MESSAGE_ORDER_STATUS_UPDATED_SUCCESSFULLY.replace(CommonConstants.REPLACER, actionText))
                     .build();
                     
         } catch (Exception e) {
             return Json.createObjectBuilder()
                     .add("state", "error")
-                    .add("message", "Failed to update order status: " + e.getMessage())
+                    .add("message", ExceptionMessages.FAILED_TO_UPDATE_ORDER_STATUS + ": " + e.getMessage())
                     .build();
         }
     }
