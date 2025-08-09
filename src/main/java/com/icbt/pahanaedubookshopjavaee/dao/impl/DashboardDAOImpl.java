@@ -21,6 +21,11 @@ public class DashboardDAOImpl implements DashboardDAO {
         this.dataSource = dataSource;
     }
 
+    /**
+     * This method is used to get the dashboard statistics
+     *
+     * @return
+     */
     @Override
     public DashboardStatsDTO getDashboardStats() {
         String totalOrdersQuery = "SELECT COUNT(*) FROM Orders WHERE status != 'D'";
@@ -63,6 +68,12 @@ public class DashboardDAOImpl implements DashboardDAO {
         }
     }
 
+    /**
+     * This method is used to get the most visited customers
+     *
+     * @param limit
+     * @return
+     */
     @Override
     public List<CustomerAnalyticsDTO> getMostVisitedCustomers(int limit) {
         String query = "SELECT c.account_number, c.name, COUNT(o.order_code) as order_count, " +
@@ -98,6 +109,12 @@ public class DashboardDAOImpl implements DashboardDAO {
         return customers;
     }
 
+    /**
+     * This method is used to get the top selling items
+     *
+     * @param limit
+     * @return
+     */
     @Override
     public List<ItemAnalyticsDTO> getTopSellingItems(int limit) {
         String query = "SELECT i.item_code, i.name, " +
@@ -134,4 +151,5 @@ public class DashboardDAOImpl implements DashboardDAO {
 
         return items;
     }
+
 }

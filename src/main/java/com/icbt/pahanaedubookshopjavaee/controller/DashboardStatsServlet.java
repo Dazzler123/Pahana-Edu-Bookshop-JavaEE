@@ -20,6 +20,13 @@ public class DashboardStatsServlet extends BaseServlet {
         this.dashboardService = serviceFactory.createDashboardService();
     }
 
+    /**
+     * This method is used to get the dashboard statistics
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
