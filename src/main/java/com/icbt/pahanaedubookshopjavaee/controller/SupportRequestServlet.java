@@ -2,14 +2,11 @@ package com.icbt.pahanaedubookshopjavaee.controller;
 
 import com.icbt.pahanaedubookshopjavaee.dto.SupportRequestDTO;
 import com.icbt.pahanaedubookshopjavaee.service.EmailService;
-import com.icbt.pahanaedubookshopjavaee.service.impl.EmailServiceImpl;
-import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -18,25 +15,23 @@ import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @WebServlet("/support-request")
-public class SupportRequestServlet extends HttpServlet {
-    
+public class SupportRequestServlet extends BaseStatelessServlet {
+
     private EmailService emailService;
-    private AbstractResponseUtility responseUtility;
 
     @Override
-    public void init() {
-        this.emailService = new EmailServiceImpl();
-        this.responseUtility = new AbstractResponseUtility();
+    protected void initializeServices() {
+        this.emailService = serviceFactory.createEmailService();
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try (JsonReader reader = Json.createReader(request.getReader())) {
             JsonObject json = reader.readObject();
-            
+
             // Generate unique ticket ID
             String ticketId = "TKT-" + System.currentTimeMillis();
-            
+
             // Create support request DTO
             SupportRequestDTO supportRequest = new SupportRequestDTO();
             supportRequest.setTicketId(ticketId);
@@ -50,7 +45,7 @@ public class SupportRequestServlet extends HttpServlet {
 
             // Send email to support team
             emailService.sendSupportRequestEmail(supportRequest);
-            
+
             // Send confirmation email to user if email provided
             if (supportRequest.getUserEmail() != null && !supportRequest.getUserEmail().trim().isEmpty()) {
                 emailService.sendSupportConfirmationEmail(supportRequest.getUserEmail(), ticketId);
@@ -64,18 +59,18 @@ public class SupportRequestServlet extends HttpServlet {
                     .add("responseTime", getResponseTime(supportRequest.getPriority()))
                     .build();
 
-            responseUtility.writeJson(response, responseJson);
+            abstractResponseUtility.writeJson(response, responseJson);
 
         } catch (Exception e) {
             e.printStackTrace();
-            
+
             JsonObject errorResponse = Json.createObjectBuilder()
                     .add("success", false)
                     .add("message", "Failed to submit support request: " + e.getMessage())
                     .build();
 
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            responseUtility.writeJson(response, errorResponse);
+            abstractResponseUtility.writeJson(response, errorResponse);
         }
     }
 
