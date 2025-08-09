@@ -1,15 +1,12 @@
 package com.icbt.pahanaedubookshopjavaee.controller;
 
 import com.icbt.pahanaedubookshopjavaee.dto.SupportRequestDTO;
-import com.icbt.pahanaedubookshopjavaee.factory.ServiceFactory;
 import com.icbt.pahanaedubookshopjavaee.service.EmailService;
-import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -18,16 +15,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @WebServlet("/support-request")
-public class SupportRequestServlet extends HttpServlet {
+public class SupportRequestServlet extends BaseStatelessServlet {
 
     private EmailService emailService;
-    private AbstractResponseUtility responseUtility;
 
     @Override
-    public void init() {
-        ServiceFactory serviceFactory = ServiceFactory.getInstance(null);
+    protected void initializeServices() {
         this.emailService = serviceFactory.createEmailService();
-        this.responseUtility = serviceFactory.initiateAbstractUtility();
     }
 
     @Override
@@ -65,7 +59,7 @@ public class SupportRequestServlet extends HttpServlet {
                     .add("responseTime", getResponseTime(supportRequest.getPriority()))
                     .build();
 
-            responseUtility.writeJson(response, responseJson);
+            abstractResponseUtility.writeJson(response, responseJson);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -76,7 +70,7 @@ public class SupportRequestServlet extends HttpServlet {
                     .build();
 
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            responseUtility.writeJson(response, errorResponse);
+            abstractResponseUtility.writeJson(response, errorResponse);
         }
     }
 

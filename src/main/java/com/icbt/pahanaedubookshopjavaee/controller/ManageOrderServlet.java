@@ -1,32 +1,23 @@
 package com.icbt.pahanaedubookshopjavaee.controller;
 
-import com.icbt.pahanaedubookshopjavaee.factory.ServiceFactory;
 import com.icbt.pahanaedubookshopjavaee.service.OrderManagementService;
-import com.icbt.pahanaedubookshopjavaee.util.constants.DBConstants;
-import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 import java.io.IOException;
 
 @WebServlet("/manage-orders")
-public class ManageOrderServlet extends HttpServlet {
+public class ManageOrderServlet extends BaseServlet {
 
     private OrderManagementService orderManagementService;
-    private AbstractResponseUtility abstractResponseUtility;
 
     @Override
-    public void init() {
-        DataSource dataSource = (DataSource) getServletContext().getAttribute(DBConstants.DBCP_LABEL);
-        ServiceFactory serviceFactory = ServiceFactory.getInstance(dataSource);
+    protected void initializeServices() {
         this.orderManagementService = serviceFactory.createOrderManagementService();
-        this.abstractResponseUtility = serviceFactory.initiateAbstractUtility();
     }
 
     @Override

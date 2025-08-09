@@ -1,35 +1,26 @@
 package com.icbt.pahanaedubookshopjavaee.controller;
 
-import com.icbt.pahanaedubookshopjavaee.factory.ServiceFactory;
 import com.icbt.pahanaedubookshopjavaee.model.Item;
 import com.icbt.pahanaedubookshopjavaee.service.ItemService;
-import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
 import com.icbt.pahanaedubookshopjavaee.util.constants.CommonConstants;
-import com.icbt.pahanaedubookshopjavaee.util.constants.DBConstants;
 import com.icbt.pahanaedubookshopjavaee.util.constants.ResponseMessages;
 
 import javax.json.*;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
 @WebServlet("/item")
-public class ItemServlet extends HttpServlet {
+public class ItemServlet extends BaseServlet {
 
     private ItemService itemService;
-    private AbstractResponseUtility abstractResponseUtility;
 
     @Override
-    public void init() {
-        DataSource dataSource = (DataSource) getServletContext().getAttribute(DBConstants.DBCP_LABEL);
-        ServiceFactory serviceFactory = ServiceFactory.getInstance(dataSource);
+    protected void initializeServices() {
         this.itemService = serviceFactory.createItemService();
-        this.abstractResponseUtility = serviceFactory.initiateAbstractUtility();
     }
 
     /**
@@ -38,7 +29,7 @@ public class ItemServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String action = request.getParameter("action");
-        
+
         // Generate next item code
         if ("generateItemCode".equals(action)) {
             String nextItemCode = itemService.generateNextItemCode();
@@ -84,7 +75,7 @@ public class ItemServlet extends HttpServlet {
         String name = request.getParameter("name");
         BigDecimal price = new BigDecimal(request.getParameter("unit_price"));
         int qty = Integer.parseInt(request.getParameter("qty_on_hand"));
-        
+
         String statusParam = request.getParameter("status");
         char status = (statusParam != null && !statusParam.isEmpty()) ?
                 statusParam.charAt(0) : CommonConstants.STATUS_ACTIVE_CHAR;

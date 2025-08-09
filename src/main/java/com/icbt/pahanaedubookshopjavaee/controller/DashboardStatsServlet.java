@@ -1,32 +1,23 @@
 package com.icbt.pahanaedubookshopjavaee.controller;
 
 import com.icbt.pahanaedubookshopjavaee.dto.DashboardStatsDTO;
-import com.icbt.pahanaedubookshopjavaee.factory.ServiceFactory;
 import com.icbt.pahanaedubookshopjavaee.service.DashboardService;
-import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
-import com.icbt.pahanaedubookshopjavaee.util.constants.DBConstants;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 import java.io.IOException;
 
 @WebServlet("/dashboard-stats")
-public class DashboardStatsServlet extends HttpServlet {
+public class DashboardStatsServlet extends BaseServlet {
 
     private DashboardService dashboardService;
-    private AbstractResponseUtility abstractResponseUtility;
 
     @Override
-    public void init() {
-        DataSource dataSource = (DataSource) getServletContext().getAttribute(DBConstants.DBCP_LABEL);
-        ServiceFactory serviceFactory = ServiceFactory.getInstance(dataSource);
+    protected void initializeServices() {
         this.dashboardService = serviceFactory.createDashboardService();
-        this.abstractResponseUtility = serviceFactory.initiateAbstractUtility();
     }
 
     @Override

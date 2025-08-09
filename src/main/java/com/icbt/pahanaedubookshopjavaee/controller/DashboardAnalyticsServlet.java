@@ -2,41 +2,31 @@ package com.icbt.pahanaedubookshopjavaee.controller;
 
 import com.icbt.pahanaedubookshopjavaee.dto.CustomerAnalyticsDTO;
 import com.icbt.pahanaedubookshopjavaee.dto.ItemAnalyticsDTO;
-import com.icbt.pahanaedubookshopjavaee.factory.ServiceFactory;
 import com.icbt.pahanaedubookshopjavaee.service.DashboardService;
-import com.icbt.pahanaedubookshopjavaee.service.impl.DashboardServiceImpl;
-import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
-import com.icbt.pahanaedubookshopjavaee.util.constants.DBConstants;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.List;
 
 @WebServlet("/dashboard-analytics")
-public class DashboardAnalyticsServlet extends HttpServlet {
+public class DashboardAnalyticsServlet extends BaseServlet {
 
     private DashboardService dashboardService;
-    private AbstractResponseUtility abstractResponseUtility;
 
     @Override
-    public void init() {
-        DataSource dataSource = (DataSource) getServletContext().getAttribute(DBConstants.DBCP_LABEL);
-        ServiceFactory serviceFactory = ServiceFactory.getInstance(dataSource);
+    protected void initializeServices() {
         this.dashboardService = serviceFactory.createDashboardService();
-        this.abstractResponseUtility = serviceFactory.initiateAbstractUtility();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String type = request.getParameter("type");
-        
+
         try {
             if ("most-visited-customers".equals(type)) {
                 getMostVisitedCustomers(response);
@@ -59,7 +49,7 @@ public class DashboardAnalyticsServlet extends HttpServlet {
     private void getMostVisitedCustomers(HttpServletResponse response) throws Exception {
         List<CustomerAnalyticsDTO> customers = dashboardService.getMostVisitedCustomers();
         JsonArrayBuilder customersArray = Json.createArrayBuilder();
-        
+
         int rank = 1;
         for (CustomerAnalyticsDTO customer : customers) {
             customersArray.add(Json.createObjectBuilder()
@@ -81,7 +71,7 @@ public class DashboardAnalyticsServlet extends HttpServlet {
     private void getTopSellingItems(HttpServletResponse response) throws Exception {
         List<ItemAnalyticsDTO> items = dashboardService.getTopSellingItems();
         JsonArrayBuilder itemsArray = Json.createArrayBuilder();
-        
+
         int rank = 1;
         for (ItemAnalyticsDTO item : items) {
             itemsArray.add(Json.createObjectBuilder()

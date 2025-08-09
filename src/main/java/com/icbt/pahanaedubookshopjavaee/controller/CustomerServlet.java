@@ -1,18 +1,13 @@
 package com.icbt.pahanaedubookshopjavaee.controller;
 
-import com.icbt.pahanaedubookshopjavaee.factory.ServiceFactory;
 import com.icbt.pahanaedubookshopjavaee.model.Customer;
 import com.icbt.pahanaedubookshopjavaee.service.CustomerService;
-import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
 import com.icbt.pahanaedubookshopjavaee.util.constants.CommonConstants;
-import com.icbt.pahanaedubookshopjavaee.util.constants.DBConstants;
 import com.icbt.pahanaedubookshopjavaee.util.constants.ResponseMessages;
 
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.List;
 
@@ -22,17 +17,13 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 
 @WebServlet("/customer")
-public class CustomerServlet extends HttpServlet {
+public class CustomerServlet extends BaseServlet {
 
     private CustomerService customerService;
-    private AbstractResponseUtility abstractResponseUtility;
 
     @Override
-    public void init() {
-        DataSource dataSource = (DataSource) getServletContext().getAttribute(DBConstants.DBCP_LABEL);
-        ServiceFactory serviceFactory = ServiceFactory.getInstance(dataSource);
+    protected void initializeServices() {
         this.customerService = serviceFactory.createCustomerService();
-        this.abstractResponseUtility = serviceFactory.initiateAbstractUtility();
     }
 
     /**
@@ -123,7 +114,7 @@ public class CustomerServlet extends HttpServlet {
         String name = request.getParameter("name");
         String addr = request.getParameter("address");
         String tel = request.getParameter("telephone");
-        
+
         String statusParam = request.getParameter("status");
         char status = (statusParam != null && !statusParam.isEmpty()) ?
                 statusParam.charAt(0) : CommonConstants.STATUS_ACTIVE_CHAR;

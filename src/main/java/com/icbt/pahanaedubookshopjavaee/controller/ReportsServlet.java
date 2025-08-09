@@ -2,20 +2,15 @@ package com.icbt.pahanaedubookshopjavaee.controller;
 
 import com.icbt.pahanaedubookshopjavaee.dto.OrderReportDTO;
 import com.icbt.pahanaedubookshopjavaee.dto.ReportFilterDTO;
-import com.icbt.pahanaedubookshopjavaee.factory.ServiceFactory;
 import com.icbt.pahanaedubookshopjavaee.service.ReportsService;
-import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
-import com.icbt.pahanaedubookshopjavaee.util.constants.DBConstants;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -23,17 +18,13 @@ import java.util.List;
 import java.util.Map;
 
 @WebServlet("/reports")
-public class ReportsServlet extends HttpServlet {
+public class ReportsServlet extends BaseServlet {
 
     private ReportsService reportsService;
-    private AbstractResponseUtility abstractResponseUtility;
 
     @Override
-    public void init() {
-        DataSource dataSource = (DataSource) getServletContext().getAttribute(DBConstants.DBCP_LABEL);
-        ServiceFactory serviceFactory = ServiceFactory.getInstance(dataSource);
+    protected void initializeServices() {
         this.reportsService = serviceFactory.createReportsService();
-        this.abstractResponseUtility = serviceFactory.initiateAbstractUtility();
     }
 
     @Override

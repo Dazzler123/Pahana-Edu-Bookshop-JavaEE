@@ -1,30 +1,24 @@
 package com.icbt.pahanaedubookshopjavaee.controller;
 
-import com.icbt.pahanaedubookshopjavaee.factory.ServiceFactory;
 import com.icbt.pahanaedubookshopjavaee.service.AuthService;
-import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet("/login")
-public class LoginServlet extends HttpServlet {
+public class LoginServlet extends BaseStatelessServlet {
 
     private AuthService authService;
-    private AbstractResponseUtility responseUtility;
 
     @Override
-    public void init() {
-        ServiceFactory serviceFactory = ServiceFactory.getInstance(null);
+    protected void initializeServices() {
         this.authService = serviceFactory.createAuthService();
-        this.responseUtility = serviceFactory.initiateAbstractUtility();
     }
 
     @Override
@@ -46,7 +40,7 @@ public class LoginServlet extends HttpServlet {
                         .add("username", username)
                         .build();
 
-                responseUtility.writeJson(response, responseJson);
+                abstractResponseUtility.writeJson(response, responseJson);
             } else {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 JsonObject responseJson = Json.createObjectBuilder()
@@ -54,7 +48,7 @@ public class LoginServlet extends HttpServlet {
                         .add("message", "Invalid username or password")
                         .build();
 
-                responseUtility.writeJson(response, responseJson);
+                abstractResponseUtility.writeJson(response, responseJson);
             }
 
         } catch (Exception e) {
@@ -64,7 +58,7 @@ public class LoginServlet extends HttpServlet {
                     .add("message", "Login failed: " + e.getMessage())
                     .build();
 
-            responseUtility.writeJson(response, responseJson);
+            abstractResponseUtility.writeJson(response, responseJson);
         }
     }
 }
