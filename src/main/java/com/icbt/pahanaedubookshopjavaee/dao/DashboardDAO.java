@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface DashboardDAO {
     DashboardStatsDTO getDashboardStats();
+
     List<CustomerAnalyticsDTO> getMostVisitedCustomers(int limit);
+
     List<ItemAnalyticsDTO> getTopSellingItems(int limit);
 }

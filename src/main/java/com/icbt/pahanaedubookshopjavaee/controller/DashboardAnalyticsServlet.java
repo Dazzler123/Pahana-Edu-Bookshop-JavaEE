@@ -23,6 +23,13 @@ public class DashboardAnalyticsServlet extends BaseServlet {
         this.dashboardService = serviceFactory.createDashboardService();
     }
 
+    /**
+     * This method is used to get the dashboard analytics
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String type = request.getParameter("type");
@@ -46,6 +53,12 @@ public class DashboardAnalyticsServlet extends BaseServlet {
         }
     }
 
+    /**
+     * This method is used to get the most visited customers
+     *
+     * @param response
+     * @throws Exception
+     */
     private void getMostVisitedCustomers(HttpServletResponse response) throws Exception {
         List<CustomerAnalyticsDTO> customers = dashboardService.getMostVisitedCustomers();
         JsonArrayBuilder customersArray = Json.createArrayBuilder();
@@ -68,6 +81,12 @@ public class DashboardAnalyticsServlet extends BaseServlet {
         abstractResponseUtility.writeJson(response, json);
     }
 
+    /**
+     * This method is used to get the top selling items
+     *
+     * @param response
+     * @throws Exception
+     */
     private void getTopSellingItems(HttpServletResponse response) throws Exception {
         List<ItemAnalyticsDTO> items = dashboardService.getTopSellingItems();
         JsonArrayBuilder itemsArray = Json.createArrayBuilder();
@@ -89,4 +108,5 @@ public class DashboardAnalyticsServlet extends BaseServlet {
 
         abstractResponseUtility.writeJson(response, json);
     }
+
 }
