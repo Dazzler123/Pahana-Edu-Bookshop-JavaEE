@@ -1,8 +1,8 @@
 package com.icbt.pahanaedubookshopjavaee.controller;
 
+import com.icbt.pahanaedubookshopjavaee.factory.ServiceFactory;
 import com.icbt.pahanaedubookshopjavaee.model.Customer;
 import com.icbt.pahanaedubookshopjavaee.service.CustomerService;
-import com.icbt.pahanaedubookshopjavaee.service.impl.CustomerServiceImpl;
 import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
 import com.icbt.pahanaedubookshopjavaee.util.constants.CommonConstants;
 import com.icbt.pahanaedubookshopjavaee.util.constants.DBConstants;
@@ -30,8 +30,9 @@ public class CustomerServlet extends HttpServlet {
     @Override
     public void init() {
         DataSource dataSource = (DataSource) getServletContext().getAttribute(DBConstants.DBCP_LABEL);
-        this.customerService = new CustomerServiceImpl(dataSource);
-        this.abstractResponseUtility = new AbstractResponseUtility();
+        ServiceFactory serviceFactory = ServiceFactory.getInstance(dataSource);
+        this.customerService = serviceFactory.createCustomerService();
+        this.abstractResponseUtility = serviceFactory.initiateAbstractUtility();
     }
 
     /**

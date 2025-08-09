@@ -2,8 +2,8 @@ package com.icbt.pahanaedubookshopjavaee.controller;
 
 import com.icbt.pahanaedubookshopjavaee.dto.OrderReportDTO;
 import com.icbt.pahanaedubookshopjavaee.dto.ReportFilterDTO;
+import com.icbt.pahanaedubookshopjavaee.factory.ServiceFactory;
 import com.icbt.pahanaedubookshopjavaee.service.ReportsService;
-import com.icbt.pahanaedubookshopjavaee.service.impl.ReportsServiceImpl;
 import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
 import com.icbt.pahanaedubookshopjavaee.util.constants.DBConstants;
 
@@ -31,17 +31,18 @@ public class ReportsServlet extends HttpServlet {
     @Override
     public void init() {
         DataSource dataSource = (DataSource) getServletContext().getAttribute(DBConstants.DBCP_LABEL);
-        this.reportsService = new ReportsServiceImpl(dataSource);
-        this.abstractResponseUtility = new AbstractResponseUtility();
+        ServiceFactory serviceFactory = ServiceFactory.getInstance(dataSource);
+        this.reportsService = serviceFactory.createReportsService();
+        this.abstractResponseUtility = serviceFactory.initiateAbstractUtility();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String reportType = request.getParameter("reportType");
-        
+
         try {
             ReportFilterDTO filter = buildFilterFromRequest(request);
-            
+
             if ("summary".equals(reportType)) {
                 generateSummaryReport(filter, response);
             } else if ("time-based".equals(reportType)) {
@@ -59,31 +60,31 @@ public class ReportsServlet extends HttpServlet {
 
     private ReportFilterDTO buildFilterFromRequest(HttpServletRequest request) {
         ReportFilterDTO filter = new ReportFilterDTO();
-        
+
         filter.setCustomerId(request.getParameter("customerId"));
         filter.setOrderId(request.getParameter("orderId"));
         filter.setItemCode(request.getParameter("itemCode"));
         filter.setStatus(request.getParameter("status"));
         filter.setPaymentStatus(request.getParameter("paymentStatus"));
         filter.setReportType(request.getParameter("timeType"));
-        
+
         String startDate = request.getParameter("startDate");
         if (startDate != null && !startDate.trim().isEmpty()) {
             filter.setStartDate(LocalDate.parse(startDate));
         }
-        
+
         String endDate = request.getParameter("endDate");
         if (endDate != null && !endDate.trim().isEmpty()) {
             filter.setEndDate(LocalDate.parse(endDate));
         }
-        
+
         return filter;
     }
 
     private void generateDetailedReport(ReportFilterDTO filter, HttpServletResponse response) throws Exception {
         List<OrderReportDTO> reports = reportsService.generateOrderReports(filter);
         Map<String, Object> summary = reportsService.getReportSummary(filter);
-        
+
         JsonArrayBuilder reportsArray = Json.createArrayBuilder();
         for (OrderReportDTO report : reports) {
             reportsArray.add(Json.createObjectBuilder()
@@ -114,7 +115,7 @@ public class ReportsServlet extends HttpServlet {
 
     private void generateSummaryReport(ReportFilterDTO filter, HttpServletResponse response) throws Exception {
         Map<String, Object> summary = reportsService.getReportSummary(filter);
-        
+
         JsonObject json = Json.createObjectBuilder()
                 .add("totalOrders", (Integer) summary.get("totalOrders"))
                 .add("totalRevenue", summary.get("totalRevenue").toString())
@@ -127,7 +128,7 @@ public class ReportsServlet extends HttpServlet {
 
     private void generateTimeBasedReport(ReportFilterDTO filter, HttpServletResponse response) throws Exception {
         List<Map<String, Object>> timeReports = reportsService.generateTimeBasedReports(filter);
-        
+
         JsonArrayBuilder reportsArray = Json.createArrayBuilder();
         for (Map<String, Object> report : timeReports) {
             JsonObjectBuilder reportBuilder = Json.createObjectBuilder();

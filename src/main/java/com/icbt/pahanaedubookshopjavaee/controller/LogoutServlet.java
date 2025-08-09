@@ -1,5 +1,6 @@
 package com.icbt.pahanaedubookshopjavaee.controller;
 
+import com.icbt.pahanaedubookshopjavaee.factory.ServiceFactory;
 import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
 
 import javax.json.Json;
@@ -18,7 +19,8 @@ public class LogoutServlet extends HttpServlet {
 
     @Override
     public void init() {
-        this.responseUtility = new AbstractResponseUtility();
+        ServiceFactory serviceFactory = ServiceFactory.getInstance(null);
+        this.responseUtility = serviceFactory.initiateAbstractUtility();
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.icbt.pahanaedubookshopjavaee.controller;
 
 import com.icbt.pahanaedubookshopjavaee.dto.DashboardStatsDTO;
+import com.icbt.pahanaedubookshopjavaee.factory.ServiceFactory;
 import com.icbt.pahanaedubookshopjavaee.service.DashboardService;
-import com.icbt.pahanaedubookshopjavaee.service.impl.DashboardServiceImpl;
 import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
 import com.icbt.pahanaedubookshopjavaee.util.constants.DBConstants;
 
@@ -24,8 +24,9 @@ public class DashboardStatsServlet extends HttpServlet {
     @Override
     public void init() {
         DataSource dataSource = (DataSource) getServletContext().getAttribute(DBConstants.DBCP_LABEL);
-        this.dashboardService = new DashboardServiceImpl(dataSource);
-        this.abstractResponseUtility = new AbstractResponseUtility();
+        ServiceFactory serviceFactory = ServiceFactory.getInstance(dataSource);
+        this.dashboardService = serviceFactory.createDashboardService();
+        this.abstractResponseUtility = serviceFactory.initiateAbstractUtility();
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.icbt.pahanaedubookshopjavaee.controller;
 
 import com.icbt.pahanaedubookshopjavaee.service.BillGenerationService;
-import com.icbt.pahanaedubookshopjavaee.service.impl.BillGenerationServiceImpl;
 import com.icbt.pahanaedubookshopjavaee.util.constants.DBConstants;
+import com.icbt.pahanaedubookshopjavaee.factory.ServiceFactory;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,7 +19,8 @@ public class GenerateBillServlet extends HttpServlet {
     @Override
     public void init() {
         DataSource dataSource = (DataSource) getServletContext().getAttribute(DBConstants.DBCP_LABEL);
-        this.billGenerationService = new BillGenerationServiceImpl(dataSource);
+        ServiceFactory serviceFactory = ServiceFactory.getInstance(dataSource);
+        this.billGenerationService = serviceFactory.createBillGenerationService();
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.icbt.pahanaedubookshopjavaee.controller;
 
+import com.icbt.pahanaedubookshopjavaee.factory.ServiceFactory;
 import com.icbt.pahanaedubookshopjavaee.service.AuthService;
-import com.icbt.pahanaedubookshopjavaee.service.impl.AuthServiceImpl;
 import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
 
 import javax.json.Json;
@@ -22,15 +22,16 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     public void init() {
-        this.authService = new AuthServiceImpl();
-        this.responseUtility = new AbstractResponseUtility();
+        ServiceFactory serviceFactory = ServiceFactory.getInstance(null);
+        this.authService = serviceFactory.createAuthService();
+        this.responseUtility = serviceFactory.initiateAbstractUtility();
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try (JsonReader reader = Json.createReader(request.getReader())) {
             JsonObject json = reader.readObject();
-            
+
             String username = json.getString("username", "");
             String password = json.getString("password", "");
 

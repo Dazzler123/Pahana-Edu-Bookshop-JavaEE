@@ -1,9 +1,9 @@
 package com.icbt.pahanaedubookshopjavaee.controller;
 
 import com.icbt.pahanaedubookshopjavaee.dto.PlaceOrderDTO;
+import com.icbt.pahanaedubookshopjavaee.factory.ServiceFactory;
 import com.icbt.pahanaedubookshopjavaee.model.OrderItem;
 import com.icbt.pahanaedubookshopjavaee.service.PlaceOrderService;
-import com.icbt.pahanaedubookshopjavaee.service.impl.PlaceOrderServiceImpl;
 import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
 import com.icbt.pahanaedubookshopjavaee.util.constants.DBConstants;
 import com.icbt.pahanaedubookshopjavaee.util.constants.CommonConstants;
@@ -28,8 +28,9 @@ public class PlaceOrderServlet extends HttpServlet {
     @Override
     public void init() {
         DataSource dataSource = (DataSource) getServletContext().getAttribute(DBConstants.DBCP_LABEL);
-        this.placeOrderService = new PlaceOrderServiceImpl(dataSource);
-        this.abstractResponseUtility = new AbstractResponseUtility();
+        ServiceFactory serviceFactory = ServiceFactory.getInstance(dataSource);
+        this.placeOrderService = serviceFactory.createPlaceOrderService();
+        this.abstractResponseUtility = serviceFactory.initiateAbstractUtility();
     }
 
     /**

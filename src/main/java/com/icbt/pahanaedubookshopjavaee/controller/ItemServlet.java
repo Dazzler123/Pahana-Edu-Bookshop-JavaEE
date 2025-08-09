@@ -1,8 +1,8 @@
 package com.icbt.pahanaedubookshopjavaee.controller;
 
+import com.icbt.pahanaedubookshopjavaee.factory.ServiceFactory;
 import com.icbt.pahanaedubookshopjavaee.model.Item;
 import com.icbt.pahanaedubookshopjavaee.service.ItemService;
-import com.icbt.pahanaedubookshopjavaee.service.impl.ItemServiceImpl;
 import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
 import com.icbt.pahanaedubookshopjavaee.util.constants.CommonConstants;
 import com.icbt.pahanaedubookshopjavaee.util.constants.DBConstants;
@@ -27,8 +27,9 @@ public class ItemServlet extends HttpServlet {
     @Override
     public void init() {
         DataSource dataSource = (DataSource) getServletContext().getAttribute(DBConstants.DBCP_LABEL);
-        this.itemService = new ItemServiceImpl(dataSource);
-        this.abstractResponseUtility = new AbstractResponseUtility();
+        ServiceFactory serviceFactory = ServiceFactory.getInstance(dataSource);
+        this.itemService = serviceFactory.createItemService();
+        this.abstractResponseUtility = serviceFactory.initiateAbstractUtility();
     }
 
     /**

@@ -1,8 +1,8 @@
 package com.icbt.pahanaedubookshopjavaee.controller;
 
 import com.icbt.pahanaedubookshopjavaee.dto.SupportRequestDTO;
+import com.icbt.pahanaedubookshopjavaee.factory.ServiceFactory;
 import com.icbt.pahanaedubookshopjavaee.service.EmailService;
-import com.icbt.pahanaedubookshopjavaee.service.impl.EmailServiceImpl;
 import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
 
 import javax.json.Json;
@@ -19,24 +19,25 @@ import java.util.UUID;
 
 @WebServlet("/support-request")
 public class SupportRequestServlet extends HttpServlet {
-    
+
     private EmailService emailService;
     private AbstractResponseUtility responseUtility;
 
     @Override
     public void init() {
-        this.emailService = new EmailServiceImpl();
-        this.responseUtility = new AbstractResponseUtility();
+        ServiceFactory serviceFactory = ServiceFactory.getInstance(null);
+        this.emailService = serviceFactory.createEmailService();
+        this.responseUtility = serviceFactory.initiateAbstractUtility();
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try (JsonReader reader = Json.createReader(request.getReader())) {
             JsonObject json = reader.readObject();
-            
+
             // Generate unique ticket ID
             String ticketId = "TKT-" + System.currentTimeMillis();
-            
+
             // Create support request DTO
             SupportRequestDTO supportRequest = new SupportRequestDTO();
             supportRequest.setTicketId(ticketId);
@@ -50,7 +51,7 @@ public class SupportRequestServlet extends HttpServlet {
 
             // Send email to support team
             emailService.sendSupportRequestEmail(supportRequest);
-            
+
             // Send confirmation email to user if email provided
             if (supportRequest.getUserEmail() != null && !supportRequest.getUserEmail().trim().isEmpty()) {
                 emailService.sendSupportConfirmationEmail(supportRequest.getUserEmail(), ticketId);
@@ -68,7 +69,7 @@ public class SupportRequestServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            
+
             JsonObject errorResponse = Json.createObjectBuilder()
                     .add("success", false)
                     .add("message", "Failed to submit support request: " + e.getMessage())
