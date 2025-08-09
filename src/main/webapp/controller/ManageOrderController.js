@@ -15,7 +15,7 @@ $(document).ready(function () {
     // Reset filters button
     $("#btn-reset-order-filters").on("click", function () {
         $("#searchOrderCode, #searchOrderDate, #searchTotalAmount").val("");
-        $("#searchOrderStatus, #searchPaymentStatus").val("");
+        $("#searchOrderStatus, #searchPaymentStatus, #searchPaymentMethod").val("");
         filterOrders();
         $("#searchOrderCode").focus();
     });
@@ -139,7 +139,7 @@ $(document).ready(function () {
 
     // Attach search filter event listeners
     function attachOrderSearchFilters() {
-        $("#searchOrderCode, #searchOrderDate, #searchTotalAmount, #searchOrderStatus, #searchPaymentStatus").on("input change", filterOrders);
+        $("#searchOrderCode, #searchOrderDate, #searchTotalAmount, #searchOrderStatus, #searchPaymentStatus, #searchPaymentMethod").on("input change", filterOrders);
     }
 
     // Filter orders function
@@ -149,6 +149,7 @@ $(document).ready(function () {
         const amountFilter = $("#searchTotalAmount").val().toLowerCase();
         const statusFilter = $("#searchOrderStatus").val();
         const paymentStatusFilter = $("#searchPaymentStatus").val();
+        const paymentMethodFilter = $("#searchPaymentMethod").val();
 
         $("#manageOrderTableBody tr").each(function () {
             const cells = $(this).children();
@@ -171,12 +172,17 @@ $(document).ready(function () {
                 (paymentStatusFilter === 'P' && paymentBadge === 'Pending') ||
                 (paymentStatusFilter === 'A' && paymentBadge === 'Paid');
 
+            // Get payment method text
+            const paymentMethodMatch = !paymentMethodFilter || 
+                cells.eq(6).text().includes(paymentMethodFilter);
+
             const match =
                 cells.eq(0).text().toLowerCase().includes(codeFilter) &&
                 dateMatch &&
                 cells.eq(2).text().toLowerCase().includes(amountFilter) &&
                 statusMatch &&
-                paymentMatch;
+                paymentMatch &&
+                paymentMethodMatch;
                 
             $(this).toggle(match);
         });

@@ -22,6 +22,8 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     /**
      * This method will return all the available customers in the database
+     *
+     * @return
      */
     public List<Customer> findAll() {
         List<Customer> customers = new ArrayList<>();
@@ -97,7 +99,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     /**
      * This method will return a boolean which contains the status
-     * of which is the customer is available or not.
+     * of which the customer is available or not.
      *
      * @param accountNumber
      * @return

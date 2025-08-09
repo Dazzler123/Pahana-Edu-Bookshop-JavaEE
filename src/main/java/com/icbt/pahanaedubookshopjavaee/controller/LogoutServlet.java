@@ -5,20 +5,19 @@ import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet("/logout")
-public class LogoutServlet extends HttpServlet {
+public class LogoutServlet extends BaseStatelessServlet {
 
     private AbstractResponseUtility responseUtility;
 
     @Override
-    public void init() {
-        this.responseUtility = new AbstractResponseUtility();
+    protected void initializeServices() {
+        this.responseUtility = serviceFactory.initiateAbstractUtility();
     }
 
     @Override
