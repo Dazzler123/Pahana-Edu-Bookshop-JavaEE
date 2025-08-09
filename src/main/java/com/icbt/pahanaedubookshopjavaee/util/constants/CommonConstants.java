@@ -32,5 +32,9 @@ public class CommonConstants {
     public static final String LABEL_ERROR = "error";
     public static final String LABEL_MESSAGE = "message";
 
+    public static final String REPORT_FILTER_DAILY = "DAILY";
+    public static final String REPORT_FILTER_MONTHLY = "MONTHLY";
+    public static final String REPORT_FILTER_ANNUALLY = "ANNUAL";
+
     public static final String REPLACER = "REPLACER";
 }
