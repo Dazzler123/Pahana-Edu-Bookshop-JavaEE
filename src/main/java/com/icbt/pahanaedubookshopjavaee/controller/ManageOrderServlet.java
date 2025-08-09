@@ -20,91 +20,82 @@ public class ManageOrderServlet extends BaseServlet {
         this.orderManagementService = serviceFactory.createOrderManagementService();
     }
 
+    /**
+     * This method is used to get all the orders for a customer
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String customerId = request.getParameter("customerId");
 
-        if (customerId == null || customerId.trim().isEmpty()) {
+        JsonObject result = orderManagementService.processGetOrdersRequest(customerId);
+
+        if (result.containsKey("state") && "error".equals(result.getString("state"))) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
-                    .add("message", "Customer ID is required")
-                    .build());
-            return;
         }
 
-        try {
-            JsonObject ordersJson = orderManagementService.getOrdersByCustomer(customerId);
-            abstractResponseUtility.writeJson(response, ordersJson);
-        } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
-                    .add("message", "Failed to load orders: " + e.getMessage())
-                    .build());
-        }
+        abstractResponseUtility.writeJson(response, result);
     }
 
+    /**
+     * This method is used to update an order
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try (JsonReader reader = Json.createReader(request.getReader())) {
-            JsonObject json = reader.readObject();
+            JsonObject orderRequest = reader.readObject();
 
-            String orderCode = json.getString("orderCode");
-            String orderDate = json.getString("orderDate");
+            JsonObject result = orderManagementService.processUpdateOrderRequest(orderRequest);
 
-            // Handle numeric values that might come as strings
-            double totalAmount;
-            double totalDiscount;
-
-            try {
-                totalAmount = json.getJsonNumber("totalAmount").doubleValue();
-            } catch (ClassCastException e) {
-                totalAmount = Double.parseDouble(json.getString("totalAmount"));
+            if (result.containsKey("state") && "error".equals(result.getString("state"))) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
 
-            try {
-                totalDiscount = json.getJsonNumber("totalDiscount").doubleValue();
-            } catch (ClassCastException e) {
-                totalDiscount = Double.parseDouble(json.getString("totalDiscount"));
-            }
+            abstractResponseUtility.writeJson(response, result);
 
-            String status = json.getString("status");
-            String paymentStatus = json.getString("paymentStatus");
-            String paymentType = json.getString("paymentType", "cash"); // Default to cash if not provided
-
-            orderManagementService.updateOrder(orderCode, orderDate, totalAmount, totalDiscount, status, paymentStatus, paymentType);
-
-            abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
-                    .add("message", "Order updated successfully")
-                    .build());
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
-                    .add("message", "Failed to update order: " + e.getMessage())
+                    .add("state", "error")
+                    .add("message", "Invalid request format: " + e.getMessage())
                     .build());
         }
     }
 
+    /**
+     * This method is used to update an order's status
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try (JsonReader reader = Json.createReader(request.getReader())) {
-            JsonObject json = reader.readObject();
+            JsonObject statusRequest = reader.readObject();
 
-            String orderCode = json.getString("orderCode");
-            String status = json.getString("status");
+            JsonObject result = orderManagementService.processUpdateOrderStatusRequest(statusRequest);
 
-            orderManagementService.updateOrderStatus(orderCode, status);
+            if (result.containsKey("state") && "error".equals(result.getString("state"))) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
 
-            String actionText = status.equals("A") ? "activated" :
-                    status.equals("I") ? "inactivated" : "deleted";
+            abstractResponseUtility.writeJson(response, result);
 
-            abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
-                    .add("message", "Order " + actionText + " successfully")
-                    .build());
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
-                    .add("message", "Failed to update order status: " + e.getMessage())
+                    .add("state", "error")
+                    .add("message", "Invalid request format: " + e.getMessage())
                     .build());
         }
     }
+
 }

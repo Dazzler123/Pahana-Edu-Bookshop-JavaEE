@@ -86,4 +86,10 @@ public class ServiceFactory extends AbstractServiceFactory {
         return new BillGenerationServiceImpl(dataSource);
     }
 
+    @Override
+    public SupportRequestService createSupportRequestService() {
+        EmailService emailService = createEmailService();
+        return new SupportRequestServiceImpl(dataSource, emailService);
+    }
+
 }

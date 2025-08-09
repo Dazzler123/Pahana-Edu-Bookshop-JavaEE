@@ -4,9 +4,14 @@ import com.icbt.pahanaedubookshopjavaee.dao.ReportsDAO;
 import com.icbt.pahanaedubookshopjavaee.dto.OrderReportDTO;
 import com.icbt.pahanaedubookshopjavaee.dto.ReportFilterDTO;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.sql.Date;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class ReportsDAOImpl implements ReportsDAO {
@@ -17,8 +22,15 @@ public class ReportsDAOImpl implements ReportsDAO {
         this.dataSource = dataSource;
     }
 
+    /**
+     * This method is used to get the order reports
+     *
+     * @param filter
+     * @return
+     * @throws Exception
+     */
     @Override
-    public List<OrderReportDTO> getOrderReports(ReportFilterDTO filter) {
+    public List<OrderReportDTO> getOrderReports(ReportFilterDTO filter) throws Exception {
         StringBuilder query = new StringBuilder(
             "SELECT o.order_code, o.customer_id, c.name as customer_name, o.order_date, " +
             "o.total_amount, o.total_discount_applied, o.status, o.payment_status, " +
@@ -59,14 +71,21 @@ public class ReportsDAOImpl implements ReportsDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to generate order reports", e);
+            throw new Exception("Failed to generate order reports", e);
         }
 
         return reports;
     }
 
+    /**
+     * This method is used to get the report summary
+     *
+     * @param filter
+     * @return
+     * @throws Exception
+     */
     @Override
-    public Map<String, Object> getReportSummary(ReportFilterDTO filter) {
+    public Map<String, Object> getReportSummary(ReportFilterDTO filter) throws Exception {
         StringBuilder query = new StringBuilder(
             "SELECT COUNT(*) as total_orders, " +
             "COALESCE(SUM(total_amount), 0) as total_revenue, " +
@@ -94,14 +113,21 @@ public class ReportsDAOImpl implements ReportsDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to generate report summary", e);
+            throw new Exception("Failed to generate report summary", e);
         }
 
         return summary;
     }
 
+    /**
+     * This method is used to get the daily reports
+     *
+     * @param filter
+     * @return
+     * @throws Exception
+     */
     @Override
-    public List<Map<String, Object>> getDailyReports(ReportFilterDTO filter) {
+    public List<Map<String, Object>> getDailyReports(ReportFilterDTO filter) throws Exception {
         StringBuilder query = new StringBuilder(
             "SELECT DATE(order_date) as report_date, " +
             "COUNT(*) as order_count, " +
@@ -116,8 +142,15 @@ public class ReportsDAOImpl implements ReportsDAO {
         return executeTimeBasedReport(query.toString(), params);
     }
 
+    /**
+     * This method is used to get the monthly reports
+     *
+     * @param filter
+     * @return
+     * @throws Exception
+     */
     @Override
-    public List<Map<String, Object>> getMonthlyReports(ReportFilterDTO filter) {
+    public List<Map<String, Object>> getMonthlyReports(ReportFilterDTO filter) throws Exception {
         StringBuilder query = new StringBuilder(
             "SELECT YEAR(order_date) as report_year, MONTH(order_date) as report_month, " +
             "COUNT(*) as order_count, " +
@@ -132,8 +165,15 @@ public class ReportsDAOImpl implements ReportsDAO {
         return executeTimeBasedReport(query.toString(), params);
     }
 
+    /**
+     * This method is used to get the annual reports
+     *
+     * @param filter
+     * @return
+     * @throws Exception
+     */
     @Override
-    public List<Map<String, Object>> getAnnualReports(ReportFilterDTO filter) {
+    public List<Map<String, Object>> getAnnualReports(ReportFilterDTO filter) throws Exception {
         StringBuilder query = new StringBuilder(
             "SELECT YEAR(order_date) as report_year, " +
             "COUNT(*) as order_count, " +
@@ -148,6 +188,122 @@ public class ReportsDAOImpl implements ReportsDAO {
         return executeTimeBasedReport(query.toString(), params);
     }
 
+    /**
+     * This method is used to generate the detailed report data
+     *
+     * @param filter
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public JsonObject generateDetailedReportData(ReportFilterDTO filter) throws Exception {
+        try {
+            List<OrderReportDTO> reports = getOrderReports(filter);
+            Map<String, Object> summary = getReportSummary(filter);
+
+            JsonArrayBuilder reportsArray = Json.createArrayBuilder();
+            for (OrderReportDTO report : reports) {
+                reportsArray.add(Json.createObjectBuilder()
+                        .add("orderCode", report.getOrderCode())
+                        .add("customerId", report.getCustomerId())
+                        .add("customerName", report.getCustomerName())
+                        .add("orderDate", report.getOrderDate().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                        .add("totalAmount", report.getTotalAmount())
+                        .add("totalDiscount", report.getTotalDiscount())
+                        .add("status", report.getStatus())
+                        .add("paymentStatus", report.getPaymentStatus())
+                        .add("itemCount", report.getItemCount())
+                );
+            }
+
+            return Json.createObjectBuilder()
+                    .add("reports", reportsArray)
+                    .add("summary", Json.createObjectBuilder()
+                            .add("totalOrders", (Integer) summary.get("totalOrders"))
+                            .add("totalRevenue", summary.get("totalRevenue").toString())
+                            .add("totalDiscounts", summary.get("totalDiscounts").toString())
+                            .add("avgOrderValue", summary.get("avgOrderValue").toString())
+                    )
+                    .build();
+                    
+        } catch (Exception e) {
+            throw new Exception("Failed to generate detailed report data", e);
+        }
+    }
+
+    /**
+     * This method is used to generate the summary report data
+     *
+     * @param filter
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public JsonObject generateSummaryReportData(ReportFilterDTO filter) throws Exception {
+        try {
+            Map<String, Object> summary = getReportSummary(filter);
+
+            return Json.createObjectBuilder()
+                    .add("totalOrders", (Integer) summary.get("totalOrders"))
+                    .add("totalRevenue", summary.get("totalRevenue").toString())
+                    .add("totalDiscounts", summary.get("totalDiscounts").toString())
+                    .add("avgOrderValue", summary.get("avgOrderValue").toString())
+                    .build();
+                    
+        } catch (Exception e) {
+            throw new Exception("Failed to generate summary report data", e);
+        }
+    }
+
+    /**
+     * This method is used to generate the time-based report data
+     *
+     * @param filter
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public JsonObject generateTimeBasedReportData(ReportFilterDTO filter) throws Exception {
+        try {
+            List<Map<String, Object>> timeReports;
+            
+            if ("DAILY".equals(filter.getReportType())) {
+                timeReports = getDailyReports(filter);
+            } else if ("MONTHLY".equals(filter.getReportType())) {
+                timeReports = getMonthlyReports(filter);
+            } else if ("ANNUAL".equals(filter.getReportType())) {
+                timeReports = getAnnualReports(filter);
+            } else {
+                timeReports = getDailyReports(filter); // default to daily
+            }
+
+            JsonArrayBuilder reportsArray = Json.createArrayBuilder();
+            for (Map<String, Object> report : timeReports) {
+                JsonObjectBuilder reportBuilder = Json.createObjectBuilder();
+                for (Map.Entry<String, Object> entry : report.entrySet()) {
+                    if (entry.getValue() != null) {
+                        reportBuilder.add(entry.getKey(), entry.getValue().toString());
+                    }
+                }
+                reportsArray.add(reportBuilder);
+            }
+
+            return Json.createObjectBuilder()
+                    .add("timeReports", reportsArray)
+                    .build();
+                    
+        } catch (Exception e) {
+            throw new Exception("Failed to generate time-based report data", e);
+        }
+    }
+
+    /**
+     * This method is used to build the where clause for the query
+     *
+     * @param query
+     * @param params
+     * @param filter
+     */
     private void buildWhereClause(StringBuilder query, List<Object> params, ReportFilterDTO filter) {
         if (filter.getCustomerId() != null && !filter.getCustomerId().trim().isEmpty()) {
             query.append(" AND o.customer_id = ?");
@@ -185,6 +341,13 @@ public class ReportsDAOImpl implements ReportsDAO {
         }
     }
 
+    /**
+     * This method is used to build the where clause for the summary query
+     *
+     * @param query
+     * @param params
+     * @param filter
+     */
     private void buildWhereClauseForSummary(StringBuilder query, List<Object> params, ReportFilterDTO filter) {
         if (filter.getCustomerId() != null && !filter.getCustomerId().trim().isEmpty()) {
             query.append(" AND customer_id = ?");
@@ -217,7 +380,15 @@ public class ReportsDAOImpl implements ReportsDAO {
         }
     }
 
-    private List<Map<String, Object>> executeTimeBasedReport(String query, List<Object> params) {
+    /**
+     * This method is used to execute the time-based report query
+     *
+     * @param query
+     * @param params
+     * @return
+     * @throws Exception
+     */
+    private List<Map<String, Object>> executeTimeBasedReport(String query, List<Object> params) throws Exception {
         List<Map<String, Object>> results = new ArrayList<>();
 
         try (Connection conn = dataSource.getConnection();
@@ -240,15 +411,23 @@ public class ReportsDAOImpl implements ReportsDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to execute time-based report", e);
+            throw new Exception("Failed to execute time-based report", e);
         }
 
         return results;
     }
 
+    /**
+     * This method is used to set the parameters for the prepared statement
+     *
+     * @param ps
+     * @param params
+     * @throws SQLException
+     */
     private void setParameters(PreparedStatement ps, List<Object> params) throws SQLException {
         for (int i = 0; i < params.size(); i++) {
             ps.setObject(i + 1, params.get(i));
         }
     }
+
 }
