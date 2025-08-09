@@ -37,4 +37,27 @@ public class CommonConstants {
     public static final String REPORT_FILTER_ANNUALLY = "ANNUAL";
 
     public static final String REPLACER = "REPLACER";
+
+    // =========== SUPPORT REQUEST CONSTANTS ============= -ST
+    public static final String PRIORITY_LOW = "LOW";
+    public static final String PRIORITY_MEDIUM = "MEDIUM";
+    public static final String PRIORITY_HIGH = "HIGH";
+    public static final String PRIORITY_URGENT = "URGENT";
+    
+    public static final String ISSUE_TYPE_TECHNICAL = "TECHNICAL";
+    public static final String ISSUE_TYPE_BILLING = "BILLING";
+    public static final String ISSUE_TYPE_ACCOUNT = "ACCOUNT";
+    public static final String ISSUE_TYPE_ORDER = "ORDER";
+    public static final String ISSUE_TYPE_PRODUCT = "PRODUCT";
+    public static final String ISSUE_TYPE_GENERAL = "GENERAL";
+    public static final String ISSUE_TYPE_BUG = "BUG";
+    public static final String ISSUE_TYPE_FEATURE = "FEATURE";
+    
+    public static final String SUPPORT_STATUS_OPEN = "OPEN";
+    public static final String SUPPORT_STATUS_IN_PROGRESS = "IN_PROGRESS";
+    public static final String SUPPORT_STATUS_RESOLVED = "RESOLVED";
+    public static final String SUPPORT_STATUS_CLOSED = "CLOSED";
+    // =========== SUPPORT REQUEST CONSTANTS ============= -ED
+
+
 }
