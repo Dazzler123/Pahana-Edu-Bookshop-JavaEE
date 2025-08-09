@@ -3,33 +3,25 @@ package com.icbt.pahanaedubookshopjavaee.controller;
 import com.icbt.pahanaedubookshopjavaee.dto.PlaceOrderDTO;
 import com.icbt.pahanaedubookshopjavaee.model.OrderItem;
 import com.icbt.pahanaedubookshopjavaee.service.PlaceOrderService;
-import com.icbt.pahanaedubookshopjavaee.service.impl.PlaceOrderServiceImpl;
-import com.icbt.pahanaedubookshopjavaee.util.AbstractResponseUtility;
-import com.icbt.pahanaedubookshopjavaee.util.constants.DBConstants;
 import com.icbt.pahanaedubookshopjavaee.util.constants.CommonConstants;
 
 import javax.json.*;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/place-order")
-public class PlaceOrderServlet extends HttpServlet {
+public class PlaceOrderServlet extends BaseServlet {
 
     private PlaceOrderService placeOrderService;
-    private AbstractResponseUtility abstractResponseUtility;
 
     @Override
-    public void init() {
-        DataSource dataSource = (DataSource) getServletContext().getAttribute(DBConstants.DBCP_LABEL);
-        this.placeOrderService = new PlaceOrderServiceImpl(dataSource);
-        this.abstractResponseUtility = new AbstractResponseUtility();
+    protected void initializeServices() {
+        this.placeOrderService = serviceFactory.createPlaceOrderService();
     }
 
     /**
