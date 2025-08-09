@@ -6,6 +6,8 @@ import com.icbt.pahanaedubookshopjavaee.dto.PlaceOrderDTO;
 import com.icbt.pahanaedubookshopjavaee.model.OrderItem;
 import com.icbt.pahanaedubookshopjavaee.service.PlaceOrderService;
 import com.icbt.pahanaedubookshopjavaee.util.constants.CommonConstants;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ResponseMessages;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ExceptionMessages;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -54,21 +56,21 @@ public class PlaceOrderServiceImpl implements PlaceOrderService {
             if (customerId == null || customerId.trim().isEmpty()) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Customer account is required")
+                        .add("message", ResponseMessages.MESSAGE_CUSTOMER_ACCOUNT_REQUIRED)
                         .build();
             }
 
             if (paymentMethod == null || paymentMethod.trim().isEmpty()) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Payment method is required")
+                        .add("message", ResponseMessages.MESSAGE_PAYMENT_METHOD_REQUIRED)
                         .build();
             }
 
             if (itemsArray == null || itemsArray.isEmpty()) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Order must contain at least one item")
+                        .add("message", ResponseMessages.MESSAGE_ORDER_ITEMS_REQUIRED)
                         .build();
             }
 
@@ -76,7 +78,7 @@ public class PlaceOrderServiceImpl implements PlaceOrderService {
             if (!isValidPaymentMethod(paymentMethod)) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Invalid payment method. Allowed: Cash, Card, Other")
+                        .add("message", ResponseMessages.MESSAGE_INVALID_PAYMENT_METHOD)
                         .build();
             }
 
@@ -107,7 +109,7 @@ public class PlaceOrderServiceImpl implements PlaceOrderService {
                     discountPercentage.compareTo(BigDecimal.valueOf(100)) > 0) {
                     return Json.createObjectBuilder()
                             .add("state", "error")
-                            .add("message", "Discount percentage must be between 0 and 100 for item: " + itemCode)
+                            .add("message", ResponseMessages.MESSAGE_DISCOUNT_PERCENTAGE_INVALID.replace(CommonConstants.REPLACER, itemCode))
                             .build();
                 }
 
@@ -122,7 +124,7 @@ public class PlaceOrderServiceImpl implements PlaceOrderService {
                 if (lineTotal.compareTo(BigDecimal.ZERO) < 0) {
                     return Json.createObjectBuilder()
                             .add("state", "error")
-                            .add("message", "Invalid line total calculation for item: " + itemCode)
+                            .add("message", ResponseMessages.MESSAGE_INVALID_LINE_TOTAL_CALCULATION.replace(CommonConstants.REPLACER, itemCode))
                             .build();
                 }
 
@@ -136,7 +138,7 @@ public class PlaceOrderServiceImpl implements PlaceOrderService {
             if (totalAmount.compareTo(BigDecimal.ZERO) <= 0) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Order total must be greater than zero")
+                        .add("message", ResponseMessages.MESSAGE_ORDER_TOTAL_MUST_BE_POSITIVE)
                         .build();
             }
 
@@ -155,7 +157,7 @@ public class PlaceOrderServiceImpl implements PlaceOrderService {
 
             return Json.createObjectBuilder()
                     .add("state", "done")
-                    .add("message", "Order placed successfully. Order Code: " + orderCode)
+                    .add("message", ResponseMessages.MESSAGE_ORDER_PLACED_SUCCESSFULLY.replace(CommonConstants.REPLACER, orderCode))
                     .add("orderCode", orderCode)
                     .add("totalAmount", totalAmount)
                     .add("totalDiscount", totalDiscount)
@@ -165,7 +167,7 @@ public class PlaceOrderServiceImpl implements PlaceOrderService {
         } catch (Exception e) {
             return Json.createObjectBuilder()
                     .add("state", "error")
-                    .add("message", "Failed to place order: " + e.getMessage())
+                    .add("message", ExceptionMessages.FAILED_TO_PLACE_ORDER + ": " + e.getMessage())
                     .build();
         }
     }
@@ -208,12 +210,12 @@ public class PlaceOrderServiceImpl implements PlaceOrderService {
      */
     private JsonObject validateOrderItem(JsonObject itemJson) {
         try {
-            // Check required fields
+            // Validate required fields
             if (!itemJson.containsKey("itemCode") || itemJson.getString("itemCode").trim().isEmpty()) {
                 return Json.createObjectBuilder()
                         .add("error", true)
                         .add("state", "error")
-                        .add("message", "Item code is required")
+                        .add("message", ResponseMessages.MESSAGE_ITEM_CODE_REQUIRED_FOR_ORDER)
                         .build();
             }
 
@@ -221,7 +223,7 @@ public class PlaceOrderServiceImpl implements PlaceOrderService {
                 return Json.createObjectBuilder()
                         .add("error", true)
                         .add("state", "error")
-                        .add("message", "Quantity is required for item: " + itemJson.getString("itemCode"))
+                        .add("message", ResponseMessages.MESSAGE_QUANTITY_REQUIRED_FOR_ORDER.replace(CommonConstants.REPLACER, itemJson.getString("itemCode")))
                         .build();
             }
 
@@ -229,7 +231,7 @@ public class PlaceOrderServiceImpl implements PlaceOrderService {
                 return Json.createObjectBuilder()
                         .add("error", true)
                         .add("state", "error")
-                        .add("message", "Unit price is required for item: " + itemJson.getString("itemCode"))
+                        .add("message", ResponseMessages.MESSAGE_UNIT_PRICE_REQUIRED_FOR_ORDER.replace(CommonConstants.REPLACER, itemJson.getString("itemCode")))
                         .build();
             }
 
@@ -237,7 +239,7 @@ public class PlaceOrderServiceImpl implements PlaceOrderService {
                 return Json.createObjectBuilder()
                         .add("error", true)
                         .add("state", "error")
-                        .add("message", "Discount is required for item: " + itemJson.getString("itemCode"))
+                        .add("message", ResponseMessages.MESSAGE_DISCOUNT_REQUIRED_FOR_ORDER.replace(CommonConstants.REPLACER, itemJson.getString("itemCode")))
                         .build();
             }
 
@@ -247,7 +249,7 @@ public class PlaceOrderServiceImpl implements PlaceOrderService {
                 return Json.createObjectBuilder()
                         .add("error", true)
                         .add("state", "error")
-                        .add("message", "Quantity must be greater than zero for item: " + itemJson.getString("itemCode"))
+                        .add("message", ResponseMessages.MESSAGE_QUANTITY_MUST_BE_POSITIVE.replace(CommonConstants.REPLACER, itemJson.getString("itemCode")))
                         .build();
             }
 
@@ -256,7 +258,7 @@ public class PlaceOrderServiceImpl implements PlaceOrderService {
                 return Json.createObjectBuilder()
                         .add("error", true)
                         .add("state", "error")
-                        .add("message", "Unit price must be greater than zero for item: " + itemJson.getString("itemCode"))
+                        .add("message", ResponseMessages.MESSAGE_UNIT_PRICE_MUST_BE_POSITIVE_FOR_ORDER.replace(CommonConstants.REPLACER, itemJson.getString("itemCode")))
                         .build();
             }
 
@@ -268,13 +270,13 @@ public class PlaceOrderServiceImpl implements PlaceOrderService {
             return Json.createObjectBuilder()
                     .add("error", true)
                     .add("state", "error")
-                    .add("message", "Invalid numeric value in item data")
+                    .add("message", ResponseMessages.MESSAGE_INVALID_NUMERIC_VALUE_IN_ITEM)
                     .build();
         } catch (Exception e) {
             return Json.createObjectBuilder()
                     .add("error", true)
                     .add("state", "error")
-                    .add("message", "Invalid item data format")
+                    .add("message", ResponseMessages.MESSAGE_INVALID_ITEM_DATA_FORMAT)
                     .build();
         }
     }

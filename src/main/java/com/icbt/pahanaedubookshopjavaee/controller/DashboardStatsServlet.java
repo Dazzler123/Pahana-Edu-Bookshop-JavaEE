@@ -2,6 +2,7 @@ package com.icbt.pahanaedubookshopjavaee.controller;
 
 import com.icbt.pahanaedubookshopjavaee.dto.DashboardStatsDTO;
 import com.icbt.pahanaedubookshopjavaee.service.DashboardService;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ResponseMessages;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -20,6 +21,13 @@ public class DashboardStatsServlet extends BaseServlet {
         this.dashboardService = serviceFactory.createDashboardService();
     }
 
+    /**
+     * This method is used to get the dashboard statistics
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
@@ -36,7 +44,7 @@ public class DashboardStatsServlet extends BaseServlet {
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
-                    .add("error", "Failed to load dashboard statistics: " + e.getMessage())
+                    .add("error", ResponseMessages.MESSAGE_FAILED_TO_LOAD_DASHBOARD_STATS + ": " + e.getMessage())
                     .build());
         }
     }

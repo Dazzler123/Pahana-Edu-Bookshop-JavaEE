@@ -6,6 +6,8 @@ import com.icbt.pahanaedubookshopjavaee.dto.OrderReportDTO;
 import com.icbt.pahanaedubookshopjavaee.dto.ReportFilterDTO;
 import com.icbt.pahanaedubookshopjavaee.service.ReportsService;
 import com.icbt.pahanaedubookshopjavaee.util.constants.CommonConstants;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ResponseMessages;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ExceptionMessages;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -47,7 +49,7 @@ public class ReportsServiceImpl implements ReportsService {
         try {
             return reportsDAO.getReportSummary(filter);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to get report summary", e);
+            throw new RuntimeException(ExceptionMessages.FAILED_TO_GENERATE_REPORT_SUMMARY, e);
         }
     }
 
@@ -69,7 +71,7 @@ public class ReportsServiceImpl implements ReportsService {
             }
             return reportsDAO.getDailyReports(filter); // default to daily
         } catch (Exception e) {
-            throw new RuntimeException("Failed to generate time-based reports", e);
+            throw new RuntimeException(ExceptionMessages.FAILED_TO_GENERATE_TIME_BASED_REPORTS, e);
         }
     }
 
@@ -92,6 +94,7 @@ public class ReportsServiceImpl implements ReportsService {
 
             return Json.createObjectBuilder()
                     .add("state", "success")
+                    .add("message", ResponseMessages.MESSAGE_DETAILED_REPORT_GENERATED)
                     .add("reports", reportData.getJsonArray("reports"))
                     .add("summary", reportData.getJsonObject("summary"))
                     .build();
@@ -99,7 +102,7 @@ public class ReportsServiceImpl implements ReportsService {
         } catch (Exception e) {
             return Json.createObjectBuilder()
                     .add("state", "error")
-                    .add("message", "Failed to generate detailed report: " + e.getMessage())
+                    .add("message", ResponseMessages.MESSAGE_FAILED_TO_GENERATE_REPORT + ": " + e.getMessage())
                     .build();
         }
     }
@@ -123,6 +126,7 @@ public class ReportsServiceImpl implements ReportsService {
 
             return Json.createObjectBuilder()
                     .add("state", "success")
+                    .add("message", ResponseMessages.MESSAGE_SUMMARY_REPORT_GENERATED)
                     .add("totalOrders", summaryData.getInt("totalOrders"))
                     .add("totalRevenue", summaryData.getString("totalRevenue"))
                     .add("totalDiscounts", summaryData.getString("totalDiscounts"))
@@ -132,7 +136,7 @@ public class ReportsServiceImpl implements ReportsService {
         } catch (Exception e) {
             return Json.createObjectBuilder()
                     .add("state", "error")
-                    .add("message", "Failed to generate summary report: " + e.getMessage())
+                    .add("message", ResponseMessages.MESSAGE_FAILED_TO_GENERATE_REPORT + ": " + e.getMessage())
                     .build();
         }
     }
@@ -160,7 +164,7 @@ public class ReportsServiceImpl implements ReportsService {
             if (!isValidReportType(filter.getReportType())) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Invalid report type. Must be DAILY, MONTHLY, or ANNUAL")
+                        .add("message", ResponseMessages.MESSAGE_INVALID_REPORT_TYPE)
                         .build();
             }
 
@@ -168,13 +172,14 @@ public class ReportsServiceImpl implements ReportsService {
 
             return Json.createObjectBuilder()
                     .add("state", "success")
+                    .add("message", ResponseMessages.MESSAGE_TIME_BASED_REPORT_GENERATED)
                     .add("timeReports", timeData.getJsonArray("timeReports"))
                     .build();
 
         } catch (Exception e) {
             return Json.createObjectBuilder()
                     .add("state", "error")
-                    .add("message", "Failed to generate time-based report: " + e.getMessage())
+                    .add("message", ResponseMessages.MESSAGE_FAILED_TO_GENERATE_REPORT + ": " + e.getMessage())
                     .build();
         }
     }
@@ -186,55 +191,33 @@ public class ReportsServiceImpl implements ReportsService {
      * @return
      */
     private JsonObject validateReportFilter(ReportFilterDTO filter) {
-        if (filter == null) {
-            return Json.createObjectBuilder()
-                    .add("state", "error")
-                    .add("message", "Report filter is required")
-                    .build();
-        }
+        // Only validate dates for time-based reports
+        if ("time-based".equals(filter.getReportType()) || 
+            (filter.getStartDate() != null || filter.getEndDate() != null)) {
+            
+            if (filter.getStartDate() == null) {
+                return Json.createObjectBuilder()
+                        .add("state", "error")
+                        .add("message", ResponseMessages.MESSAGE_START_DATE_REQUIRED)
+                        .build();
+            }
 
-        // Validate date range
-        if (filter.getStartDate() != null && filter.getEndDate() != null) {
+            if (filter.getEndDate() == null) {
+                return Json.createObjectBuilder()
+                        .add("state", "error")
+                        .add("message", ResponseMessages.MESSAGE_END_DATE_REQUIRED)
+                        .build();
+            }
+
             if (filter.getStartDate().isAfter(filter.getEndDate())) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
-                        .add("message", "Start date cannot be after end date")
+                        .add("message", ResponseMessages.MESSAGE_INVALID_DATE_RANGE)
                         .build();
             }
         }
 
-        // Validate date range is not too large (e.g., more than 2 years)
-        if (filter.getStartDate() != null && filter.getEndDate() != null) {
-            long daysBetween = java.time.temporal.ChronoUnit.DAYS.between(filter.getStartDate(), filter.getEndDate());
-            if (daysBetween > 730) { // 2 years
-                return Json.createObjectBuilder()
-                        .add("state", "error")
-                        .add("message", "Date range cannot exceed 2 years")
-                        .build();
-            }
-        }
-
-        // Validate status values
-        if (filter.getStatus() != null && !filter.getStatus().trim().isEmpty()) {
-            if (!filter.getStatus().matches("[AID]")) {
-                return Json.createObjectBuilder()
-                        .add("state", "error")
-                        .add("message", "Invalid order status. Must be A, I, or D")
-                        .build();
-            }
-        }
-
-        // Validate payment status values
-        if (filter.getPaymentStatus() != null && !filter.getPaymentStatus().trim().isEmpty()) {
-            if (!filter.getPaymentStatus().matches("[PNR]")) {
-                return Json.createObjectBuilder()
-                        .add("state", "error")
-                        .add("message", "Invalid payment status. Must be P, N, or R")
-                        .build();
-            }
-        }
-
-        return null; // No validation errors
+        return null;
     }
 
     /**
