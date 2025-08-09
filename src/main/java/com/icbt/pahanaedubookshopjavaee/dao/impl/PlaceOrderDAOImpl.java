@@ -3,6 +3,8 @@ package com.icbt.pahanaedubookshopjavaee.dao.impl;
 import com.icbt.pahanaedubookshopjavaee.dao.PlaceOrderDAO;
 import com.icbt.pahanaedubookshopjavaee.model.OrderItem;
 import com.icbt.pahanaedubookshopjavaee.util.constants.CommonConstants;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ExceptionMessages;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ResponseMessages;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -69,7 +71,7 @@ public class PlaceOrderDAOImpl implements PlaceOrderDAO {
                     int updatedRows = psStock.executeUpdate();
 
                     if (updatedRows == 0) {
-                        throw new Exception("Insufficient stock for item: " + item.getItemCode());
+                        throw new Exception(ResponseMessages.MESSAGE_INSUFFICIENT_STOCK.replace(CommonConstants.REPLACER, item.getItemCode()));
                     }
 
                     // Insert order item
@@ -89,7 +91,7 @@ public class PlaceOrderDAOImpl implements PlaceOrderDAO {
 
         } catch (Exception e) {
             if (connection != null) connection.rollback();
-            throw e;
+            throw new Exception(ExceptionMessages.FAILED_TO_CREATE_ORDER + ": " + e.getMessage(), e);
         } finally {
             if (connection != null) connection.setAutoCommit(true);
             if (connection != null) connection.close();

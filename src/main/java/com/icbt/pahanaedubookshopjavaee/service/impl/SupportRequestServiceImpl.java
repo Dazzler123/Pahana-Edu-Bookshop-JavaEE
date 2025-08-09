@@ -6,6 +6,8 @@ import com.icbt.pahanaedubookshopjavaee.dto.SupportRequestDTO;
 import com.icbt.pahanaedubookshopjavaee.service.EmailService;
 import com.icbt.pahanaedubookshopjavaee.service.SupportRequestService;
 import com.icbt.pahanaedubookshopjavaee.util.constants.CommonConstants;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ResponseMessages;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ExceptionMessages;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -101,7 +103,7 @@ public class SupportRequestServiceImpl implements SupportRequestService {
             // Return success response
             return Json.createObjectBuilder()
                     .add("success", true)
-                    .add("message", "Support request submitted successfully!")
+                    .add("message", ResponseMessages.MESSAGE_SUPPORT_REQUEST_SUBMITTED_SUCCESSFULLY)
                     .add("ticketId", ticketId)
                     .add("responseTime", getResponseTime(supportRequest.getPriority()))
                     .add("status", CommonConstants.SUPPORT_STATUS_OPEN)
@@ -110,7 +112,7 @@ public class SupportRequestServiceImpl implements SupportRequestService {
         } catch (Exception e) {
             return Json.createObjectBuilder()
                     .add("success", false)
-                    .add("message", "Failed to submit support request: " + e.getMessage())
+                    .add("message", ExceptionMessages.FAILED_TO_SUBMIT_SUPPORT_REQUEST + ": " + e.getMessage())
                     .build();
         }
     }
@@ -184,7 +186,7 @@ public class SupportRequestServiceImpl implements SupportRequestService {
         if (!requestJson.containsKey("subject") || requestJson.getString("subject").trim().isEmpty()) {
             return Json.createObjectBuilder()
                     .add("success", false)
-                    .add("message", "Subject is required")
+                    .add("message", ResponseMessages.MESSAGE_SUBJECT_REQUIRED)
                     .build();
         }
 
@@ -192,7 +194,7 @@ public class SupportRequestServiceImpl implements SupportRequestService {
         if (subject.length() > 200) {
             return Json.createObjectBuilder()
                     .add("success", false)
-                    .add("message", "Subject cannot exceed 200 characters")
+                    .add("message", ResponseMessages.MESSAGE_SUBJECT_TOO_LONG)
                     .build();
         }
 
@@ -200,7 +202,7 @@ public class SupportRequestServiceImpl implements SupportRequestService {
         if (!requestJson.containsKey("description") || requestJson.getString("description").trim().isEmpty()) {
             return Json.createObjectBuilder()
                     .add("success", false)
-                    .add("message", "Description is required")
+                    .add("message", ResponseMessages.MESSAGE_DESCRIPTION_REQUIRED)
                     .build();
         }
 
@@ -208,7 +210,7 @@ public class SupportRequestServiceImpl implements SupportRequestService {
         if (description.length() > 2000) {
             return Json.createObjectBuilder()
                     .add("success", false)
-                    .add("message", "Description cannot exceed 2000 characters")
+                    .add("message", ResponseMessages.MESSAGE_DESCRIPTION_TOO_LONG)
                     .build();
         }
 
@@ -217,7 +219,7 @@ public class SupportRequestServiceImpl implements SupportRequestService {
         if (!isValidPriority(priority)) {
             return Json.createObjectBuilder()
                     .add("success", false)
-                    .add("message", "Invalid priority. Must be one of: LOW, MEDIUM, HIGH, URGENT")
+                    .add("message", ResponseMessages.MESSAGE_INVALID_PRIORITY)
                     .build();
         }
 
@@ -226,7 +228,7 @@ public class SupportRequestServiceImpl implements SupportRequestService {
         if (!isValidIssueType(issueType)) {
             return Json.createObjectBuilder()
                     .add("success", false)
-                    .add("message", "Invalid issue type. Must be one of: TECHNICAL, BILLING, ACCOUNT, ORDER, PRODUCT, GENERAL, BUG, FEATURE")
+                    .add("message", ResponseMessages.MESSAGE_INVALID_ISSUE_TYPE)
                     .build();
         }
 
@@ -236,12 +238,12 @@ public class SupportRequestServiceImpl implements SupportRequestService {
             if (!isValidEmail(userEmail)) {
                 return Json.createObjectBuilder()
                         .add("success", false)
-                        .add("message", "Invalid email format")
+                        .add("message", ResponseMessages.MESSAGE_INVALID_EMAIL_FORMAT)
                         .build();
             }
         }
 
-        return null;
+        return null; // No validation errors
     }
 
     /**

@@ -3,6 +3,7 @@ package com.icbt.pahanaedubookshopjavaee.controller;
 import com.icbt.pahanaedubookshopjavaee.dto.CustomerAnalyticsDTO;
 import com.icbt.pahanaedubookshopjavaee.dto.ItemAnalyticsDTO;
 import com.icbt.pahanaedubookshopjavaee.service.DashboardService;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ResponseMessages;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -23,6 +24,13 @@ public class DashboardAnalyticsServlet extends BaseServlet {
         this.dashboardService = serviceFactory.createDashboardService();
     }
 
+    /**
+     * This method is used to get the dashboard analytics
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String type = request.getParameter("type");
@@ -35,17 +43,23 @@ public class DashboardAnalyticsServlet extends BaseServlet {
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
-                        .add("error", "Invalid type parameter")
+                        .add("error", ResponseMessages.MESSAGE_INVALID_ANALYTICS_TYPE)
                         .build());
             }
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
-                    .add("error", "Failed to load analytics data: " + e.getMessage())
+                    .add("error", ResponseMessages.MESSAGE_FAILED_TO_LOAD_CUSTOMER_ANALYTICS + ": " + e.getMessage())
                     .build());
         }
     }
 
+    /**
+     * This method is used to get the most visited customers
+     *
+     * @param response
+     * @throws Exception
+     */
     private void getMostVisitedCustomers(HttpServletResponse response) throws Exception {
         List<CustomerAnalyticsDTO> customers = dashboardService.getMostVisitedCustomers();
         JsonArrayBuilder customersArray = Json.createArrayBuilder();
@@ -68,6 +82,12 @@ public class DashboardAnalyticsServlet extends BaseServlet {
         abstractResponseUtility.writeJson(response, json);
     }
 
+    /**
+     * This method is used to get the top selling items
+     *
+     * @param response
+     * @throws Exception
+     */
     private void getTopSellingItems(HttpServletResponse response) throws Exception {
         List<ItemAnalyticsDTO> items = dashboardService.getTopSellingItems();
         JsonArrayBuilder itemsArray = Json.createArrayBuilder();
@@ -89,4 +109,5 @@ public class DashboardAnalyticsServlet extends BaseServlet {
 
         abstractResponseUtility.writeJson(response, json);
     }
+
 }

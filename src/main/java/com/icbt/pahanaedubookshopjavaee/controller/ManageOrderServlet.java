@@ -1,6 +1,7 @@
 package com.icbt.pahanaedubookshopjavaee.controller;
 
 import com.icbt.pahanaedubookshopjavaee.service.OrderManagementService;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ResponseMessages;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -64,7 +65,7 @@ public class ManageOrderServlet extends BaseServlet {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
                     .add("state", "error")
-                    .add("message", "Invalid request format: " + e.getMessage())
+                    .add("message", ResponseMessages.MESSAGE_INVALID_REQUEST_FORMAT + ": " + e.getMessage())
                     .build());
         }
     }
@@ -93,7 +94,7 @@ public class ManageOrderServlet extends BaseServlet {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
                     .add("state", "error")
-                    .add("message", "Invalid request format: " + e.getMessage())
+                    .add("message", ResponseMessages.MESSAGE_INVALID_REQUEST_FORMAT + ": " + e.getMessage())
                     .build());
         }
     }

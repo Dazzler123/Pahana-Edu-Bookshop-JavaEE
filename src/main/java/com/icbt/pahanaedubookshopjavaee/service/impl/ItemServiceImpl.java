@@ -6,6 +6,7 @@ import com.icbt.pahanaedubookshopjavaee.model.Item;
 import com.icbt.pahanaedubookshopjavaee.service.ItemService;
 import com.icbt.pahanaedubookshopjavaee.util.constants.CommonConstants;
 import com.icbt.pahanaedubookshopjavaee.util.constants.ResponseMessages;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ExceptionMessages;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -81,7 +82,7 @@ public class ItemServiceImpl implements ItemService {
         } catch (Exception e) {
             return Json.createObjectBuilder()
                     .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
-                    .add(CommonConstants.LABEL_MESSAGE, "Failed to retrieve items: " + e.getMessage())
+                    .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.MESSAGE_FAILED_TO_RETRIEVE_ITEMS + ": " + e.getMessage())
                     .build();
         }
     }
@@ -102,7 +103,7 @@ public class ItemServiceImpl implements ItemService {
         } catch (Exception e) {
             return Json.createObjectBuilder()
                     .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
-                    .add(CommonConstants.LABEL_MESSAGE, "Failed to generate item code: " + e.getMessage())
+                    .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.MESSAGE_FAILED_TO_GENERATE_ITEM_CODE + ": " + e.getMessage())
                     .build();
         }
     }
@@ -124,21 +125,28 @@ public class ItemServiceImpl implements ItemService {
             if (name == null || name.trim().isEmpty()) {
                 return Json.createObjectBuilder()
                         .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
-                        .add(CommonConstants.LABEL_MESSAGE, "Item name is required")
+                        .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.MESSAGE_ITEM_NAME_REQUIRED)
+                        .build();
+            }
+
+            if (name.length() > 100) {
+                return Json.createObjectBuilder()
+                        .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
+                        .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.MESSAGE_ITEM_NAME_TOO_LONG)
                         .build();
             }
 
             if (unitPrice == null || unitPrice.trim().isEmpty()) {
                 return Json.createObjectBuilder()
                         .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
-                        .add(CommonConstants.LABEL_MESSAGE, "Unit price is required")
+                        .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.MESSAGE_UNIT_PRICE_REQUIRED)
                         .build();
             }
 
             if (qtyOnHand == null || qtyOnHand.trim().isEmpty()) {
                 return Json.createObjectBuilder()
                         .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
-                        .add(CommonConstants.LABEL_MESSAGE, "Quantity on hand is required")
+                        .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.MESSAGE_QTY_ON_HAND_REQUIRED)
                         .build();
             }
 
@@ -151,13 +159,13 @@ public class ItemServiceImpl implements ItemService {
                 if (price.compareTo(BigDecimal.ZERO) < 0) {
                     return Json.createObjectBuilder()
                             .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
-                            .add(CommonConstants.LABEL_MESSAGE, "Unit price must be positive")
+                            .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.MESSAGE_UNIT_PRICE_MUST_BE_POSITIVE)
                             .build();
                 }
             } catch (NumberFormatException e) {
                 return Json.createObjectBuilder()
                         .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
-                        .add(CommonConstants.LABEL_MESSAGE, "Invalid unit price format")
+                        .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.MESSAGE_INVALID_UNIT_PRICE_FORMAT)
                         .build();
             }
 
@@ -166,13 +174,13 @@ public class ItemServiceImpl implements ItemService {
                 if (qty < 0) {
                     return Json.createObjectBuilder()
                             .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
-                            .add(CommonConstants.LABEL_MESSAGE, "Quantity on hand cannot be negative")
+                            .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.MESSAGE_QTY_ON_HAND_CANNOT_BE_NEGATIVE)
                             .build();
                 }
             } catch (NumberFormatException e) {
                 return Json.createObjectBuilder()
                         .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
-                        .add(CommonConstants.LABEL_MESSAGE, "Invalid quantity format")
+                        .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.MESSAGE_INVALID_QUANTITY_FORMAT)
                         .build();
             }
 
@@ -205,7 +213,7 @@ public class ItemServiceImpl implements ItemService {
         } catch (Exception e) {
             return Json.createObjectBuilder()
                     .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
-                    .add(CommonConstants.LABEL_MESSAGE, "Failed to save item: " + e.getMessage())
+                    .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.MESSAGE_FAILED_TO_SAVE_ITEM + ": " + e.getMessage())
                     .build();
         }
     }
@@ -239,7 +247,7 @@ public class ItemServiceImpl implements ItemService {
             if (!isItemExists(itemCode)) {
                 return Json.createObjectBuilder()
                         .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
-                        .add(CommonConstants.LABEL_MESSAGE, "Item not found")
+                        .add(CommonConstants.LABEL_MESSAGE, ResponseMessages.MESSAGE_ITEM_NOT_FOUND)
                         .build();
             }
 
@@ -258,7 +266,7 @@ public class ItemServiceImpl implements ItemService {
         } catch (Exception e) {
             return Json.createObjectBuilder()
                     .add(CommonConstants.LABEL_STATE, CommonConstants.LABEL_ERROR)
-                    .add(CommonConstants.LABEL_MESSAGE, "Failed to update item status: " + e.getMessage())
+                    .add(CommonConstants.LABEL_MESSAGE, ExceptionMessages.FAILED_TO_UPDATE_ITEM_STATUS + ": " + e.getMessage())
                     .build();
         }
     }

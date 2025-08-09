@@ -70,7 +70,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException(ExceptionMessages.FAILED_TO_SAVE_CUSTOMER, e);
+            throw new RuntimeException(ExceptionMessages.DATABASE_ERROR_SAVING_CUSTOMER, e);
         }
     }
 
@@ -93,7 +93,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException(ExceptionMessages.FAILED_TO_UPDATE_CUSTOMER, e);
+            throw new RuntimeException(ExceptionMessages.DATABASE_ERROR_UPDATING_CUSTOMER, e);
         }
     }
 
@@ -116,7 +116,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException(ExceptionMessages.FAILED_TO_FIND_CUSTOMER, e);
+            throw new RuntimeException(ExceptionMessages.DATABASE_ERROR_CHECKING_CUSTOMER_EXISTS, e);
         }
     }
 
@@ -234,7 +234,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException("Failed to generate account number", e);
+            throw new RuntimeException(ExceptionMessages.FAILED_TO_GENERATE_CUSTOMER_ACCOUNT_NUMBER, e);
         }
     }
 

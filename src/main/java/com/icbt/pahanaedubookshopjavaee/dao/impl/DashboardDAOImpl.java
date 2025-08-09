@@ -4,6 +4,7 @@ import com.icbt.pahanaedubookshopjavaee.dao.DashboardDAO;
 import com.icbt.pahanaedubookshopjavaee.dto.CustomerAnalyticsDTO;
 import com.icbt.pahanaedubookshopjavaee.dto.ItemAnalyticsDTO;
 import com.icbt.pahanaedubookshopjavaee.dto.DashboardStatsDTO;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ExceptionMessages;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -21,6 +22,11 @@ public class DashboardDAOImpl implements DashboardDAO {
         this.dataSource = dataSource;
     }
 
+    /**
+     * This method is used to get the dashboard statistics
+     *
+     * @return
+     */
     @Override
     public DashboardStatsDTO getDashboardStats() {
         String totalOrdersQuery = "SELECT COUNT(*) FROM Orders WHERE status != 'D'";
@@ -59,10 +65,16 @@ public class DashboardDAOImpl implements DashboardDAO {
             return new DashboardStatsDTO(totalOrders, pendingOrders, totalRevenue);
 
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to load dashboard statistics", e);
+            throw new RuntimeException(ExceptionMessages.DATABASE_ERROR_LOADING_DASHBOARD_STATS, e);
         }
     }
 
+    /**
+     * This method is used to get the most visited customers
+     *
+     * @param limit
+     * @return
+     */
     @Override
     public List<CustomerAnalyticsDTO> getMostVisitedCustomers(int limit) {
         String query = "SELECT c.account_number, c.name, COUNT(o.order_code) as order_count, " +
@@ -92,12 +104,18 @@ public class DashboardDAOImpl implements DashboardDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to load most visited customers", e);
+            throw new RuntimeException(ExceptionMessages.DATABASE_ERROR_LOADING_CUSTOMER_ANALYTICS, e);
         }
 
         return customers;
     }
 
+    /**
+     * This method is used to get the top selling items
+     *
+     * @param limit
+     * @return
+     */
     @Override
     public List<ItemAnalyticsDTO> getTopSellingItems(int limit) {
         String query = "SELECT i.item_code, i.name, " +
@@ -129,9 +147,10 @@ public class DashboardDAOImpl implements DashboardDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to load top selling items", e);
+            throw new RuntimeException(ExceptionMessages.DATABASE_ERROR_LOADING_ITEM_ANALYTICS, e);
         }
 
         return items;
     }
+
 }
