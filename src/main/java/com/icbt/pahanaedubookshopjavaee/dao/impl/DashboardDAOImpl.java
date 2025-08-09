@@ -4,6 +4,7 @@ import com.icbt.pahanaedubookshopjavaee.dao.DashboardDAO;
 import com.icbt.pahanaedubookshopjavaee.dto.CustomerAnalyticsDTO;
 import com.icbt.pahanaedubookshopjavaee.dto.ItemAnalyticsDTO;
 import com.icbt.pahanaedubookshopjavaee.dto.DashboardStatsDTO;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ExceptionMessages;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -64,7 +65,7 @@ public class DashboardDAOImpl implements DashboardDAO {
             return new DashboardStatsDTO(totalOrders, pendingOrders, totalRevenue);
 
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to load dashboard statistics", e);
+            throw new RuntimeException(ExceptionMessages.DATABASE_ERROR_LOADING_DASHBOARD_STATS, e);
         }
     }
 
@@ -103,7 +104,7 @@ public class DashboardDAOImpl implements DashboardDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to load most visited customers", e);
+            throw new RuntimeException(ExceptionMessages.DATABASE_ERROR_LOADING_CUSTOMER_ANALYTICS, e);
         }
 
         return customers;
@@ -146,7 +147,7 @@ public class DashboardDAOImpl implements DashboardDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to load top selling items", e);
+            throw new RuntimeException(ExceptionMessages.DATABASE_ERROR_LOADING_ITEM_ANALYTICS, e);
         }
 
         return items;

@@ -98,4 +98,35 @@ public class ResponseMessages {
     public static final String MESSAGE_FAILED_TO_LOAD_ORDERS = "Failed to load orders";
     // =========== MANAGE ORDER RESPONSE MESSAGES =========== -ED
 
+    // =========== DASHBOARD RESPONSE MESSAGES =========== -ST
+    public static final String MESSAGE_DASHBOARD_STATS_LOADED_SUCCESSFULLY = "Dashboard statistics loaded successfully";
+    public static final String MESSAGE_CUSTOMER_ANALYTICS_LOADED_SUCCESSFULLY = "Customer analytics loaded successfully";
+    public static final String MESSAGE_ITEM_ANALYTICS_LOADED_SUCCESSFULLY = "Item analytics loaded successfully";
+    public static final String MESSAGE_NO_CUSTOMER_DATA_AVAILABLE = "No customer data available";
+    public static final String MESSAGE_NO_ITEM_DATA_AVAILABLE = "No item data available";
+    public static final String MESSAGE_NO_ORDER_DATA_AVAILABLE = "No order data available";
+    public static final String MESSAGE_INVALID_ANALYTICS_TYPE = "Invalid analytics type. Must be 'most-visited-customers' or 'top-selling-items'";
+    public static final String MESSAGE_ANALYTICS_TYPE_REQUIRED = "Analytics type parameter is required";
+    public static final String MESSAGE_FAILED_TO_LOAD_DASHBOARD_STATS = "Failed to load dashboard statistics";
+    public static final String MESSAGE_FAILED_TO_LOAD_CUSTOMER_ANALYTICS = "Failed to load customer analytics";
+    public static final String MESSAGE_FAILED_TO_LOAD_ITEM_ANALYTICS = "Failed to load item analytics";
+    // =========== DASHBOARD RESPONSE MESSAGES =========== -ED
+
+    // =========== REPORTS RESPONSE MESSAGES =========== -ST
+    public static final String MESSAGE_REPORT_GENERATED_SUCCESSFULLY = "Report generated successfully";
+    public static final String MESSAGE_SUMMARY_REPORT_GENERATED = "Summary report generated successfully";
+    public static final String MESSAGE_DETAILED_REPORT_GENERATED = "Detailed report generated successfully";
+    public static final String MESSAGE_TIME_BASED_REPORT_GENERATED = "Time-based report generated successfully";
+    public static final String MESSAGE_INVALID_REPORT_TYPE = "Invalid report type. Must be DAILY, MONTHLY, or ANNUAL";
+    public static final String MESSAGE_INVALID_DATE_RANGE = "Invalid date range. Start date must be before end date";
+    public static final String MESSAGE_START_DATE_REQUIRED = "Start date is required";
+    public static final String MESSAGE_END_DATE_REQUIRED = "End date is required";
+    public static final String MESSAGE_INVALID_DATE_FORMAT = "Invalid date format. Use YYYY-MM-DD format";
+    public static final String MESSAGE_DATE_RANGE_TOO_LARGE = "Date range is too large. Maximum allowed range is 1 year";
+    public static final String MESSAGE_REPORT_TYPE_REQUIRED = "Report type is required";
+    public static final String MESSAGE_NO_DATA_FOUND_FOR_PERIOD = "No data found for the specified period";
+    public static final String MESSAGE_FAILED_TO_GENERATE_REPORT = "Failed to generate report";
+    public static final String MESSAGE_FAILED_TO_PROCESS_REPORT_REQUEST = "Failed to process report request";
+    // =========== REPORTS RESPONSE MESSAGES =========== -ED
+
 }

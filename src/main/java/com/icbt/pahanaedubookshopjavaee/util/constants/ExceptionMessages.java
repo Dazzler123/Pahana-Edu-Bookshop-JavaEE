@@ -73,4 +73,29 @@ public class ExceptionMessages {
     public static final String DATABASE_ERROR_CHECKING_ORDER_EXISTS = "Database error while checking order existence";
     // =========== MANAGE ORDER EXCEPTION MESSAGES =========== -ED
 
+    // =========== DASHBOARD EXCEPTION MESSAGES =========== -ST
+    public static final String FAILED_TO_LOAD_DASHBOARD_STATISTICS = "Failed to load dashboard statistics";
+    public static final String FAILED_TO_LOAD_MOST_VISITED_CUSTOMERS = "Failed to load most visited customers";
+    public static final String FAILED_TO_LOAD_TOP_SELLING_ITEMS = "Failed to load top selling items";
+    public static final String DATABASE_ERROR_LOADING_DASHBOARD_STATS = "Database error while loading dashboard statistics";
+    public static final String DATABASE_ERROR_LOADING_CUSTOMER_ANALYTICS = "Database error while loading customer analytics";
+    public static final String DATABASE_ERROR_LOADING_ITEM_ANALYTICS = "Database error while loading item analytics";
+    public static final String FAILED_TO_CALCULATE_DASHBOARD_METRICS = "Failed to calculate dashboard metrics";
+    public static final String FAILED_TO_PROCESS_ANALYTICS_REQUEST = "Failed to process analytics request";
+    // =========== DASHBOARD EXCEPTION MESSAGES =========== -ED
+
+    // =========== REPORTS EXCEPTION MESSAGES =========== -ST
+    public static final String FAILED_TO_GENERATE_ORDER_REPORTS = "Failed to generate order reports";
+    public static final String FAILED_TO_GENERATE_REPORT_SUMMARY = "Failed to generate report summary";
+    public static final String FAILED_TO_GENERATE_TIME_BASED_REPORTS = "Failed to generate time-based reports";
+    public static final String FAILED_TO_GENERATE_DETAILED_REPORT = "Failed to generate detailed report";
+    public static final String FAILED_TO_GENERATE_SUMMARY_REPORT = "Failed to generate summary report";
+    public static final String FAILED_TO_VALIDATE_REPORT_FILTER = "Failed to validate report filter";
+    public static final String FAILED_TO_EXECUTE_REPORT_QUERY = "Failed to execute report query";
+    public static final String DATABASE_ERROR_GENERATING_REPORTS = "Database error while generating reports";
+    public static final String DATABASE_ERROR_EXECUTING_REPORT_QUERY = "Database error while executing report query";
+    public static final String REPORT_PROCESSING_ERROR = "Error occurred while processing report";
+    public static final String INVALID_REPORT_PARAMETERS = "Invalid report parameters provided";
+    // =========== REPORTS EXCEPTION MESSAGES =========== -ED
+
 }

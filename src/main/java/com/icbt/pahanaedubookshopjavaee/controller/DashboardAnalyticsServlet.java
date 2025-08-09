@@ -3,6 +3,7 @@ package com.icbt.pahanaedubookshopjavaee.controller;
 import com.icbt.pahanaedubookshopjavaee.dto.CustomerAnalyticsDTO;
 import com.icbt.pahanaedubookshopjavaee.dto.ItemAnalyticsDTO;
 import com.icbt.pahanaedubookshopjavaee.service.DashboardService;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ResponseMessages;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -42,13 +43,13 @@ public class DashboardAnalyticsServlet extends BaseServlet {
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
-                        .add("error", "Invalid type parameter")
+                        .add("error", ResponseMessages.MESSAGE_INVALID_ANALYTICS_TYPE)
                         .build());
             }
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
-                    .add("error", "Failed to load analytics data: " + e.getMessage())
+                    .add("error", ResponseMessages.MESSAGE_FAILED_TO_LOAD_CUSTOMER_ANALYTICS + ": " + e.getMessage())
                     .build());
         }
     }
