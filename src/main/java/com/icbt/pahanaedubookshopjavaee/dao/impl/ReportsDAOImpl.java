@@ -3,6 +3,7 @@ package com.icbt.pahanaedubookshopjavaee.dao.impl;
 import com.icbt.pahanaedubookshopjavaee.dao.ReportsDAO;
 import com.icbt.pahanaedubookshopjavaee.dto.OrderReportDTO;
 import com.icbt.pahanaedubookshopjavaee.dto.ReportFilterDTO;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ExceptionMessages;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -71,7 +72,7 @@ public class ReportsDAOImpl implements ReportsDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new Exception("Failed to generate order reports", e);
+            throw new Exception(ExceptionMessages.DATABASE_ERROR_GENERATING_REPORTS, e);
         }
 
         return reports;
@@ -113,7 +114,7 @@ public class ReportsDAOImpl implements ReportsDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new Exception("Failed to generate report summary", e);
+            throw new Exception(ExceptionMessages.DATABASE_ERROR_GENERATING_REPORTS, e);
         }
 
         return summary;
@@ -227,7 +228,7 @@ public class ReportsDAOImpl implements ReportsDAO {
                     .build();
                     
         } catch (Exception e) {
-            throw new Exception("Failed to generate detailed report data", e);
+            throw new Exception(ExceptionMessages.FAILED_TO_GENERATE_DETAILED_REPORT, e);
         }
     }
 
@@ -251,7 +252,7 @@ public class ReportsDAOImpl implements ReportsDAO {
                     .build();
                     
         } catch (Exception e) {
-            throw new Exception("Failed to generate summary report data", e);
+            throw new Exception(ExceptionMessages.FAILED_TO_GENERATE_SUMMARY_REPORT, e);
         }
     }
 
@@ -411,7 +412,7 @@ public class ReportsDAOImpl implements ReportsDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new Exception("Failed to execute time-based report", e);
+            throw new Exception(ExceptionMessages.DATABASE_ERROR_EXECUTING_REPORT_QUERY, e);
         }
 
         return results;

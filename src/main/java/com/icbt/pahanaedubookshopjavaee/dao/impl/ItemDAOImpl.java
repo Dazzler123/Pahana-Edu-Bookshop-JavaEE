@@ -73,7 +73,7 @@ public class ItemDAOImpl implements ItemDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException(ExceptionMessages.FAILED_TO_SAVE_ITEM, e);
+            throw new RuntimeException(ExceptionMessages.DATABASE_ERROR_SAVING_ITEM, e);
         }
     }
 
@@ -97,7 +97,7 @@ public class ItemDAOImpl implements ItemDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException(ExceptionMessages.FAILED_TO_UPDATE_ITEM, e);
+            throw new RuntimeException(ExceptionMessages.DATABASE_ERROR_UPDATING_ITEM, e);
         }
     }
 
@@ -191,7 +191,7 @@ public class ItemDAOImpl implements ItemDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException("Failed to generate item code", e);
+            throw new RuntimeException(ExceptionMessages.DATABASE_ERROR_GENERATING_ITEM_CODE, e);
         }
     }
 }

@@ -77,7 +77,7 @@ $(document).ready(function () {
                 });
             },
             error: function() {
-                $('#recentOrdersTable').html('<tr><td colspan="4" class="text-center text-danger">Failed to load customer data</td></tr>');
+                $('#recentOrdersTable').html('<tr><td colspan="4" class="text-center text-danger">Failed to load customer analytics data</td></tr>');
             }
         });
     }
@@ -118,7 +118,7 @@ $(document).ready(function () {
                 });
             },
             error: function() {
-                $('#topItemsTable').html('<tr><td colspan="3" class="text-center text-danger">Failed to load item data</td></tr>');
+                $('#topItemsTable').html('<tr><td colspan="3" class="text-center text-danger">Failed to load item analytics data</td></tr>');
             }
         });
     }

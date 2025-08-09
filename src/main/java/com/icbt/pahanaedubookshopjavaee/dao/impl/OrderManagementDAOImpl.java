@@ -1,6 +1,8 @@
 package com.icbt.pahanaedubookshopjavaee.dao.impl;
 
 import com.icbt.pahanaedubookshopjavaee.dao.OrderManagementDAO;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ExceptionMessages;
+import com.icbt.pahanaedubookshopjavaee.util.constants.ResponseMessages;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -55,7 +57,7 @@ public class OrderManagementDAOImpl implements OrderManagementDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new Exception("Failed to retrieve orders for customer: " + customerId, e);
+            throw new Exception(ExceptionMessages.DATABASE_ERROR_RETRIEVING_ORDERS + ": " + customerId, e);
         }
 
         return Json.createObjectBuilder()
@@ -93,11 +95,11 @@ public class OrderManagementDAOImpl implements OrderManagementDAO {
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
-                throw new Exception("Order not found: " + orderCode);
+                throw new Exception(ResponseMessages.MESSAGE_ORDER_NOT_FOUND + ": " + orderCode);
             }
 
         } catch (SQLException e) {
-            throw new Exception("Failed to update order: " + orderCode, e);
+            throw new Exception(ExceptionMessages.DATABASE_ERROR_UPDATING_ORDER + ": " + orderCode, e);
         }
     }
 
@@ -120,11 +122,11 @@ public class OrderManagementDAOImpl implements OrderManagementDAO {
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
-                throw new Exception("Order not found: " + orderCode);
+                throw new Exception(ResponseMessages.MESSAGE_ORDER_NOT_FOUND + ": " + orderCode);
             }
 
         } catch (SQLException e) {
-            throw new Exception("Failed to update order status: " + orderCode, e);
+            throw new Exception(ExceptionMessages.DATABASE_ERROR_UPDATING_ORDER_STATUS + ": " + orderCode, e);
         }
     }
 
