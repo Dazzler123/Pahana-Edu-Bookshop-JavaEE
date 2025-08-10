@@ -62,11 +62,11 @@ public class ReportsServiceImpl implements ReportsService {
     @Override
     public List<Map<String, Object>> generateTimeBasedReports(ReportFilterDTO filter) {
         try {
-            if ("DAILY".equals(filter.getReportType())) {
+            if (CommonConstants.REPORT_FILTER_DAILY.equals(filter.getReportType())) {
                 return reportsDAO.getDailyReports(filter);
-            } else if ("MONTHLY".equals(filter.getReportType())) {
+            } else if (CommonConstants.REPORT_FILTER_MONTHLY.equals(filter.getReportType())) {
                 return reportsDAO.getMonthlyReports(filter);
-            } else if ("ANNUAL".equals(filter.getReportType())) {
+            } else if (CommonConstants.REPORT_FILTER_ANNUALLY.equals(filter.getReportType())) {
                 return reportsDAO.getAnnualReports(filter);
             }
             return reportsDAO.getDailyReports(filter); // default to daily

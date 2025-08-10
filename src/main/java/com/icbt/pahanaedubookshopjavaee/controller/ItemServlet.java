@@ -86,6 +86,12 @@ public class ItemServlet extends BaseServlet {
             }
             
             abstractResponseUtility.writeJson(response, result);
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            abstractResponseUtility.writeJson(response, Json.createObjectBuilder()
+                    .add("state", "error")
+                    .add("message", "Invalid request format: " + e.getMessage())
+                    .build());
         }
     }
 
