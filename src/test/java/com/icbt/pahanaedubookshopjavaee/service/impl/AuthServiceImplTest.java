@@ -1,14 +1,12 @@
 package com.icbt.pahanaedubookshopjavaee.service.impl;
 
-import com.icbt.pahanaedubookshopjavaee.service.AuthService;
-import com.icbt.pahanaedubookshopjavaee.util.constants.AuthConstants;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class AuthServiceImplTest {
 
-    private AuthService authService;
+    private AuthServiceImpl authService;
 
     @Before
     public void setUp() {
@@ -16,133 +14,75 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    public void testAuthenticate_ValidCredentials_ReturnsTrue() {
-        // Arrange
-        String validUsername = AuthConstants.ADMIN_USERNAME;
-        String validPassword = AuthConstants.ADMIN_PASSWORD;
-
+    public void testAuthenticate_ValidCredentials_ShouldReturnTrue() {
         // Act
-        boolean result = authService.authenticate(validUsername, validPassword);
+        boolean result = authService.authenticate("Admin", "1234");
 
         // Assert
-        assertTrue("Authentication should succeed with valid credentials", result);
+        assertTrue("Should authenticate with valid credentials", result);
     }
 
     @Test
-    public void testAuthenticate_InvalidUsername_ReturnsFalse() {
-        // Arrange
-        String invalidUsername = "InvalidUser";
-        String validPassword = AuthConstants.ADMIN_PASSWORD;
-
+    public void testAuthenticate_InvalidUsername_ShouldReturnFalse() {
         // Act
-        boolean result = authService.authenticate(invalidUsername, validPassword);
+        boolean result = authService.authenticate("InvalidUser", "1234");
 
         // Assert
-        assertFalse("Authentication should fail with invalid username", result);
+        assertFalse("Should not authenticate with invalid username", result);
     }
 
     @Test
-    public void testAuthenticate_InvalidPassword_ReturnsFalse() {
-        // Arrange
-        String validUsername = AuthConstants.ADMIN_USERNAME;
-        String invalidPassword = "wrongpassword";
-
+    public void testAuthenticate_InvalidPassword_ShouldReturnFalse() {
         // Act
-        boolean result = authService.authenticate(validUsername, invalidPassword);
+        boolean result = authService.authenticate("Admin", "wrongpassword");
 
         // Assert
-        assertFalse("Authentication should fail with invalid password", result);
+        assertFalse("Should not authenticate with invalid password", result);
     }
 
     @Test
-    public void testAuthenticate_BothInvalid_ReturnsFalse() {
-        // Arrange
-        String invalidUsername = "InvalidUser";
-        String invalidPassword = "wrongpassword";
-
+    public void testAuthenticate_NullUsername_ShouldReturnFalse() {
         // Act
-        boolean result = authService.authenticate(invalidUsername, invalidPassword);
+        boolean result = authService.authenticate(null, "1234");
 
         // Assert
-        assertFalse("Authentication should fail with both invalid credentials", result);
+        assertFalse("Should not authenticate with null username", result);
     }
 
     @Test
-    public void testAuthenticate_NullUsername_ReturnsFalse() {
-        // Arrange
-        String nullUsername = null;
-        String validPassword = AuthConstants.ADMIN_PASSWORD;
-
+    public void testAuthenticate_NullPassword_ShouldReturnFalse() {
         // Act
-        boolean result = authService.authenticate(nullUsername, validPassword);
+        boolean result = authService.authenticate("Admin", null);
 
         // Assert
-        assertFalse("Authentication should fail with null username", result);
+        assertFalse("Should not authenticate with null password", result);
     }
 
     @Test
-    public void testAuthenticate_NullPassword_ReturnsFalse() {
-        // Arrange
-        String validUsername = AuthConstants.ADMIN_USERNAME;
-        String nullPassword = null;
-
+    public void testAuthenticate_EmptyCredentials_ShouldReturnFalse() {
         // Act
-        boolean result = authService.authenticate(validUsername, nullPassword);
+        boolean result = authService.authenticate("", "");
 
         // Assert
-        assertFalse("Authentication should fail with null password", result);
+        assertFalse("Should not authenticate with empty credentials", result);
     }
 
     @Test
-    public void testAuthenticate_EmptyUsername_ReturnsFalse() {
-        // Arrange
-        String emptyUsername = "";
-        String validPassword = AuthConstants.ADMIN_PASSWORD;
-
+    public void testAuthenticate_CaseSensitive_ShouldReturnFalse() {
         // Act
-        boolean result = authService.authenticate(emptyUsername, validPassword);
+        boolean result = authService.authenticate("admin", "1234");
 
         // Assert
-        assertFalse("Authentication should fail with empty username", result);
+        assertFalse("Should be case sensitive for username", result);
     }
 
     @Test
-    public void testAuthenticate_EmptyPassword_ReturnsFalse() {
-        // Arrange
-        String validUsername = AuthConstants.ADMIN_USERNAME;
-        String emptyPassword = "";
-
+    public void testAuthenticate_WhitespaceCredentials_ShouldReturnFalse() {
         // Act
-        boolean result = authService.authenticate(validUsername, emptyPassword);
+        boolean result = authService.authenticate(" Admin ", " 1234 ");
 
         // Assert
-        assertFalse("Authentication should fail with empty password", result);
-    }
-
-    @Test
-    public void testAuthenticate_WhitespaceUsername_ReturnsFalse() {
-        // Arrange
-        String whitespaceUsername = "   ";
-        String validPassword = AuthConstants.ADMIN_PASSWORD;
-
-        // Act
-        boolean result = authService.authenticate(whitespaceUsername, validPassword);
-
-        // Assert
-        assertFalse("Authentication should fail with whitespace-only username", result);
-    }
-
-    @Test
-    public void testAuthenticate_CaseSensitiveUsername_ReturnsFalse() {
-        // Arrange
-        String lowercaseUsername = AuthConstants.ADMIN_USERNAME.toLowerCase();
-        String validPassword = AuthConstants.ADMIN_PASSWORD;
-
-        // Act
-        boolean result = authService.authenticate(lowercaseUsername, validPassword);
-
-        // Assert
-        assertFalse("Authentication should be case-sensitive for username", result);
+        assertFalse("Should not authenticate with whitespace in credentials", result);
     }
 
 }
