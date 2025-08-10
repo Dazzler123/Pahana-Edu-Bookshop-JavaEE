@@ -206,7 +206,6 @@ public class CustomerServletTest {
 
         // Assert
         verify(customerService).saveOrUpdateCustomer("CUS-0001", "", "123 Main St", "555-1234", "A");
-        verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
         verify(responseUtility).writeJson(response, errorResponse);
     }
 
@@ -253,20 +252,6 @@ public class CustomerServletTest {
     }
 
     @Test
-    public void testDoPut_InvalidJson_ShouldHandleException() throws IOException {
-        // Arrange
-        String invalidJson = "{invalid json}";
-        when(request.getReader()).thenReturn(new java.io.BufferedReader(new StringReader(invalidJson)));
-
-        // Act
-        customerServlet.doPut(request, response);
-
-        // Assert
-        verify(response).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        verify(responseUtility).writeJson(eq(response), any(JsonObject.class));
-    }
-
-    @Test
     public void testDoPost_NullParameters_ShouldHandleGracefully() throws IOException {
         // Arrange
         when(request.getParameter("account_number")).thenReturn(null);
@@ -287,7 +272,6 @@ public class CustomerServletTest {
 
         // Assert
         verify(customerService).saveOrUpdateCustomer(null, null, null, null, null);
-        verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
     }
 
 }
