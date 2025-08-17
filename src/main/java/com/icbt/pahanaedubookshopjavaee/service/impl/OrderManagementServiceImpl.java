@@ -202,7 +202,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
                         .build();
             }
 
-            if (!paymentStatus.matches("[PNR]")) {
+            if (!paymentStatus.matches("[ANP]")) {
                 return Json.createObjectBuilder()
                         .add("state", "error")
                         .add("message", ResponseMessages.MESSAGE_INVALID_PAYMENT_STATUS)
