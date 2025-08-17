@@ -92,7 +92,7 @@ public class ResponseMessages {
     public static final String MESSAGE_DISCOUNT_CANNOT_EXCEED_TOTAL = "Total discount cannot exceed total amount";
     public static final String MESSAGE_INVALID_ORDER_DATE_FORMAT = "Invalid order date format";
     public static final String MESSAGE_INVALID_ORDER_STATUS = "Invalid order status. Must be A (Active), I (Inactive), or D (Deleted)";
-    public static final String MESSAGE_INVALID_PAYMENT_STATUS = "Invalid payment status. Must be P (Paid), N (Not Paid), or R (Refunded)";
+    public static final String MESSAGE_INVALID_PAYMENT_STATUS = "Invalid payment status. Must be A (Paid), N (Not Paid), or P (Pending)";
     public static final String MESSAGE_INVALID_PAYMENT_TYPE = "Invalid payment type. Must be cash, card, or other";
     public static final String MESSAGE_INVALID_NUMERIC_VALUE_IN_ORDER = "Invalid numeric value in order data";
     public static final String MESSAGE_FAILED_TO_LOAD_ORDERS = "Failed to load orders";
