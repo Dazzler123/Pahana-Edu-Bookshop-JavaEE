@@ -1,2 +1,11 @@
 // === BACKEND BASE URL ===
-window.baseURL = "http://localhost:8080/Pahana_Edu_Bookshop_JavaEE_war_exploded/";
+
+(function () {
+    const pathSegments = window.location.pathname.split("/");
+    const contextPath = pathSegments[1] || "";
+
+    window.baseURL = window.location.origin + "/" + contextPath + "/";
+
+    console.log("[CommonConfig] baseURL initialized:", window.baseURL);
+})();
+

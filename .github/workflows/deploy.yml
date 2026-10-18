@@ -1,0 +1,76 @@
+
+name: Build and Deploy JavaEE Application
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up Java 8
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '8'
+          cache: maven
+
+      - name: Build WAR
+        run: |
+          chmod +x mvnw
+          ./mvnw -B clean package
+
+      - name: Prepare SSH
+        env:
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$EC2_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts
+
+      - name: Upload WAR to EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          WAR_FILE="target/Pahana-Edu-Bookshop-JavaEE-1.0-SNAPSHOT.war"
+          test -f "$WAR_FILE"
+          scp -i ~/.ssh/deploy_key \
+            "$WAR_FILE" \
+            "ubuntu@${EC2_HOST}:/tmp/Pahana-Edu-Bookshop-JavaEE-1.0-SNAPSHOT.war"
+
+      - name: Deploy WAR on Tomcat
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          ssh -i ~/.ssh/deploy_key "ubuntu@${EC2_HOST}" 'bash -s' <<'REMOTE'
+          set -e
+          sudo systemctl stop tomcat
+          sudo rm -rf /opt/tomcat/webapps/Pahana-Edu-Bookshop-JavaEE-1.0-SNAPSHOT
+          sudo mv /tmp/Pahana-Edu-Bookshop-JavaEE-1.0-SNAPSHOT.war \
+            /opt/tomcat/webapps/
+          sudo chown tomcat:tomcat \
+            /opt/tomcat/webapps/Pahana-Edu-Bookshop-JavaEE-1.0-SNAPSHOT.war
+          sudo chmod 640 \
+            /opt/tomcat/webapps/Pahana-Edu-Bookshop-JavaEE-1.0-SNAPSHOT.war
+          sudo systemctl start tomcat
+          REMOTE
+
+      - name: Verify Tomcat service
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          ssh -i ~/.ssh/deploy_key "ubuntu@${EC2_HOST}" \
+            'systemctl is-active tomcat'
