@@ -1,5 +1,5 @@
 
-name: Build and Deploy JavaEE Application
+name: Build JavaEE Application
 
 on:
   push:
@@ -11,8 +11,8 @@ permissions:
   contents: read
 
 jobs:
-  build-and-deploy:
-    runs-on: self-hosted
+  build:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout source code
@@ -29,28 +29,3 @@ jobs:
         run: |
           chmod +x mvnw
           ./mvnw -B clean package
-
-      - name: Deploy WAR to Tomcat
-        run: |
-          set -e
-          
-          WAR_FILE="target/Pahana-Edu-Bookshop-JavaEE-1.0-SNAPSHOT.war"
-          DEPLOY_DIR="/opt/tomcat/webapps"
-          APP_NAME="Pahana-Edu-Bookshop-JavaEE-1.0-SNAPSHOT"
-          
-          test -f "$WAR_FILE"
-          
-          sudo systemctl stop tomcat
-          
-          sudo rm -rf "$DEPLOY_DIR/$APP_NAME"
-          sudo rm -f "$DEPLOY_DIR/$APP_NAME.war"
-          
-          sudo install -o tomcat -g tomcat -m 640 \
-            "$WAR_FILE" "$DEPLOY_DIR/$APP_NAME.war"
-          
-          sudo systemctl start tomcat
-
-      - name: Verify Tomcat
-        run: |
-          systemctl is-active --quiet tomcat
-          echo "Tomcat is running."
